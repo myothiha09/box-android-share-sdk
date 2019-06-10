@@ -3,7 +3,7 @@
     <color name="box_sharesdk_primary_text">#de000000</color>
     <color name="box_sharesdk_hint">#80000000</color>
     <color name="box_sharesdk_accent">#00adef</color>
-    <color name="box_sharesdk_background">#ffffffff</color>
+    <color name="box_sharesdk_background">#FFFFFF</color>
 
     <!-- Custom colors -->
     <color name="box_sharesdk_primary">#ffffffff</color>
@@ -17,4 +17,8 @@
     <color name="box_sharesdk_accent_transparent">#3f1992D4</color>
     <color name="box_sharesdk_no_collaborators_msg">#757575</color>
     <color name="box_sharesdk_collaborators_label">#404040</color>
+
+    <color name="box_sharesdk_cell_button_text">#72848e</color>
+
+    <color name="box_share_sdk_screen_background">#eaeef3</color>
 </resources>

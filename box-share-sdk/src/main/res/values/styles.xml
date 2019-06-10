@@ -107,4 +107,19 @@
     </style>
 
     <dimen name="box_sharesdk_dialog_minWidth">72dp</dimen>
+
+    <style name="BoxCellButton" parent="@style/ButtonAppTheme">
+        <item name="android:gravity">left</item>
+        <item name="android:layout_height">@dimen/box_sharesdk_big_cell_height</item>
+    </style>
+
+    <style name="BoxCellButtonHeader" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="BoxCellButtonText" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">6sp</item>
+        <item name="android:textColor">@color/box_sharesdk_cell_button_text</item>
+    </style>
 </resources>

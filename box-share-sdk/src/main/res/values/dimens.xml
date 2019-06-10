@@ -12,4 +12,10 @@
     <dimen name="box_sharesdk_zero_margin">0dp</dimen>
     <dimen name="box_sharesdk_dialog_margin">24dp</dimen>
     <dimen name="box_sharesdk_progressbar_size">50dp</dimen>
+
+
+    <dimen name="box_sharesdk_big_cell_height">98dp</dimen>
+    <dimen name="box_sharesdk_medium_cell_height">78dp</dimen>
+    <dimen name="box_sharesdk_small_cell_height">48dp</dimen>
+    <dimen name="box_sharesdk_vertical_margin_cell_components">16dp</dimen>
 </resources>
