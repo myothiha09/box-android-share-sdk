@@ -2,7 +2,6 @@ package com.box.androidsdk.share.sharerepo;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.support.design.widget.Snackbar;
 
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.BoxFutureTask;
@@ -17,7 +16,7 @@ import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.internal.models.BoxIteratorInvitees;
 import com.box.androidsdk.share.vm.DataWrapper;
-import com.box.androidsdk.share.vm.InvitingCollabDataWrapper;
+import com.box.androidsdk.share.vm.InviteCollaboratorsDataWrapper;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class ShareRepo implements ShareRepoInterface {
 
     private final MutableLiveData<DataWrapper<BoxCollaborationItem>> mShareItem = new MutableLiveData<DataWrapper<BoxCollaborationItem>>();
 
-    private final MutableLiveData<InvitingCollabDataWrapper> mInvitingCollabsChecker = new MutableLiveData<InvitingCollabDataWrapper>();
+    private final MutableLiveData<InviteCollaboratorsDataWrapper> mInvitingCollabsChecker = new MutableLiveData<InviteCollaboratorsDataWrapper>();
 
     public ShareRepo(ShareController controller) {
         this.mController = controller;
@@ -84,8 +83,8 @@ public class ShareRepo implements ShareRepoInterface {
     }
 
     @Override
-    public LiveData<InvitingCollabDataWrapper> addCollabs(BoxCollaborationItem boxCollaborationItem, BoxCollaboration.Role selectedRole, String[] emails) {
-        final InvitingCollabDataWrapper data = new InvitingCollabDataWrapper();
+    public LiveData<InviteCollaboratorsDataWrapper> addCollabs(BoxCollaborationItem boxCollaborationItem, BoxCollaboration.Role selectedRole, String[] emails) {
+        final InviteCollaboratorsDataWrapper data = new InviteCollaboratorsDataWrapper();
         mController.addCollaborations(boxCollaborationItem, selectedRole, emails).addOnCompletedListener(new BoxFutureTask.OnCompletedListener<BoxResponseBatch>() {
             @Override
             public void onCompleted(BoxResponse<BoxResponseBatch> response) {
@@ -96,7 +95,7 @@ public class ShareRepo implements ShareRepoInterface {
         return mInvitingCollabsChecker;
     }
 
-    private InvitingCollabDataWrapper handleCollaboratorsInvited(BoxResponseBatch responses) {
+    private InviteCollaboratorsDataWrapper handleCollaboratorsInvited(BoxResponseBatch responses) {
         int strCode;
         boolean mInvitationFailed;
         String subMssg = null;
@@ -163,7 +162,7 @@ public class ShareRepo implements ShareRepoInterface {
 
         mInvitationFailed = (didRequestFail && !failedCollaboratorsList.isEmpty());
 
-        return new InvitingCollabDataWrapper(mInvitationFailed, subMssg, strCode);
+        return new InviteCollaboratorsDataWrapper(mInvitationFailed, subMssg, strCode);
     }
 
 

@@ -1,8 +1,8 @@
 package com.box.androidsdk.share.vm;
 
 public class DataWrapper<T> {
-    private T data;
-    private int stringErrorCode;
+    protected T data;
+    protected int stringErrorCode;
     public static final int SUCCEESS = -1;
 
 

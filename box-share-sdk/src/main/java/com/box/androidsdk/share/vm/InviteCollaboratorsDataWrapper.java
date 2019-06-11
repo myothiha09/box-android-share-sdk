@@ -3,16 +3,16 @@ package com.box.androidsdk.share.vm;
 /**
  * A special class to hold data for inviting a new Collaborator
  */
-public class InvitingCollabDataWrapper {
+public class InviteCollaboratorsDataWrapper {
     private boolean mInvitationFailed;
     private String subMessage; //String used to hold the formatting part
     private int strCode;
 
 
-    public InvitingCollabDataWrapper() {
+    public InviteCollaboratorsDataWrapper() {
 
     }
-    public InvitingCollabDataWrapper(boolean mInvitationFailed, String subMessage, int strCode) {
+    public InviteCollaboratorsDataWrapper(boolean mInvitationFailed, String subMessage, int strCode) {
         this.mInvitationFailed = mInvitationFailed;
         this.subMessage = subMessage;
         this.strCode = strCode;
@@ -42,7 +42,7 @@ public class InvitingCollabDataWrapper {
         this.strCode = strCode;
     }
 
-    public void setValues(InvitingCollabDataWrapper other) {
+    public void setValues(InviteCollaboratorsDataWrapper other) {
         this.mInvitationFailed = other.mInvitationFailed;
         this.subMessage = other.subMessage;
         this.strCode = other.strCode;
