@@ -17,7 +17,7 @@ import com.box.androidsdk.share.fragments.SharedLinkFragment;
 
 import java.util.ArrayList;
 
-public class BoxCollaboratorsRolesActivity extends BoxActivity {
+public class BoxCollaborationRolesActivity extends BoxActivity {
 
     private static final String ARGS_ROLES = "argsRoles";
     private static final String ARGS_SELECTED_ROLE = "argsSelectedRole";
@@ -30,7 +30,7 @@ public class BoxCollaboratorsRolesActivity extends BoxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_collaborators_roles);
+        setContentView(R.layout.activity_collaboration_roles);
         initToolbar();
     }
 
@@ -65,7 +65,7 @@ public class BoxCollaboratorsRolesActivity extends BoxActivity {
         if (session == null || session.getUser() == null)
             throw new IllegalArgumentException("Invalid user associated with Box session.");
 
-        Intent intent = new Intent(context, BoxCollaboratorsRolesActivity.class);
+        Intent intent = new Intent(context, BoxCollaborationRolesActivity.class);
         intent.putExtra(CollaborationUtils.EXTRA_ITEM, item);
         intent.putExtra(CollaborationUtils.EXTRA_USER_ID, session.getUser().getId());
         return intent;

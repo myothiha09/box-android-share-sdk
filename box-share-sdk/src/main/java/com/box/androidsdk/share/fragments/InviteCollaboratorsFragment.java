@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.Toast;
 
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.BoxFutureTask;
@@ -33,7 +32,7 @@ import com.box.androidsdk.content.utils.BoxLogUtils;
 import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
-import com.box.androidsdk.share.activities.BoxCollaboratorsRolesActivity;
+import com.box.androidsdk.share.activities.BoxCollaborationRolesActivity;
 import com.box.androidsdk.share.adapters.InviteeAdapter;
 import com.box.androidsdk.share.internal.models.BoxInvitee;
 import com.box.androidsdk.share.internal.models.BoxIteratorInvitees;
@@ -126,7 +125,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
         if (getArguments().getBoolean(EXTRA_USE_CONTACTS_PROVIDER)){
             requestPermissionsIfNecessary();
         }
-        BoxCollaboratorsRolesActivity.mRoles = mRoles;
+        BoxCollaborationRolesActivity.mRoles = mRoles;
         return view;
     }
 

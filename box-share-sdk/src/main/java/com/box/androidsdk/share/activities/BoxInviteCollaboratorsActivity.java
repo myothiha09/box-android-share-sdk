@@ -57,7 +57,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
 
     @Override
     public void onClick(View v) {
-        Intent intent = BoxCollaboratorsRolesActivity.getLaunchIntent(this, mShareItem, mSession);
+        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession);
         startActivity(intent);
     }
 
