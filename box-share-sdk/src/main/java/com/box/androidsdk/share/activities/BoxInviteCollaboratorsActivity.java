@@ -34,6 +34,12 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
     }
 
     @Override
+    protected void initToolbar() {
+        super.initToolbar();
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);//to get blackText on status bar. will be moved to BoxActivity after all screens are updated.
+    }
+
+    @Override
     protected void initializeUi() {
         mFragment = (InviteCollaboratorsFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
         if (mFragment == null) {

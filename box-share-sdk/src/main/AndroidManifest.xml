@@ -11,7 +11,7 @@
         <activity
             android:name=".activities.BoxInviteCollaboratorsActivity"
             android:label="@string/box_sharesdk_invite_collaborators"
-            android:theme="@style/ShareTheme" >
+            android:theme="@style/ShareThemeNew" >
         </activity>
         <activity
             android:name=".activities.BoxSharedLinkActivity"
@@ -26,7 +26,7 @@
         <activity
             android:name=".activities.BoxCollaboratorsRolesActivity"
             android:label="@string/box_sharesdk_title_access_level"
-            android:theme="@style/ShareTheme" >
+            android:theme="@style/ShareThemeNew" >
         </activity>
     </application>
 
