@@ -1,44 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/box_share_sdk_screen_background"
+    android:orientation="vertical">
+    <TextView
+        style="@style/BoxCellTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
+        android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_new"
+        android:text="@string/box_sharesdk_invite_collaborators" />
+   <LinearLayout
+       android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_title_to_cell"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@color/box_share_sdk_components_background"
+       android:orientation="vertical">
+       <com.box.androidsdk.share.ui.ChipCollaborationView
+           android:background="@color/box_share_sdk_components_background"
+           android:id="@+id/invite_collaborator_autocomplete"
+           android:layout_width="match_parent"
+           android:minHeight="@dimen/box_sharesdk_small_cell_height"
+           android:layout_height="wrap_content"
+           android:imeOptions="actionDone"
+           android:textColor="@color/box_sharesdk_primary_text"
+           android:textSize="19sp"
+           android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
+           android:paddingRight="@dimen/box_sharesdk_horizontal_margin_new"
+           android:inputType="text|textNoSuggestions|textMultiLine"
+           android:focusableInTouchMode="true"
+           android:layout_marginLeft="-2dp"/>
+       <Button
+           android:layout_width="30dp"
+           android:layout_height="30dp"
+           android:visibility="visible"
+           android:id="@+id/invite_collaborator_role"/>
+       <View style="@style/BoxInsetDivider" />
+       <android.support.constraint.ConstraintLayout
+           android:background="@color/box_share_sdk_components_background"
+           android:layout_width="match_parent"
+           android:layout_height="@dimen/box_sharesdk_medium_cell_height">
+           <TextView
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintLeft_toLeftOf="parent"
+               android:text="Placeholder"
+               android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_cell_component"
+               android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
+               style="@style/BoxCellSubHeader"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content" />
+           <TextView
+               android:text="subtext"
+               style="@style/BoxCellText"
+               android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
+               android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin_cell_component"
+               app:layout_constraintLeft_toLeftOf="parent"
+               app:layout_constraintBottom_toBottomOf="parent"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content" />
+           <TextView
+               style="@style/BoxCellText"
+               android:text="subText"
+               app:layout_constraintRight_toRightOf="parent"
+               android:layout_marginRight="@dimen/box_sharesdk_horizontal_margin_new"
+               app:layout_constraintTop_toTopOf="parent"
+               android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_cell_component"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content" />
+       </android.support.constraint.ConstraintLayout>
+       <View style="@style/BoxInsetDivider" />
+   </LinearLayout>
+    <com.box.androidsdk.share.views.CollaboratorsInitialsView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin"
-        android:layout_marginRight="@dimen/box_sharesdk_horizontal_margin">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/box_sharesdk_hint"
-            android:text="@string/box_sharesdk_to" />
-        <com.box.androidsdk.share.ui.ChipCollaborationView
-            android:id="@+id/invite_collaborator_autocomplete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:textColor="@color/box_sharesdk_primary_text"
-            android:textSize="19sp"
-            android:nextFocusDown="@+id/editText"
-            android:inputType="text|textNoSuggestions|textMultiLine"
-            android:focusableInTouchMode="true"
-            android:layout_marginLeft="-2dp"/>
-        <Button
-            android:id="@+id/invite_collaborator_role"
-            style="@style/BoxLabelTextNoPadding"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/box_sharesdk_collaboration_cell_height"
-            android:layout_marginTop="20dp"
-            />
-        <com.box.androidsdk.share.views.CollaboratorsInitialsView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/collaboratorsInitialsView"/>
-    </LinearLayout>
-</ScrollView>
+        android:layout_height="wrap_content"
+        android:id="@+id/collaboratorsInitialsView"/>
+</LinearLayout>
