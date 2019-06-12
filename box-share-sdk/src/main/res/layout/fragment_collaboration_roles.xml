@@ -1,12 +1,8 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.box.androidsdk.share.fragments.CollaborationRolesDialog"
-    android:background="@color/background_material_light"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:filterTouchesWhenObscured="false"
-    android:minWidth="360dp">
+    android:filterTouchesWhenObscured="false">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -14,14 +10,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:background="@color/box_share_sdk_screen_background"
             android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin">
             <TextView
+                style="@style/BoxCellTitle"
                 android:id="@+id/collaborator_role_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/box_sharesdk_radio_margin"
+                android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
+                android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_new"
+                android:text="@string/box_sharesdk_select_an_option"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
             <RadioGroup
+                android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_title_to_cell"
                 android:id="@+id/collaborator_roles_group"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

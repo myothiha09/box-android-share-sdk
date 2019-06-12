@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.box.androidsdk.content.models.BoxCollaborationItem;
-import com.box.androidsdk.content.models.BoxFolder;
 import com.box.androidsdk.content.models.BoxIteratorCollaborations;
 import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.content.utils.SdkUtils;
@@ -20,7 +20,7 @@ import com.box.androidsdk.share.fragments.InviteCollaboratorsFragment;
  * Activity used to allow users to invite additional collaborators to the folder. Email addresses will auto complete from the phones address book
  * as well as Box's internal invitee endpoint. The intent to launch this activity can be retrieved via the static getLaunchIntent method
  */
-public class BoxInviteCollaboratorsActivity extends BoxActivity implements InviteCollaboratorsFragment.InviteCollaboratorsListener {
+public class BoxInviteCollaboratorsActivity extends BoxActivity implements InviteCollaboratorsFragment.InviteCollaboratorsListener, View.OnClickListener{
 
     private boolean mSendEnabled;
     private static int REQUEST_SHOW_COLLABORATORS = 32;
@@ -45,7 +45,14 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
         }
         mFragment.setController(mController);
         ((InviteCollaboratorsFragment)mFragment).setInviteCollaboratorsListener(this);
+        ((InviteCollaboratorsFragment)mFragment).setOnEditAccessListener(this);
         mSendEnabled = ((InviteCollaboratorsFragment)mFragment).areCollaboratorsPresent();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = BoxCollaboratorsRolesActivity.getLaunchIntent(this, mShareItem, mSession);
+        startActivity(intent);
     }
 
     @Override

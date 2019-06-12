@@ -113,13 +113,18 @@
         <item name="android:layout_height">@dimen/box_sharesdk_big_cell_height</item>
     </style>
 
-    <style name="BoxCellButtonHeader" parent="@style/TextAppearance.AppCompat.Subhead">
+    <style name="BoxCellHeader" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="BoxCellButtonText" parent="@style/TextAppearance.AppCompat.Subhead">
+    <style name="BoxCellText" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
-        <item name="android:textColor">@color/box_sharesdk_cell_button_text</item>
+        <item name="android:textColor">@color/box_sharesdk_cell_text</item>
+    </style>
+
+    <style name="BoxCellTitle" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/box_sharesdK_cell_title</item>
     </style>
 </resources>

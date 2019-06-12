@@ -18,7 +18,10 @@
     <color name="box_sharesdk_no_collaborators_msg">#757575</color>
     <color name="box_sharesdk_collaborators_label">#404040</color>
 
-    <color name="box_sharesdk_cell_button_text">#72848e</color>
+    <color name="box_sharesdk_cell_text">#72848e</color>
+    <color name="box_sharesdK_cell_title">#72848e</color>
 
     <color name="box_share_sdk_screen_background">#eaeef3</color>
+    <color name="box_share_sdk_components_background">#ffffff</color>
+
 </resources>

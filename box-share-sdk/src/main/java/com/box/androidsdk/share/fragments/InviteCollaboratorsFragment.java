@@ -33,6 +33,7 @@ import com.box.androidsdk.content.utils.BoxLogUtils;
 import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
+import com.box.androidsdk.share.activities.BoxCollaboratorsRolesActivity;
 import com.box.androidsdk.share.adapters.InviteeAdapter;
 import com.box.androidsdk.share.internal.models.BoxInvitee;
 import com.box.androidsdk.share.internal.models.BoxIteratorInvitees;
@@ -53,7 +54,7 @@ import java.util.List;
  * 2. ShowCollaboratorsListener is used to set up a listener by this fragment on the child custom view called CollaboratorsInitialsView.
  */
 
-public class InviteCollaboratorsFragment extends BoxFragment implements View.OnClickListener, CollaborationRolesDialog.OnRoleSelectedListener, TokenCompleteTextView.TokenListener<BoxInvitee>, InviteeAdapter.InviteeAdapterListener, CollaboratorsInitialsView.ShowCollaboratorsListener {
+public class InviteCollaboratorsFragment extends BoxFragment implements CollaborationRolesDialog.OnRoleSelectedListener, TokenCompleteTextView.TokenListener<BoxInvitee>, InviteeAdapter.InviteeAdapterListener, CollaboratorsInitialsView.ShowCollaboratorsListener {
 
     // Should be implemented by the parent Fragment or Activity
     public interface InviteCollaboratorsListener {
@@ -77,6 +78,8 @@ public class InviteCollaboratorsFragment extends BoxFragment implements View.OnC
     private CollaboratorsInitialsView mCollabInitialsView;
     private boolean mInvitationFailed = false;
 
+    private View.OnClickListener mOnEditAcessListener;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,7 +87,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements View.OnC
 
         mFilterTerm = "";
         mRoleButton = (Button) view.findViewById(R.id.invite_collaborator_role);
-        mRoleButton.setOnClickListener(this);
+        mRoleButton.setOnClickListener(mOnEditAcessListener);
         mAutoComplete = (ChipCollaborationView) view.findViewById(R.id.invite_collaborator_autocomplete);
         mAutoComplete.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         mAdapter = createInviteeAdapter(getActivity());
@@ -123,7 +126,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements View.OnC
         if (getArguments().getBoolean(EXTRA_USE_CONTACTS_PROVIDER)){
             requestPermissionsIfNecessary();
         }
-
+        BoxCollaboratorsRolesActivity.mRoles = mRoles;
         return view;
     }
 
@@ -237,17 +240,24 @@ public class InviteCollaboratorsFragment extends BoxFragment implements View.OnC
         notifyInviteCollaboratorsListener();
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.invite_collaborator_role) {
-            if (mRoles == null || mRoles.size() == 0) {
-                SdkUtils.toastSafely(getContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
-                return;
-            }
+//    @Override
+//    public void onClick(View v) {
+//        if (v.getId() == R.id.invite_collaborator_role) {
+//            if (mRoles == null || mRoles.size() == 0) {
+//                SdkUtils.toastSafely(getContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
+//                return;
+//            }
+//            //CollaboratorsRolesFragment rolesFragment = CollaboratorsRolesFragment.newInstance(mRoles, mSelectedRole, getString(R.string.box_sharesdk_access), false, false, null);
+////            CollaborationRolesDialog rolesDialog = CollaborationRolesDialog.newInstance(mRoles, mSelectedRole, getString(R.string.box_sharesdk_access), false, false, null);
+////            rolesDialog.setOnRoleSelectedListener(this);
+////            rolesDialog.show(getFragmentManager(), CollaborationRolesDialog.TAG);
+//        }
+//    }
 
-            CollaborationRolesDialog rolesDialog = CollaborationRolesDialog.newInstance(mRoles, mSelectedRole, getString(R.string.box_sharesdk_access), false, false, null);
-            rolesDialog.setOnRoleSelectedListener(this);
-            rolesDialog.show(getFragmentManager(), CollaborationRolesDialog.TAG);
+    public void setOnEditAccessListener(View.OnClickListener listener) {
+        mOnEditAcessListener = listener;
+        if (mRoleButton != null) {
+            mRoleButton.setOnClickListener(mOnEditAcessListener);
         }
     }
 

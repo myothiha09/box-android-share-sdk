@@ -18,4 +18,19 @@
     <dimen name="box_sharesdk_medium_cell_height">78dp</dimen>
     <dimen name="box_sharesdk_small_cell_height">48dp</dimen>
     <dimen name="box_sharesdk_vertical_margin_cell_components">16dp</dimen>
+
+    <dimen name="box_sharesdk_vertical_margin_title_to_cell">12dp</dimen>
+
+    <dimen name="box_sharesdk_horizontal_margin_new">24dp</dimen>
+    <dimen name="box_sharesdk_vertical_margin_new">24dp</dimen>
+
+
+    <dimen name="box_sharesdk_radio_horizontal_margin_left">23dp</dimen>
+    <dimen name="box_sharesdk_radio_horizontal_margin_right">31dp</dimen>
+    <dimen name="box_sharesdk_radio_vertical_margin">16dp</dimen>
+    <dimen name="box_sharesdk_radio_horizontal_margin_components">26dp</dimen>
+    <dimen name="box_sharesdk_radio_vertical_margin_components">8dp</dimen>
+    <dimen name="box_sharesdk_radio_height">96dp</dimen>
+    <dimen name="box_sharesdk_radio_button_size">20dp</dimen>
+    <dimen name="box_sharesdk_radio_horizontal_offset">-6dp</dimen>
 </resources>
