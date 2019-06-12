@@ -44,10 +44,10 @@
         app:layout_constraintTop_toBottomOf="@id/roles_name" />
 
     <View
+        style="@style/BoxDivider"
         android:id="@+id/divider"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="@dimen/box_sharesdk_radio_horizontal_margin_left"
-        app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/BoxDivider"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -11,7 +11,7 @@
     <color name="box_sharesdk_togglebar_background">#ffffffff</color>
     <color name="box_sharesdk_button_back">#ffffffff</color>
     <color name="box_sharesdk_divider">#ffd6d6d6</color>
-    <color name="box_sharesdk_warning_color">#ffb71c1c</color>
+    <color name="box_sharesdk_warning_color">#e23e52</color>
     <color name="box_sharesdk_chip_text_color">#e0000000</color>
     <color name="box_sharesdk_initials_count_color">#e0d4d4d4</color>
     <color name="box_sharesdk_accent_transparent">#3f1992D4</color>
@@ -23,5 +23,8 @@
 
     <color name="box_share_sdk_screen_background">#eaeef3</color>
     <color name="box_share_sdk_components_background">#ffffff</color>
+
+
+    <color name="box_share_action_bar_background">#ffffff</color>
 
 </resources>

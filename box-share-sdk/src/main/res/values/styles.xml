@@ -6,6 +6,7 @@
         <item name="android:buttonStyle">@style/ButtonAppTheme</item>
     </style>
 
+
     <style name="ShareDialogTheme" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorPrimary">@color/box_sharesdk_background</item>
         <item name="colorPrimaryDark">@color/box_sharesdk_primary_dark</item>
@@ -113,18 +114,27 @@
         <item name="android:layout_height">@dimen/box_sharesdk_big_cell_height</item>
     </style>
 
+    <style name="SanSerifTextSubHead" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
     <style name="BoxCellHeader" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
-    <style name="BoxCellText" parent="@style/TextAppearance.AppCompat.Subhead">
+    <style name="BoxCellText" parent="@style/SanSerifTextSubHead">
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">6sp</item>
         <item name="android:textColor">@color/box_sharesdk_cell_text</item>
     </style>
 
-    <style name="BoxCellTitle" parent="@style/TextAppearance.AppCompat.Subhead">
+    <style name="BoxCellTitle" parent="@style/SanSerifTextSubHead">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/box_sharesdK_cell_title</item>
+    </style>
+
+    <style name="BoxRemoveButtonText" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/box_sharesdk_warning_color</item>
     </style>
 </resources>

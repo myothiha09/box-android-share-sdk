@@ -33,4 +33,5 @@
     <dimen name="box_sharesdk_radio_height">96dp</dimen>
     <dimen name="box_sharesdk_radio_button_size">20dp</dimen>
     <dimen name="box_sharesdk_radio_horizontal_offset">-6dp</dimen>
+    <dimen name="box_sharesdk_remove_button_margin">16dp</dimen>
 </resources>

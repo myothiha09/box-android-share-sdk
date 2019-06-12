@@ -13,41 +13,27 @@
             android:background="@color/box_share_sdk_screen_background"
             android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin">
             <TextView
-                style="@style/BoxCellTitle"
+                style="@style/BoxCellText"
                 android:id="@+id/collaborator_role_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
                 android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_new"
-                android:text="@string/box_sharesdk_select_an_option"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+                android:text="@string/box_sharesdk_select_an_option" />
             <RadioGroup
                 android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_title_to_cell"
                 android:id="@+id/collaborator_roles_group"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-            <!--<LinearLayout-->
-                <!--android:orientation="horizontal"-->
-                <!--android:gravity="right"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent">-->
-                <!--<Button-->
-                    <!--android:id="@+id/cancelButton"-->
-                    <!--style="?android:attr/buttonBarButtonStyle"-->
-                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
-                    <!--android:textColor="@color/box_link_text"-->
-                    <!--android:text="@string/collaboration_roles_dialog_cancel"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
-                <!--<Button-->
-                    <!--android:id="@+id/okButton"-->
-                    <!--style="?android:attr/buttonBarButtonStyle"-->
-                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Button"-->
-                    <!--android:textColor="@color/box_link_text"-->
-                    <!--android:text="@string/collaboration_roles_dialog_ok"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content" />-->
-            <!--</LinearLayout>-->
+            
+            <Button
+                style="@style/BoxRemoveButtonText"
+                android:layout_width="match_parent"
+                android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
+                android:text="@string/box_sharesdk_role_remove_person"
+                android:layout_marginTop="@dimen/box_sharesdk_remove_button_margin"
+                android:background="@color/box_share_sdk_components_background"
+                android:layout_height="@dimen/box_sharesdk_small_cell_height" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
