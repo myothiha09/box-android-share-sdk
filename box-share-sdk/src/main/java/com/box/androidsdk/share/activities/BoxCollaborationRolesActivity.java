@@ -12,14 +12,16 @@ import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
+import com.box.androidsdk.share.fragments.CollaborationRolesDialog;
+import com.box.androidsdk.share.fragments.CollaborationsFragment;
 import com.box.androidsdk.share.fragments.CollaboratorsRolesFragment;
 import com.box.androidsdk.share.fragments.SharedLinkFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BoxCollaborationRolesActivity extends BoxActivity {
 
-    public ArrayList<BoxCollaboration.Role> mRoles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +42,13 @@ public class BoxCollaborationRolesActivity extends BoxActivity {
         if (mFragment == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-            mRoles = (ArrayList<BoxCollaboration.Role>) getIntent().getSerializableExtra(CollaborationUtils.EXTRA_COLLABORATIONS_ROLES);
-            mFragment = CollaboratorsRolesFragment.newInstance((BoxCollaborationItem) mShareItem, mRoles);
+            String collaboratorName = (String) getIntent().getSerializableExtra(CollaboratorsRolesFragment.ARGS_NAME);
+            ArrayList<BoxCollaboration.Role> roles = (ArrayList<BoxCollaboration.Role>) getIntent().getSerializableExtra((CollaboratorsRolesFragment.ARGS_ROLES));
+            BoxCollaboration.Role selectedRole = (BoxCollaboration.Role) getIntent().getSerializableExtra(CollaboratorsRolesFragment.ARGS_SELECTED_ROLE);
+            boolean allowRemove = getIntent().getBooleanExtra(CollaboratorsRolesFragment.ARGS_ALLOW_REMOVE, false);
+            boolean allowOwnerRole = getIntent().getBooleanExtra(CollaboratorsRolesFragment.ARGS_ALLOW_OWNER_ROLE, false);
+            BoxCollaboration collaboration = (BoxCollaboration)getIntent().getSerializableExtra(CollaboratorsRolesFragment.ARGS_SERIALIZABLE_EXTRA);
+            mFragment = CollaboratorsRolesFragment.newInstance((BoxCollaborationItem) mShareItem, roles, selectedRole, collaboratorName, allowRemove, allowOwnerRole, collaboration);
             ft.add(R.id.fragmentContainer, mFragment);
             ft.commit();
         }
@@ -65,9 +72,15 @@ public class BoxCollaborationRolesActivity extends BoxActivity {
      * @param session the session to view the share link information with
      * @return the intent to launch the activity
      */
-    public static Intent getLaunchIntent(Context context, BoxItem item, BoxSession session, ArrayList<BoxCollaboration.Role> roles) {
+    public static Intent getLaunchIntent(Context context, BoxItem item, BoxSession session, ArrayList<BoxCollaboration.Role> roles,
+                                         BoxCollaboration.Role selectedRole, String name, boolean allowRemove, boolean allowOwnerRole, BoxCollaboration collaboration) {
         Intent intent = getLaunchIntent(context, item, session);
-        intent.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS_ROLES, roles);
+        intent.putExtra(CollaboratorsRolesFragment.ARGS_ROLES, roles);
+        intent.putExtra(CollaboratorsRolesFragment.ARGS_SELECTED_ROLE, selectedRole);
+        intent.putExtra(CollaboratorsRolesFragment.ARGS_NAME, name);
+        intent.putExtra(CollaboratorsRolesFragment.ARGS_ALLOW_REMOVE, allowRemove);
+        intent.putExtra(CollaboratorsRolesFragment.ARGS_ALLOW_OWNER_ROLE, allowOwnerRole);
+        intent.putExtra(CollaboratorsRolesFragment.ARGS_SERIALIZABLE_EXTRA, collaboration);
         return intent;
     }
 }

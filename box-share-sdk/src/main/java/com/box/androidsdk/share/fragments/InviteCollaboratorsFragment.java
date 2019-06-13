@@ -293,8 +293,15 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
             mRoleButton.setOnClickListener(mOnEditAcessListener);
         }
     }
-    public ArrayList<BoxCollaboration.Role> getmRoles() {
-        return mRoles;
+    public Bundle getData() {
+        Bundle b = new Bundle();
+        b.putSerializable(CollaboratorsRolesFragment.ARGS_ROLES, mRoles);
+        b.putSerializable(CollaboratorsRolesFragment.ARGS_SELECTED_ROLE, mSelectedRole);
+        b.putSerializable(CollaboratorsRolesFragment.ARGS_ALLOW_OWNER_ROLE, false);
+        b.putSerializable(CollaboratorsRolesFragment.ARGS_ALLOW_REMOVE, false);
+        b.putSerializable(CollaboratorsRolesFragment.ARGS_NAME, "");
+        b.putSerializable(CollaboratorsRolesFragment.ARGS_SERIALIZABLE_EXTRA, null);
+        return b;
     }
 
     @Override

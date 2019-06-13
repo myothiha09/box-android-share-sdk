@@ -6,6 +6,7 @@ import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -22,12 +23,12 @@ import java.util.List;
 
 public class CollaboratorsRolesFragment extends BoxFragment implements View.OnClickListener {
 
-    private static final String ARGS_ROLES = "argsRoles";
-    private static final String ARGS_SELECTED_ROLE = "argsSelectedRole";
-    private static final String ARGS_NAME = "argsName";
-    private static final String ARGS_ALLOW_REMOVE = "argsAllowRemove";
-    private static final String ARGS_ALLOW_OWNER_ROLE = "argsAllowOwnerRole";
-    private static final String ARGS_SERIALIZABLE_EXTRA = "argsTargetId";
+    public static final String ARGS_ROLES = "argsRoles";
+    public static final String ARGS_SELECTED_ROLE = "argsSelectedRole";
+    public static final String ARGS_NAME = "argsName";
+    public static final String ARGS_ALLOW_REMOVE = "argsAllowRemove";
+    public static final String ARGS_ALLOW_OWNER_ROLE = "argsAllowOwnerRole";
+    public static final String ARGS_SERIALIZABLE_EXTRA = "argsTargetId";
 
     private List<BoxCollaboration.Role> mRoles;
     private boolean mAllowOwnerRole;
@@ -38,19 +39,20 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
     protected ArrayList<RadioButton> mRolesOptions = new ArrayList<RadioButton>();
 
     private RadioGroup mRadioGroup;
-
+    private Button mRemoveButton;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collaboration_roles, container, false);
 
         mRoles = (ArrayList<BoxCollaboration.Role>) getArguments().getSerializable(ARGS_ROLES);
-//        mSelectedRole = (BoxCollaboration.Role) getArguments().getSerializable(ARGS_SELECTED_ROLE);
-//        mAllowRemove = getArguments().getBoolean(ARGS_ALLOW_REMOVE);
-//        mAllowOwnerRole = getArguments().getBoolean(ARGS_ALLOW_OWNER_ROLE);
-//        mCollaboration = (BoxCollaboration)getArguments().getSerializable(ARGS_SERIALIZABLE_EXTRA);
+        mSelectedRole = (BoxCollaboration.Role) getArguments().getSerializable(ARGS_SELECTED_ROLE);
+        mAllowRemove = getArguments().getBoolean(ARGS_ALLOW_REMOVE);
+        mAllowOwnerRole = getArguments().getBoolean(ARGS_ALLOW_OWNER_ROLE);
+        mCollaboration = (BoxCollaboration)getArguments().getSerializable(ARGS_SERIALIZABLE_EXTRA);
 
         mRadioGroup = (RadioGroup) view.findViewById(R.id.collaborator_roles_group);
+        mRemoveButton = (Button) view.findViewById(R.id.remove_btn);
         addRolesToView(mRoles);
         return view;
     }
@@ -96,34 +98,26 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
             lastElementDivider.setVisibility(View.INVISIBLE);
         }
 
-//        if (mAllowRemove) {
-//            // Add remove person option
-//            View radioView = getActivity().getLayoutInflater().inflate(R.layout.radio_item_remove, null);
-//            TextView rolesText = (TextView) radioView.findViewById(R.id.roles_name);
-//            rolesText.setTag(null);
-//            rolesText.setOnClickListener(this);
-//            RadioButton rolesRadio = (RadioButton) radioView.findViewById(R.id.roles_radio);
-//            rolesRadio.setTag(null);
-//            rolesRadio.setOnClickListener(this);
-//            mRolesOptions.add(rolesRadio);
-//            rolesLayout.addView(radioView);
-//        }
+        if (!mAllowRemove) {
+            mRemoveButton.setVisibility(View.GONE);
+        }
     }
 //
-//    public static CollaboratorsRolesFragment newInstance(ArrayList<BoxCollaboration.Role> roles, BoxCollaboration.Role selectedRole, String name, boolean allowRemove, boolean allowOwnerRole, BoxCollaboration collaboration) {
-//        CollaboratorsRolesFragment fragment = new CollaboratorsRolesFragment();
-//
-//        Bundle b = new Bundle();
-//        b.putSerializable(ARGS_ROLES, roles);
-//        b.putSerializable(ARGS_SELECTED_ROLE, selectedRole);
-//        b.putString(ARGS_NAME, name);
-//        b.putBoolean(ARGS_ALLOW_REMOVE, allowRemove);
-//        b.putBoolean(ARGS_ALLOW_OWNER_ROLE, allowOwnerRole);
-//        b.putSerializable(ARGS_SERIALIZABLE_EXTRA, collaboration);
-//        fragment.setArguments(b);
-//
-//        return fragment;
-//    }
+    public static CollaboratorsRolesFragment newInstance(BoxCollaborationItem item, ArrayList<BoxCollaboration.Role> roles, BoxCollaboration.Role selectedRole, String name, boolean allowRemove, boolean allowOwnerRole, BoxCollaboration collaboration) {
+        CollaboratorsRolesFragment fragment = new CollaboratorsRolesFragment();
+
+        Bundle b = getBundle(item);
+        b.putSerializable(ARGS_ROLES, roles);
+        b.putSerializable(ARGS_SELECTED_ROLE, selectedRole);
+        b.putString(ARGS_NAME, name);
+        b.putBoolean(ARGS_ALLOW_REMOVE, allowRemove);
+        b.putBoolean(ARGS_ALLOW_OWNER_ROLE, allowOwnerRole);
+        b.putSerializable(ARGS_SERIALIZABLE_EXTRA, collaboration);
+        fragment.setArguments(b);
+
+        return fragment;
+    }
+
     public void onClick(View v) {
         BoxCollaboration.Role selectedRole = (BoxCollaboration.Role) v.getTag();
         for (RadioButton radio : mRolesOptions) {
@@ -135,14 +129,6 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
             }
         }
         mIsRemoveCollaborationSelected = selectedRole == null;
-    }
-
-    public static CollaboratorsRolesFragment newInstance(BoxCollaborationItem item, ArrayList<BoxCollaboration.Role> roles) {
-        Bundle args = getBundle(item);
-        CollaboratorsRolesFragment fragment = new CollaboratorsRolesFragment();
-        args.putSerializable(ARGS_ROLES, roles);
-        fragment.setArguments(args);
-        return fragment;
     }
 
 

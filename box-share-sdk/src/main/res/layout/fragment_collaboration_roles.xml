@@ -27,6 +27,7 @@
                 android:layout_height="match_parent" />
             
             <Button
+                android:id="@+id/remove_btn"
                 style="@style/BoxRemoveButtonText"
                 android:layout_width="match_parent"
                 android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"

@@ -16,6 +16,7 @@ import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
+import com.box.androidsdk.share.fragments.CollaboratorsRolesFragment;
 import com.box.androidsdk.share.fragments.InviteCollaboratorsFragment;
 
 import java.util.ArrayList;
@@ -61,12 +62,18 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
 
     @Override
     public void onClick(View v) {
-        ArrayList<BoxCollaboration.Role> roles = ((InviteCollaboratorsFragment)mFragment).getmRoles();
+        Bundle data = ((InviteCollaboratorsFragment)mFragment).getData();
+        String collaboratorName = data.getString(CollaboratorsRolesFragment.ARGS_NAME);
+        ArrayList<BoxCollaboration.Role> roles = (ArrayList<BoxCollaboration.Role>) data.getSerializable(CollaboratorsRolesFragment.ARGS_ROLES);
+        BoxCollaboration.Role selectedRole = (BoxCollaboration.Role) data.getSerializable(CollaboratorsRolesFragment.ARGS_SELECTED_ROLE);
+        boolean allowRemove = data.getBoolean(CollaboratorsRolesFragment.ARGS_ALLOW_REMOVE);
+        boolean allowOwnerRole = data.getBoolean(CollaboratorsRolesFragment.ARGS_ALLOW_OWNER_ROLE);
+        BoxCollaboration collaboration = (BoxCollaboration)data.getSerializable(CollaboratorsRolesFragment.ARGS_SERIALIZABLE_EXTRA);
         if (roles == null || roles.size() == 0) {
             SdkUtils.toastSafely(getApplicationContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
            return;
         }
-        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession, roles);
+        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession, roles, selectedRole, collaboratorName,allowRemove, allowOwnerRole, collaboration);
         startActivity(intent);
     }
 
