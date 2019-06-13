@@ -14,7 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.TextView;
 
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.BoxFutureTask;
@@ -32,7 +34,6 @@ import com.box.androidsdk.content.utils.BoxLogUtils;
 import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
-import com.box.androidsdk.share.activities.BoxCollaborationRolesActivity;
 import com.box.androidsdk.share.adapters.InviteeAdapter;
 import com.box.androidsdk.share.internal.models.BoxInvitee;
 import com.box.androidsdk.share.internal.models.BoxIteratorInvitees;
@@ -68,6 +69,9 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
     public static final String EXTRA_COLLAB_SELECTED_ROLE = "collabSelectedRole";
 
     private Button mRoleButton;
+    private Button mAddPersonalMessageButton;
+    private EditText mPersonalMessageEditText;
+    private TextView mPersonalMessageTextView;
     private ChipCollaborationView mAutoComplete;
     private InviteeAdapter mAdapter;
     private BoxCollaboration.Role mSelectedRole;
@@ -93,6 +97,24 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
         mAdapter.setInviteeAdapterListener(this);
         mAutoComplete.setAdapter(mAdapter);
         mAutoComplete.setTokenListener(this);
+
+        mPersonalMessageEditText = (EditText) view.findViewById(R.id.personal_message_edit_text);
+        mPersonalMessageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!view.isFocused() && ((EditText)view).getText().toString().isEmpty()) {
+                    onEmptyMessage();
+                }
+            }
+        });
+        mPersonalMessageTextView = (TextView) view.findViewById(R.id.personal_message_text_view) ;
+        mAddPersonalMessageButton = (Button) view.findViewById(R.id.add_personal_message_button);
+        mAddPersonalMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onAddPersonalMessage();
+            }
+        });
 
         mCollabInitialsView = (CollaboratorsInitialsView) view.findViewById(R.id.collaboratorsInitialsView);
         mCollabInitialsView.setArguments((BoxCollaborationItem)mShareItem, mController);
@@ -125,8 +147,20 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
         if (getArguments().getBoolean(EXTRA_USE_CONTACTS_PROVIDER)){
             requestPermissionsIfNecessary();
         }
-        BoxCollaborationRolesActivity.mRoles = mRoles;
         return view;
+    }
+
+    private void onEmptyMessage() {
+        mAddPersonalMessageButton.setVisibility(View.VISIBLE);
+        mPersonalMessageTextView.setVisibility(View.GONE);
+        mPersonalMessageEditText.setVisibility(View.GONE);
+    }
+
+    private void onAddPersonalMessage() {
+        mAddPersonalMessageButton.setVisibility(View.GONE);
+        mPersonalMessageTextView.setVisibility(View.VISIBLE);
+        mPersonalMessageEditText.setVisibility(View.VISIBLE);
+        mPersonalMessageEditText.requestFocus();
     }
 
     private BoxCollaboration.Role getBestDefaultRole(String roleName, List<BoxCollaboration.Role> roles){
@@ -258,6 +292,9 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
         if (mRoleButton != null) {
             mRoleButton.setOnClickListener(mOnEditAcessListener);
         }
+    }
+    public ArrayList<BoxCollaboration.Role> getmRoles() {
+        return mRoles;
     }
 
     @Override
@@ -497,7 +534,6 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
      */
     private void setSelectedRole(BoxCollaboration.Role role) {
         mSelectedRole = role;
-        mRoleButton.setText(createTitledSpannable(getString(R.string.box_sharesdk_access), CollaborationUtils.getRoleName(getActivity(), role)));
     }
 
     protected BoxCollaborationItem getCollaborationItem() {

@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/box_share_sdk_screen_background"
+            android:background="@color/box_sharesdk_screen_background"
             android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin">
             <TextView
                 style="@style/BoxCellText"
@@ -32,7 +32,8 @@
                 android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
                 android:text="@string/box_sharesdk_role_remove_person"
                 android:layout_marginTop="@dimen/box_sharesdk_remove_button_margin"
-                android:background="@color/box_share_sdk_components_background"
+                android:visibility="gone"
+                android:background="@drawable/box_ripple_btn"
                 android:layout_height="@dimen/box_sharesdk_small_cell_height" />
         </LinearLayout>
     </ScrollView>

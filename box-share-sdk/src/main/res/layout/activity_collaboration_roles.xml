@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/box_share_sdk_screen_background"
+    android:background="@color/box_sharesdk_screen_background"
     android:filterTouchesWhenObscured="false">
     <include layout="@layout/view_action_bar" />
     <FrameLayout

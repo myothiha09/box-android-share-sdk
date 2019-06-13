@@ -23,6 +23,7 @@
 
     <dimen name="box_sharesdk_horizontal_margin_new">24dp</dimen>
     <dimen name="box_sharesdk_vertical_margin_new">24dp</dimen>
+    <dimen name="box_sharesdk_vertical_margin_new_small">8dp</dimen>
 
 
     <dimen name="box_sharesdk_radio_horizontal_margin_left">23dp</dimen>
@@ -36,4 +37,5 @@
     <dimen name="box_sharesdk_remove_button_margin">16dp</dimen>
 
     <dimen name="box_sharesdk_chip_size">28dp</dimen>
+    <dimen name="box_sharesdk_chip_margin">10dp</dimen>
 </resources>

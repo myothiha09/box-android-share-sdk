@@ -19,14 +19,8 @@ import java.util.ArrayList;
 
 public class BoxCollaborationRolesActivity extends BoxActivity {
 
-    private static final String ARGS_ROLES = "argsRoles";
-    private static final String ARGS_SELECTED_ROLE = "argsSelectedRole";
-    private static final String ARGS_NAME = "argsName";
-    private static final String ARGS_ALLOW_REMOVE = "argsAllowRemove";
-    private static final String ARGS_ALLOW_OWNER_ROLE = "argsAllowOwnerRole";
-    private static final String ARGS_SERIALIZABLE_EXTRA = "argsTargetId";
+    public ArrayList<BoxCollaboration.Role> mRoles;
 
-    public static ArrayList<BoxCollaboration.Role> mRoles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +40,7 @@ public class BoxCollaborationRolesActivity extends BoxActivity {
         if (mFragment == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+            mRoles = (ArrayList<BoxCollaboration.Role>) getIntent().getSerializableExtra(CollaborationUtils.EXTRA_COLLABORATIONS_ROLES);
             mFragment = CollaboratorsRolesFragment.newInstance((BoxCollaborationItem) mShareItem, mRoles);
             ft.add(R.id.fragmentContainer, mFragment);
             ft.commit();
@@ -53,6 +48,15 @@ public class BoxCollaborationRolesActivity extends BoxActivity {
         mFragment.setController(mController);
     }
 
+    public static Intent getLaunchIntent(Context context, BoxItem item, BoxSession session) {
+        if (session == null || session.getUser() == null)
+            throw new IllegalArgumentException("Invalid user associated with Box session.");
+
+        Intent intent = new Intent(context, BoxCollaborationRolesActivity.class);
+        intent.putExtra(CollaborationUtils.EXTRA_ITEM, item);
+        intent.putExtra(CollaborationUtils.EXTRA_USER_ID, session.getUser().getId());
+        return intent;
+    }
     /**
      * Gets a fully formed intent that can be used to start the activity with
      *
@@ -61,13 +65,9 @@ public class BoxCollaborationRolesActivity extends BoxActivity {
      * @param session the session to view the share link information with
      * @return the intent to launch the activity
      */
-    public static Intent getLaunchIntent(Context context, BoxItem item, BoxSession session) {
-        if (session == null || session.getUser() == null)
-            throw new IllegalArgumentException("Invalid user associated with Box session.");
-
-        Intent intent = new Intent(context, BoxCollaborationRolesActivity.class);
-        intent.putExtra(CollaborationUtils.EXTRA_ITEM, item);
-        intent.putExtra(CollaborationUtils.EXTRA_USER_ID, session.getUser().getId());
+    public static Intent getLaunchIntent(Context context, BoxItem item, BoxSession session, ArrayList<BoxCollaboration.Role> roles) {
+        Intent intent = getLaunchIntent(context, item, session);
+        intent.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS_ROLES, roles);
         return intent;
     }
 }

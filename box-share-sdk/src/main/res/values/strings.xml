@@ -42,6 +42,7 @@
     <string name="box_sharesdk_title_link_access">Link Access</string>
     <string name="box_sharesdk_title_share_link">Share Link</string>
     <string name="box_sharesdk_title_access_level">Access Level</string>
+    <string name="box_sharesdk_change_access">Change Access</string>
     <string name="box_sharesdk_no_shared_link_instructions" description="description shown when there is no shared link enabled">Enabling a link generates a sharable link that others can use to access and view this content.</string>
     <string name="box_sharesdk_link_copied_to_clipboard" description="toast after copying a link using copy link button">Link copied to clipboard.</string>
     <string name="box_sharesdk_I_have_shared_x_with_you" description="message displayed in user's email when item is shared">I have shared \'%1$s\' with you on Box.</string>
@@ -101,7 +102,8 @@
     <string name="box_sharesdk_unable_to_invite">Unable to invite collaborators. Please contact support if the issue persists.</string>
     <string name="box_sharesdk_title_remove_different_collaboration_folder" description="Title for the alert dialog to confirm removing a collaborator for a parent of selected item">Remove Collaborator</string>
     <string name="box_sharesdk_warn_remove_different_collaboration_folder" description="shown as message of warning dialog before removing collaboration for a different than selected item">This will remove %1$s from accessing all files within %2$s. Are you sure ?</string>
-
-
+    <string name="box_sharesdk_add_a_personal_message" description="text for a button that can be clicked to add a personal message when inviting a new collaborator for a file or folder">Add a personal message</string>
+    <string name="box_sharesdk_personal_message" description="title for a textfield to add a personal message when inviting a new collaborator for a file or folder">Personal Message</string>
+    <string name="box_sharesdk_send_invitation" description="text for a button for inviting a new collaborator for a file or folder">Send Invitation</string>
 
 </resources>

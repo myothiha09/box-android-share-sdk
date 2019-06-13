@@ -7,7 +7,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.box.androidsdk.content.models.BoxCollaboration;
 import com.box.androidsdk.content.models.BoxCollaborationItem;
 import com.box.androidsdk.content.models.BoxIteratorCollaborations;
 import com.box.androidsdk.content.models.BoxSession;
@@ -15,6 +17,8 @@ import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.fragments.InviteCollaboratorsFragment;
+
+import java.util.ArrayList;
 
 /**
  * Activity used to allow users to invite additional collaborators to the folder. Email addresses will auto complete from the phones address book
@@ -57,7 +61,12 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
 
     @Override
     public void onClick(View v) {
-        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession);
+        ArrayList<BoxCollaboration.Role> roles = ((InviteCollaboratorsFragment)mFragment).getmRoles();
+        if (roles == null || roles.size() == 0) {
+            SdkUtils.toastSafely(getApplicationContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
+           return;
+        }
+        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession, roles);
         startActivity(intent);
     }
 

@@ -137,9 +137,6 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
         mIsRemoveCollaborationSelected = selectedRole == null;
     }
 
-    public static CollaboratorsRolesFragment newInstance(BoxCollaborationItem collaborationItem) {
-        return newInstance(collaborationItem, new ArrayList<BoxCollaboration.Role>());
-    }
     public static CollaboratorsRolesFragment newInstance(BoxCollaborationItem item, ArrayList<BoxCollaboration.Role> roles) {
         Bundle args = getBundle(item);
         CollaboratorsRolesFragment fragment = new CollaboratorsRolesFragment();

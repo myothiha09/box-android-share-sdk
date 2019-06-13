@@ -21,10 +21,12 @@
     <color name="box_sharesdk_cell_text">#72848e</color>
     <color name="box_sharesdK_cell_title">#72848e</color>
 
-    <color name="box_share_sdk_screen_background">#eaeef3</color>
-    <color name="box_share_sdk_components_background">#ffffff</color>
+    <color name="box_sharesdk_screen_background">#eaeef3</color>
+    <color name="box_sharesdk_components_background">#ffffff</color>
 
 
-    <color name="box_share_action_bar_background">#ffffff</color>
+    <color name="box_sharesdk_action_bar_background">#ffffff</color>
+    <color name="box_sharesdk_personal_message_button_color">#0061d5</color>
+    <color name="box_sharesdk_send_invitation_bg">#26c281</color>
 
 </resources>
