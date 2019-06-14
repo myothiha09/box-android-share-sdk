@@ -1,5 +1,7 @@
 package com.box.androidsdk.share.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -11,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.box.androidsdk.content.models.BoxCollaboration;
 import com.box.androidsdk.content.models.BoxCollaborationItem;
@@ -34,7 +37,6 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
     private boolean mAllowOwnerRole;
     private BoxCollaboration.Role mSelectedRole;
     private boolean mAllowRemove;
-    private boolean mIsRemoveCollaborationSelected;
     private BoxCollaboration mCollaboration;
     protected ArrayList<RadioButton> mRolesOptions = new ArrayList<RadioButton>();
 
@@ -102,7 +104,7 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
             mRemoveButton.setVisibility(View.GONE);
         }
     }
-//
+    //
     public static CollaboratorsRolesFragment newInstance(BoxCollaborationItem item, ArrayList<BoxCollaboration.Role> roles, BoxCollaboration.Role selectedRole, String name, boolean allowRemove, boolean allowOwnerRole, BoxCollaboration collaboration) {
         CollaboratorsRolesFragment fragment = new CollaboratorsRolesFragment();
 
@@ -128,7 +130,6 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
                 mSelectedRole = role;
             }
         }
-        mIsRemoveCollaborationSelected = selectedRole == null;
     }
 
 

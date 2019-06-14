@@ -74,27 +74,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
            return;
         }
         Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession, roles, selectedRole, collaboratorName,allowRemove, allowOwnerRole, collaboration);
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_invite_collaborators, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem sendMenuItem = menu.findItem(R.id.box_sharesdk_action_send);
-        if (mSendEnabled) {
-            sendMenuItem.setEnabled(true);
-            sendMenuItem.setIcon(R.drawable.ic_box_sharesdk_send_accent_24dp);
-        } else {
-            sendMenuItem.setEnabled(false);
-            sendMenuItem.setIcon(R.drawable.ic_box_sharesdk_send_light_24dp);
-        }
-        return super.onPrepareOptionsMenu(menu);
+        startActivityForResult(intent, 11);
     }
 
     @Override
@@ -108,6 +88,9 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
         if (requestCode == REQUEST_SHOW_COLLABORATORS && resultCode == RESULT_OK) {
             InviteCollaboratorsFragment fragment = (InviteCollaboratorsFragment) getSupportFragmentManager().findFragmentByTag(InviteCollaboratorsFragment.TAG);
             fragment.refreshUi();
+        } else if (requestCode == 11 && resultCode == RESULT_OK) {
+            String str = data.getStringExtra("Sel");
+            Toast.makeText(getApplicationContext(), "S", Toast.LENGTH_SHORT).show();
         }
     }
 

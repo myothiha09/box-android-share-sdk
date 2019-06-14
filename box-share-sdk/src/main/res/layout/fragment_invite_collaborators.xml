@@ -89,7 +89,7 @@
         <View
             android:id="@+id/bottom_divider"
             style="@style/BoxInsetDivider"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/personal_message_text_view"

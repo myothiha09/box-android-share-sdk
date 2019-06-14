@@ -79,6 +79,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
     private InviteCollaboratorsListener mInviteCollaboratorsListener;
     private String mFilterTerm;
     private CollaboratorsInitialsView mCollabInitialsView;
+    private View bottomDivider;
     private boolean mInvitationFailed = false;
 
     private View.OnClickListener mOnEditAcessListener;
@@ -87,7 +88,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_invite_collaborators, container, false);
-
+        bottomDivider = view.findViewById(R.id.bottom_divider);
         mFilterTerm = "";
         mRoleButton = (Button) view.findViewById(R.id.invite_collaborator_role);
         mRoleButton.setOnClickListener(mOnEditAcessListener);
@@ -154,12 +155,14 @@ public class InviteCollaboratorsFragment extends BoxFragment implements Collabor
         mAddPersonalMessageButton.setVisibility(View.VISIBLE);
         mPersonalMessageTextView.setVisibility(View.GONE);
         mPersonalMessageEditText.setVisibility(View.GONE);
+        bottomDivider.setVisibility(View.GONE);
     }
 
     private void onAddPersonalMessage() {
         mAddPersonalMessageButton.setVisibility(View.GONE);
         mPersonalMessageTextView.setVisibility(View.VISIBLE);
         mPersonalMessageEditText.setVisibility(View.VISIBLE);
+        bottomDivider.setVisibility(View.VISIBLE);
         mPersonalMessageEditText.requestFocus();
     }
 
