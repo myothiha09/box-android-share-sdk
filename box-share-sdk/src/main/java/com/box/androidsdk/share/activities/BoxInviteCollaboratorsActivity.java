@@ -25,9 +25,8 @@ import java.util.ArrayList;
  * Activity used to allow users to invite additional collaborators to the folder. Email addresses will auto complete from the phones address book
  * as well as Box's internal invitee endpoint. The intent to launch this activity can be retrieved via the static getLaunchIntent method
  */
-public class BoxInviteCollaboratorsActivity extends BoxActivity implements InviteCollaboratorsFragment.InviteCollaboratorsListener, View.OnClickListener{
+public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.OnClickListener{
 
-    private boolean mSendEnabled;
     private static int REQUEST_SHOW_COLLABORATORS = 32;
 
     @Override
@@ -55,9 +54,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
             ft.commit();
         }
         mFragment.setController(mController);
-        ((InviteCollaboratorsFragment)mFragment).setInviteCollaboratorsListener(this);
         ((InviteCollaboratorsFragment)mFragment).setOnEditAccessListener(this);
-        mSendEnabled = ((InviteCollaboratorsFragment)mFragment).areCollaboratorsPresent();
     }
 
     @Override
@@ -74,13 +71,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
            return;
         }
         Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession, roles, selectedRole, collaboratorName,allowRemove, allowOwnerRole, collaboration);
-        startActivityForResult(intent, 11);
-    }
-
-    @Override
-    public void onShowCollaborators(BoxIteratorCollaborations collaborations) {
-        Intent collabsIntent = BoxCollaborationsActivity.getLaunchIntent(this, (BoxCollaborationItem)mShareItem, mSession, collaborations);
-        startActivityForResult(collabsIntent, REQUEST_SHOW_COLLABORATORS);
+        startActivity(intent);
     }
 
     @Override
@@ -88,41 +79,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements Invit
         if (requestCode == REQUEST_SHOW_COLLABORATORS && resultCode == RESULT_OK) {
             InviteCollaboratorsFragment fragment = (InviteCollaboratorsFragment) getSupportFragmentManager().findFragmentByTag(InviteCollaboratorsFragment.TAG);
             fragment.refreshUi();
-        } else if (requestCode == 11 && resultCode == RESULT_OK) {
-            String str = data.getStringExtra("Sel");
-            Toast.makeText(getApplicationContext(), "S", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onCollaboratorsPresent() {
-        if (!mSendEnabled) {
-            mSendEnabled = true;
-            invalidateOptionsMenu();
-        }
-    }
-
-    @Override
-    public void onCollaboratorsAbsent() {
-        if (mSendEnabled) {
-            mSendEnabled = false;
-            invalidateOptionsMenu();
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.box_sharesdk_action_send) {
-            ((InviteCollaboratorsFragment)mFragment).addCollaborations();
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
