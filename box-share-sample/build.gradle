@@ -10,6 +10,14 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    configurations.all {
+        exclude group: 'com.android.support'
+    }
+
+
+    dataBinding {
+        enabled = true
+    }
     buildTypes {
         release {
             minifyEnabled false

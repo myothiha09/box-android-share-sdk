@@ -4,10 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.box.androidsdk.share.databinding.FragmentInviteCollaboratorsBinding;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -52,7 +54,7 @@ import java.util.List;
  * 2. ShowCollaboratorsListener is used to set up a listener by this fragment on the child custom view called CollaboratorsInitialsView.
  */
 
-public class InviteCollaboratorsFragment extends BoxFragment implements InviteeAdapter.InviteeAdapterListener {
+public class InviteCollaboratorsFragment extends BoxFragment {
 
 
     private static final Integer MY_PERMISSIONS_REQUEST_READ_CONTACTS = 32;
@@ -64,7 +66,6 @@ public class InviteCollaboratorsFragment extends BoxFragment implements InviteeA
     private Button mAddPersonalMessageButton;
     private EditText mPersonalMessageEditText;
     private TextView mPersonalMessageTextView;
-    private ChipCollaborationView mAutoComplete;
     private InviteeAdapter mAdapter;
     private BoxCollaboration.Role mSelectedRole;
     private ArrayList<BoxCollaboration.Role> mRoles;
@@ -77,16 +78,25 @@ public class InviteCollaboratorsFragment extends BoxFragment implements InviteeA
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_invite_collaborators, container, false);
+        FragmentInviteCollaboratorsBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_invite_collaborators, container,false);
+        MultiAutoCompleteTextView.CommaTokenizer tokenizer = new MultiAutoCompleteTextView.CommaTokenizer();
+        boolean permission = getArguments().getBoolean(EXTRA_USE_CONTACTS_PROVIDER, true);
+        binding.setTokenizer(tokenizer);
+        binding.setPermission(permission);
+        View view = binding.getRoot();
+
         bottomDivider = view.findViewById(R.id.bottom_divider);
         mFilterTerm = "";
         mRoleButton = (Button) view.findViewById(R.id.invite_collaborator_role);
         mRoleButton.setOnClickListener(mOnEditAccessListener);
-        mAutoComplete = (ChipCollaborationView) view.findViewById(R.id.invite_collaborator_autocomplete);
-        mAutoComplete.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+
+
+
+//        mAutoComplete = (ChipCollaborationView) view.findViewById(R.id.invite_collaborator_autocomplete);
+//        mAutoComplete.setTokenizer();
         mAdapter = createInviteeAdapter(getActivity());
         mAdapter.setInviteeAdapterListener(this);
-        mAutoComplete.setAdapter(mAdapter);
+//        mAutoComplete.setAdapter(mAdapter);
 
         mPersonalMessageEditText = (EditText) view.findViewById(R.id.personal_message_edit_text);
         mPersonalMessageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -188,13 +198,13 @@ public class InviteCollaboratorsFragment extends BoxFragment implements InviteeA
         };
     }
 
-    public boolean areCollaboratorsPresent() {
-        if (mAutoComplete != null) {
-            return mAutoComplete.getObjects().size() > 0;
-        }
-
-        return false;
-    }
+//    public boolean areCollaboratorsPresent() {
+//        if (mAutoComplete != null) {
+//            return mAutoComplete.getObjects().size() > 0;
+//        }
+//
+//        return false;
+//    }
 
     @Override
     public int getActivityResultCode() {
@@ -221,16 +231,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements InviteeA
         }
     }
 
-    @Override
-    public void onFilterTermChanged(CharSequence constraint) {
-        if (constraint.length() >= 3) {
-            String firstThreeChars = constraint.subSequence(0, 3).toString();
-            if (!firstThreeChars.equals(mFilterTerm)) {
-                mFilterTerm = firstThreeChars;
-                fetchInvitees();
-            }
-        }
-    }
+
 
 //    @Override
 //    public void onClick(View v) {
@@ -322,19 +323,19 @@ public class InviteCollaboratorsFragment extends BoxFragment implements InviteeA
         }
     }
 
-    /**
-     * Executes the request to add collaborations to the item
-     */
-    public void addCollaborations() {
-        List<BoxInvitee> invitees = mAutoComplete.getObjects();
-        String[] emailParts = new String[invitees.size()];
-        for (int i = 0; i < invitees.size(); i++) {
-            emailParts[i] = invitees.get(i).getEmail();
-        }
-
-        showSpinner(R.string.box_sharesdk_adding_collaborators, R.string.boxsdk_Please_wait);
-        mController.addCollaborations(getCollaborationItem(), mSelectedRole, emailParts).addOnCompletedListener(mAddCollaborationsListener);
-    }
+//    /**
+//     * Executes the request to add collaborations to the item
+//     */
+//    public void addCollaborations() {
+//        List<BoxInvitee> invitees = mAutoComplete.getObjects();
+//        String[] emailParts = new String[invitees.size()];
+//        for (int i = 0; i < invitees.size(); i++) {
+//            emailParts[i] = invitees.get(i).getEmail();
+//        }
+//
+//        showSpinner(R.string.box_sharesdk_adding_collaborators, R.string.boxsdk_Please_wait);
+//        mController.addCollaborations(getCollaborationItem(), mSelectedRole, emailParts).addOnCompletedListener(mAddCollaborationsListener);
+//    }
 
     private BoxFutureTask.OnCompletedListener<BoxIteratorInvitees> mGetInviteesListener =
             new BoxFutureTask.OnCompletedListener<BoxIteratorInvitees>() {
