@@ -22,9 +22,7 @@ public class ShareVMFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(SelectRoleVM.class)) {
-            return (T) new SelectRoleVM(mShareRepo, mShareItem);
-        } else if (modelClass.isAssignableFrom(InviteCollaboratorsVM.class)) {
+        if (modelClass.isAssignableFrom(InviteCollaboratorsVM.class)) {
             return (T) new InviteCollaboratorsVM(mShareRepo, mShareItem);
         }
 

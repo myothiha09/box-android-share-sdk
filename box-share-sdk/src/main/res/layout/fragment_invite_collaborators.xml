@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
     <data>
         <variable
             name="tokenizer"
             type="android.widget.MultiAutoCompleteTextView.CommaTokenizer" />
         <variable
-            name="permission"
-            type="boolean" />
+            name="adapter"
+            type="com.box.androidsdk.share.adapters.InviteeAdapter" />
+        <variable
+            name="onRoleClickListener"
+            type="android.view.View.OnClickListener" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -49,7 +53,7 @@
                 android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
                 android:paddingRight="@dimen/box_sharesdk_horizontal_margin_new"
                 android:textAppearance="@style/BoxEditTextAppearance"
-                app:adapter="@{permission}"
+                app:adapter="@{adapter}"
                 app:tokenizer="@{tokenizer}"
                 app:layout_constraintRight_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -92,6 +96,7 @@
                     android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_cell_component"
                     android:layout_marginRight="@dimen/box_sharesdk_horizontal_margin_new"
                     android:text="@string/box_sharesdk_change_access"
+                    android:onClickListener="@{onRoleClickListener}"
                     android:id="@+id/invite_collaborator_role"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -121,6 +126,9 @@
                 android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_new_small"
                 android:layout_marginRight="@dimen/box_sharesdk_horizontal_margin_new"
                 android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin_cell_component"
+                app:personalMessageTextView="@{personalMessageTextView}"
+                app:addPersonalMessageButton="@{addPersonalMessageButton}"
+                app:bottomDivider="@{bottomDivider}"
                 android:background="@android:color/transparent"
                 android:textAppearance="@style/BoxEditTextAppearance" />
         </LinearLayout>
@@ -133,6 +141,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
             android:layout_marginTop="@dimen/box_sharesdk_remove_button_margin"
+            app:personalMessageEditText="@{personalMessageEditText}"
+            app:personalMessageTextView="@{personalMessageTextView}"
+            app:bottomDivider="@{bottomDivider}"
             android:text="@string/box_sharesdk_add_a_personal_message" />
 
 

@@ -16,10 +16,7 @@ import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
-import android.widget.TextView;
 
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.BoxFutureTask;
@@ -37,9 +34,7 @@ import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.adapters.InviteeAdapter;
-import com.box.androidsdk.share.internal.models.BoxInvitee;
 import com.box.androidsdk.share.internal.models.BoxIteratorInvitees;
-import com.box.androidsdk.share.views.ChipCollaborationView;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -62,15 +57,10 @@ public class InviteCollaboratorsFragment extends BoxFragment {
     public static final String EXTRA_USE_CONTACTS_PROVIDER = "InviteCollaboratorsFragment.ExtraUseContactsProvider";
     public static final String EXTRA_COLLAB_SELECTED_ROLE = "collabSelectedRole";
 
-    private Button mRoleButton;
-    private Button mAddPersonalMessageButton;
-    private EditText mPersonalMessageEditText;
-    private TextView mPersonalMessageTextView;
     private InviteeAdapter mAdapter;
     private BoxCollaboration.Role mSelectedRole;
     private ArrayList<BoxCollaboration.Role> mRoles;
     private String mFilterTerm;
-    private View bottomDivider;
     private boolean mInvitationFailed = false;
 
     private View.OnClickListener mOnEditAccessListener;
@@ -80,41 +70,15 @@ public class InviteCollaboratorsFragment extends BoxFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FragmentInviteCollaboratorsBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_invite_collaborators, container,false);
         MultiAutoCompleteTextView.CommaTokenizer tokenizer = new MultiAutoCompleteTextView.CommaTokenizer();
-        boolean permission = getArguments().getBoolean(EXTRA_USE_CONTACTS_PROVIDER, true);
+
+        mAdapter = createInviteeAdapter(getActivity());
+        mAdapter.setInviteeAdapterListener(createInviteeAdapterListener());
+        binding.setAdapter(mAdapter);
         binding.setTokenizer(tokenizer);
-        binding.setPermission(permission);
+        binding.setOnRoleClickListener(mOnEditAccessListener);
         View view = binding.getRoot();
 
-        bottomDivider = view.findViewById(R.id.bottom_divider);
         mFilterTerm = "";
-        mRoleButton = (Button) view.findViewById(R.id.invite_collaborator_role);
-        mRoleButton.setOnClickListener(mOnEditAccessListener);
-
-
-
-//        mAutoComplete = (ChipCollaborationView) view.findViewById(R.id.invite_collaborator_autocomplete);
-//        mAutoComplete.setTokenizer();
-        mAdapter = createInviteeAdapter(getActivity());
-        mAdapter.setInviteeAdapterListener(this);
-//        mAutoComplete.setAdapter(mAdapter);
-
-        mPersonalMessageEditText = (EditText) view.findViewById(R.id.personal_message_edit_text);
-        mPersonalMessageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!view.isFocused() && ((EditText)view).getText().toString().isEmpty()) {
-                    onEmptyMessage();
-                }
-            }
-        });
-        mPersonalMessageTextView = (TextView) view.findViewById(R.id.personal_message_text_view) ;
-        mAddPersonalMessageButton = (Button) view.findViewById(R.id.add_personal_message_button);
-        mAddPersonalMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onAddPersonalMessage();
-            }
-        });
 
         if (savedInstanceState != null) {
             String selected_role_enum = savedInstanceState.getString(EXTRA_COLLAB_SELECTED_ROLE);
@@ -148,21 +112,6 @@ public class InviteCollaboratorsFragment extends BoxFragment {
         return view;
     }
 
-    private void onEmptyMessage() {
-        mAddPersonalMessageButton.setVisibility(View.VISIBLE);
-        mPersonalMessageTextView.setVisibility(View.GONE);
-        mPersonalMessageEditText.setVisibility(View.GONE);
-        bottomDivider.setVisibility(View.GONE);
-    }
-
-    private void onAddPersonalMessage() {
-        mAddPersonalMessageButton.setVisibility(View.GONE);
-        mPersonalMessageTextView.setVisibility(View.VISIBLE);
-        mPersonalMessageEditText.setVisibility(View.VISIBLE);
-        bottomDivider.setVisibility(View.VISIBLE);
-        mPersonalMessageEditText.requestFocus();
-    }
-
     private BoxCollaboration.Role getBestDefaultRole(String roleName, List<BoxCollaboration.Role> roles){
         try {
             return BoxCollaboration.Role.fromString(roleName);
@@ -180,14 +129,6 @@ public class InviteCollaboratorsFragment extends BoxFragment {
         super.onSaveInstanceState(outState);
     }
 
-    /**
-     * Refresh the CollabInitialsView
-     * This will invalidate the previous cached response that contains collaborators and instead
-     * force the view to make a new request to refresh itself with new information (in case there are updates)
-     */
-    public void refreshUi() {
-
-    }
 
     protected InviteeAdapter createInviteeAdapter(final Context context){
         return new InviteeAdapter(context) {
@@ -197,14 +138,21 @@ public class InviteCollaboratorsFragment extends BoxFragment {
             }
         };
     }
+    public InviteeAdapter.InviteeAdapterListener createInviteeAdapterListener() {
+        return new InviteeAdapter.InviteeAdapterListener() {
+            @Override
+            public void onFilterTermChanged(CharSequence constraint) {
+                if (constraint.length() >= 3) {
+                    String firstThreeChars = constraint.subSequence(0, 3).toString();
+                    if (!firstThreeChars.equals(mFilterTerm)) {
+                        mFilterTerm = firstThreeChars;
+                        fetchInvitees();
+                    }
+                }
+            }
+        };
+    }
 
-//    public boolean areCollaboratorsPresent() {
-//        if (mAutoComplete != null) {
-//            return mAutoComplete.getObjects().size() > 0;
-//        }
-//
-//        return false;
-//    }
 
     @Override
     public int getActivityResultCode() {
@@ -231,27 +179,8 @@ public class InviteCollaboratorsFragment extends BoxFragment {
         }
     }
 
-
-
-//    @Override
-//    public void onClick(View v) {
-//        if (v.getId() == R.id.invite_collaborator_role) {
-//            if (mRoles == null || mRoles.size() == 0) {
-//                SdkUtils.toastSafely(getContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
-//                return;
-//            }
-//            //CollaboratorsRolesFragment rolesFragment = CollaboratorsRolesFragment.newInstance(mRoles, mSelectedRole, getString(R.string.box_sharesdk_access), false, false, null);
-////            CollaborationRolesDialog rolesDialog = CollaborationRolesDialog.newInstance(mRoles, mSelectedRole, getString(R.string.box_sharesdk_access), false, false, null);
-////            rolesDialog.setOnRoleSelectedListener(this);
-////            rolesDialog.show(getFragmentManager(), CollaborationRolesDialog.TAG);
-//        }
-//    }
-
     public void setOnEditAccessListener(View.OnClickListener listener) {
         mOnEditAccessListener = listener;
-        if (mRoleButton != null) {
-            mRoleButton.setOnClickListener(mOnEditAccessListener);
-        }
     }
     public Bundle getData() {
         Bundle b = new Bundle();
@@ -466,7 +395,6 @@ public class InviteCollaboratorsFragment extends BoxFragment {
 
         if (mInvitationFailed) {
             Snackbar.make(getView(), msg, Snackbar.LENGTH_INDEFINITE).show();
-            refreshUi();
         } else {
             mController.showToast(getActivity(), msg);
             getActivity().finish();

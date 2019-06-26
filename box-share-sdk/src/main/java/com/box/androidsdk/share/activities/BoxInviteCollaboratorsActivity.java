@@ -75,7 +75,6 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SHOW_COLLABORATORS && resultCode == RESULT_OK) {
             InviteCollaboratorsFragment fragment = (InviteCollaboratorsFragment) getSupportFragmentManager().findFragmentByTag(InviteCollaboratorsFragment.TAG);
-            fragment.refreshUi();
         }
     }
 
