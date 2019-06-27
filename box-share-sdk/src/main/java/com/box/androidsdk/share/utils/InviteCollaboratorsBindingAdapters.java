@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.box.androidsdk.content.models.BoxCollaboration;
+import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 
 public class InviteCollaboratorsBindingAdapters {
@@ -49,4 +50,10 @@ public class InviteCollaboratorsBindingAdapters {
     public static void setRoleDescription(TextView roleDescription, BoxCollaboration.Role role) {
         roleDescription.setText(CollaborationUtils.getRoleDescription(roleDescription.getContext(), role));
     }
+
+    @BindingAdapter(value = {"setInviteeInitial"})
+    public static void setInitialsThumnb(TextView textView, String name) {
+        SdkUtils.setInitialsThumb(textView.getContext(), textView, name);
+    }
+
 }
