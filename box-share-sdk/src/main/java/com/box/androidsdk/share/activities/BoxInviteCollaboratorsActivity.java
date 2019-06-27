@@ -3,6 +3,8 @@ package com.box.androidsdk.share.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.OnClickListener{
 
     private static int REQUEST_SHOW_COLLABORATORS = 32;
+
+    private static int BOX_COLLABORATION_ROLES_REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +71,18 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
             SdkUtils.toastSafely(getApplicationContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
             return;
         }
-        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this, mShareItem, mSession, roles, selectedRole, collaboratorName,allowRemove, allowOwnerRole, collaboration);
-        startActivity(intent);
+        Intent intent = BoxCollaborationRolesActivity.getLaunchIntent(this,
+                mShareItem, mSession, roles,
+                selectedRole, collaboratorName, allowRemove,
+                allowOwnerRole, collaboration);
+        startActivityForResult(intent, BOX_COLLABORATION_ROLES_REQUEST_CODE);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SHOW_COLLABORATORS && resultCode == RESULT_OK) {
-            InviteCollaboratorsFragment fragment = (InviteCollaboratorsFragment) getSupportFragmentManager().findFragmentByTag(InviteCollaboratorsFragment.TAG);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == BOX_COLLABORATION_ROLES_REQUEST_CODE && resultCode == RESULT_OK) {
+            BoxCollaboration.Role role = (BoxCollaboration.Role) data.getSerializableExtra(CollaboratorsRolesFragment.ARGS_ROLES);
+            ((InviteCollaboratorsFragment)mFragment).setRole(role);
         }
     }
 

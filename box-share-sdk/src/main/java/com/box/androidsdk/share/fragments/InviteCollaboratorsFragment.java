@@ -62,20 +62,14 @@ public class InviteCollaboratorsFragment extends BoxFragment {
     private ArrayList<BoxCollaboration.Role> mRoles;
     private String mFilterTerm;
     private boolean mInvitationFailed = false;
+    FragmentInviteCollaboratorsBinding binding;
 
     private View.OnClickListener mOnEditAccessListener;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentInviteCollaboratorsBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_invite_collaborators, container,false);
-        MultiAutoCompleteTextView.CommaTokenizer tokenizer = new MultiAutoCompleteTextView.CommaTokenizer();
-
-        mAdapter = createInviteeAdapter(getActivity());
-        mAdapter.setInviteeAdapterListener(createInviteeAdapterListener());
-        binding.setAdapter(mAdapter);
-        binding.setTokenizer(tokenizer);
-        binding.setOnRoleClickListener(mOnEditAccessListener);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_invite_collaborators, container,false);
         View view = binding.getRoot();
 
         mFilterTerm = "";
@@ -109,6 +103,15 @@ public class InviteCollaboratorsFragment extends BoxFragment {
         if (getArguments().getBoolean(EXTRA_USE_CONTACTS_PROVIDER)){
             requestPermissionsIfNecessary();
         }
+
+        MultiAutoCompleteTextView.CommaTokenizer tokenizer = new MultiAutoCompleteTextView.CommaTokenizer();
+
+        mAdapter = createInviteeAdapter(getActivity());
+        mAdapter.setInviteeAdapterListener(createInviteeAdapterListener());
+        binding.setAdapter(mAdapter);
+        binding.setTokenizer(tokenizer);
+        binding.setOnRoleClickListener(mOnEditAccessListener);
+        binding.setRole(mSelectedRole);
         return view;
     }
 
@@ -130,7 +133,7 @@ public class InviteCollaboratorsFragment extends BoxFragment {
     }
 
 
-    protected InviteeAdapter createInviteeAdapter(final Context context){
+    private InviteeAdapter createInviteeAdapter(final Context context){
         return new InviteeAdapter(context) {
             @Override
             protected boolean isReadContactsPermissionAvailable() {
@@ -138,7 +141,7 @@ public class InviteCollaboratorsFragment extends BoxFragment {
             }
         };
     }
-    public InviteeAdapter.InviteeAdapterListener createInviteeAdapterListener() {
+    private InviteeAdapter.InviteeAdapterListener createInviteeAdapterListener() {
         return new InviteeAdapter.InviteeAdapterListener() {
             @Override
             public void onFilterTermChanged(CharSequence constraint) {
@@ -440,5 +443,10 @@ public class InviteCollaboratorsFragment extends BoxFragment {
         args.putBoolean(EXTRA_USE_CONTACTS_PROVIDER, useContactsProvider);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setRole(BoxCollaboration.Role role) {
+        this.mSelectedRole = role;
+        binding.setRole(role);
     }
 }

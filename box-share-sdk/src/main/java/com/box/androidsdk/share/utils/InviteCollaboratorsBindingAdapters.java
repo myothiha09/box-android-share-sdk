@@ -7,6 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.box.androidsdk.content.models.BoxCollaboration;
+import com.box.androidsdk.share.CollaborationUtils;
+
 public class InviteCollaboratorsBindingAdapters {
 
     @BindingAdapter(value = {"personalMessageTextView", "addPersonalMessageButton", "bottomDivider"})
@@ -35,5 +38,15 @@ public class InviteCollaboratorsBindingAdapters {
                 v1.requestFocus();
             }
         });
+    }
+
+    @BindingAdapter(value = {"roleName"})
+    public static void setRoleName(TextView roleName, BoxCollaboration.Role role) {
+        roleName.setText(CollaborationUtils.getRoleName(roleName.getContext(), role));
+    }
+
+    @BindingAdapter(value = {"roleDescription"})
+    public static void setRoleDescription(TextView roleDescription, BoxCollaboration.Role role) {
+        roleDescription.setText(CollaborationUtils.getRoleDescription(roleDescription.getContext(), role));
     }
 }

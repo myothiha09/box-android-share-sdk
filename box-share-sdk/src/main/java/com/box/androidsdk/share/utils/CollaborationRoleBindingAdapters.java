@@ -40,7 +40,7 @@ public class CollaborationRoleBindingAdapters {
             BoxCollaboration.Role clickedRole = (BoxCollaboration.Role) v.getTag();
             for (RadioButton radio : roleOptions) {
                 BoxCollaboration.Role role = (BoxCollaboration.Role) radio.getTag();
-                boolean shouldCheck = clickedRole == role ? true : false;
+                boolean shouldCheck = clickedRole == role;
                 radio.setChecked(shouldCheck);
                 notifier.setRole(clickedRole);
             }

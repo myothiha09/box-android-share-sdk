@@ -1,5 +1,6 @@
 package com.box.androidsdk.share.fragments;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class CollaboratorsRolesFragment extends BoxFragment implements View.OnClickListener {
+public class CollaboratorsRolesFragment extends BoxFragment {
 
     public static final String ARGS_ROLES = "argsRoles";
     public static final String ARGS_SELECTED_ROLE = "argsSelectedRole";
@@ -38,30 +39,24 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
     public static final String ARGS_ALLOW_OWNER_ROLE = "argsAllowOwnerRole";
     public static final String ARGS_SERIALIZABLE_EXTRA = "argsTargetId";
 
-    private List<BoxCollaboration.Role> mRoles;
-    private boolean mAllowOwnerRole;
-    private BoxCollaboration.Role mSelectedRole;
-    private boolean mAllowRemove;
-    private BoxCollaboration mCollaboration;
-    protected ArrayList<RadioButton> mRolesOptions = new ArrayList<RadioButton>();
-
+    SelectRoleVM vm;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentCollaborationRolesBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_collaboration_roles, container, false);
-        mRoles = (ArrayList<BoxCollaboration.Role>) getArguments().getSerializable(ARGS_ROLES);
-        mSelectedRole = (BoxCollaboration.Role) getArguments().getSerializable(ARGS_SELECTED_ROLE);
-        mAllowRemove = getArguments().getBoolean(ARGS_ALLOW_REMOVE);
-        mAllowOwnerRole = getArguments().getBoolean(ARGS_ALLOW_OWNER_ROLE);
-        mCollaboration = (BoxCollaboration)getArguments().getSerializable(ARGS_SERIALIZABLE_EXTRA);
+        List<BoxCollaboration.Role> mRoles = (ArrayList<BoxCollaboration.Role>) getArguments().getSerializable(ARGS_ROLES);
+        BoxCollaboration.Role mSelectedRole = (BoxCollaboration.Role) getArguments().getSerializable(ARGS_SELECTED_ROLE);
+        boolean mAllowRemove = getArguments().getBoolean(ARGS_ALLOW_REMOVE);
+        boolean mAllowOwnerRole = getArguments().getBoolean(ARGS_ALLOW_OWNER_ROLE);
+        BoxCollaboration mCollaboration = (BoxCollaboration) getArguments().getSerializable(ARGS_SERIALIZABLE_EXTRA);
 
         View view = binding.getRoot();
 
         SelectRoleVMFactory factory = new SelectRoleVMFactory(mRoles, mAllowOwnerRole, mSelectedRole, mAllowRemove, mCollaboration);
-        SelectRoleVM vm = ViewModelProviders.of(getActivity(), factory).get(SelectRoleVM.class);
+        vm = ViewModelProviders.of(getActivity(), factory).get(SelectRoleVM.class);
         binding.setViewModel(vm);
-        binding.setRoleUpdateNotifier(role -> vm.setSelectedRole(role));
+        binding.setRoleUpdateNotifier(vm::setSelectedRole);
         return view;
     }
 
@@ -79,22 +74,13 @@ public class CollaboratorsRolesFragment extends BoxFragment implements View.OnCl
 
         return fragment;
     }
-
-    public void onClick(View v) {
-        BoxCollaboration.Role selectedRole = (BoxCollaboration.Role) v.getTag();
-        for (RadioButton radio : mRolesOptions) {
-            BoxCollaboration.Role role = (BoxCollaboration.Role) radio.getTag();
-            boolean shouldCheck = selectedRole == role ? true : false;
-            radio.setChecked(shouldCheck);
-            if (shouldCheck) {
-                mSelectedRole = role;
-            }
-        }
-    }
-
     public interface RoleUpdateNotifier {
-        public void setRole(BoxCollaboration.Role role);
+        void setRole(BoxCollaboration.Role role);
     }
 
-
+    @Override
+    public void addResult(Intent data) {
+        super.addResult(data);
+        data.putExtra(ARGS_ROLES, vm.getSelectedRole());
+    }
 }

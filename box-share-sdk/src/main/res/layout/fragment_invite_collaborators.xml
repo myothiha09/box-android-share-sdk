@@ -12,6 +12,10 @@
         <variable
             name="onRoleClickListener"
             type="android.view.View.OnClickListener" />
+        <variable
+            name="role"
+            type="com.box.androidsdk.content.models.BoxCollaboration.Role" />
+        <import type="com.box.androidsdk.share.CollaborationUtils" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -74,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
                     android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_cell_component"
-                    android:text="Placeholder"
+                    app:roleName="@{role}"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -85,6 +89,7 @@
                     android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
                     android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin_cell_component"
                     android:text="subtext"
+                    app:roleDescription="@{role}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
