@@ -45,7 +45,7 @@
         </activity>
         <activity
             android:name=".activities.BoxCollaborationRolesActivity"
-            android:label="@string/box_sharesdk_title_link_access"
+            android:label="@string/box_sharesdk_title_access_level"
             android:theme="@style/ShareThemeNew" >
         </activity>
     </application>

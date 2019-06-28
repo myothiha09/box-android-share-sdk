@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:onClickListener="@{onRoleClickListener}"
                 android:layout_height="@dimen/box_sharesdk_medium_cell_height"
-                android:background="@drawable/box_ripple_btn">
+                android:background="@drawable/box_ripple_btn_blue">
 
                 <TextView
                     style="@style/BoxCellSubHeader"
@@ -94,8 +94,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
-                <Button
-                    style="@style/BoxTextButton"
+                <TextView
                     android:textAppearance="@style/BoxCellText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
