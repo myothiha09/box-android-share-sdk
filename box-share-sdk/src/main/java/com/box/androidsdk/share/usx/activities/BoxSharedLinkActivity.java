@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 
+import com.box.androidsdk.content.models.BoxCollaborationItem;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.share.CollaborationUtils;
@@ -15,7 +16,7 @@ import com.box.androidsdk.share.usx.fragments.SharedLinkFragment;
 /**
  * Activity used to share/unshare an item from Box. The intent to launch this activity can be retrieved via the static getLaunchIntent method
  */
-public class BoxSharedLinkActivity extends BoxActivity implements View.OnClickListener{
+public class BoxSharedLinkActivity extends BoxActivity {
 
     private static final int REQUEST_SHARED_LINK_ACCESS = 100;
 
@@ -37,12 +38,12 @@ public class BoxSharedLinkActivity extends BoxActivity implements View.OnClickLi
             ft.commit();
         }
         mFragment.setController(mController);
-        ((SharedLinkFragment)mFragment).setOnEditLinkAccessButtonClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        startActivityForResult(BoxSharedLinkAccessActivity.getLaunchIntent(BoxSharedLinkActivity.this, mShareItem, mSession), REQUEST_SHARED_LINK_ACCESS);
+        ((SharedLinkFragment)mFragment).setOnEditLinkAccessButtonClickListener(v ->
+                startActivityForResult(BoxSharedLinkAccessActivity.getLaunchIntent(BoxSharedLinkActivity.this,
+                        mShareItem, mSession), REQUEST_SHARED_LINK_ACCESS));
+        ((SharedLinkFragment)mFragment).setOnInviteCollabsClickListener( v ->
+                startActivity(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxSharedLinkActivity.this,
+                        (BoxCollaborationItem) mShareItem, mSession)));
     }
 
     @Override

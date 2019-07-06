@@ -6,6 +6,8 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,8 @@ import com.box.androidsdk.content.requests.BoxRequestItem;
 import com.box.androidsdk.content.requests.BoxRequestUpdateSharedItem;
 import com.box.androidsdk.content.requests.BoxResponse;
 import com.box.androidsdk.share.R;
+import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkBinding;
+import com.box.androidsdk.share.utils.SharedLinkBindingAdapters;
 
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
@@ -54,11 +58,15 @@ public class SharedLinkFragment extends BoxFragment implements PositiveNegativeD
     private boolean hasSetupUi = false;
 
     private View.OnClickListener mOnEditLinkAccessButtonClickListener;
+    private View.OnClickListener mOnInviteCollabsClickListener;
+    UsxFragmentSharedLinkBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.usx_fragment_shared_link, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_shared_link, container, false);
+        binding.setOnInviteCollabsClickListener(mOnInviteCollabsClickListener);
+        View view = binding.getRoot();
 
         mSharedLinkUrlText = (TextView)view.findViewById(R.id.shared_link_url_text);
         mSharedLinkUrlSwitch = (Switch)view.findViewById(R.id.shared_link_url_switch);
@@ -136,7 +144,9 @@ public class SharedLinkFragment extends BoxFragment implements PositiveNegativeD
             mEditLinkAccessButton.setOnClickListener(mOnEditLinkAccessButtonClickListener);
         }
     }
-
+    public void setOnInviteCollabsClickListener(View.OnClickListener listener) {
+        mOnInviteCollabsClickListener = listener;
+    }
 
     @Override
     public void onPositiveButtonClicked(PositiveNegativeDialogFragment fragment) {
