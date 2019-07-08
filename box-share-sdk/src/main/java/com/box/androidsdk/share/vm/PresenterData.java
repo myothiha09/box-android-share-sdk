@@ -11,12 +11,12 @@ import com.box.androidsdk.content.BoxException;
  */
 public class PresenterData<T> {
     private T mData;
+    public static final int NO_MSG = -1;
     private int mStrRes;
-    public static final int SUCCESS = -1;
-    BoxException mException;
+    Exception mException;
 
     public PresenterData() {
-
+        mStrRes = NO_MSG;
     }
 
     public PresenterData(T data, @StringRes @PluralsRes int strRes) {
@@ -36,7 +36,7 @@ public class PresenterData<T> {
      */
     public void success(T data) {
         this.mData = data;
-        this.mStrRes = SUCCESS;
+        this.mStrRes = NO_MSG;
     }
 
     /**
@@ -54,11 +54,12 @@ public class PresenterData<T> {
      * Updates the item with the stringCode passed in. Use this if request was unsuccessful
      * @param strRes the String resource for the error message
      */
-    public void failure(@StringRes @PluralsRes int strRes, BoxException exception) {
+    public void failure(@StringRes @PluralsRes int strRes, Exception exception) {
         this.mData = null;
         this.mStrRes = strRes;
         this.mException = exception;
     }
+
 
     /**
      * Returns true if the request was successful.
@@ -84,7 +85,15 @@ public class PresenterData<T> {
         return mStrRes;
     }
 
-    public BoxException getException() {
+    public Exception getException() {
         return mException;
+    }
+
+    /**
+     * Set an exception for the presenter.
+     * @param exception the exception
+     */
+    public void setException(Exception exception) {
+        this.mException = exception;
     }
 }
