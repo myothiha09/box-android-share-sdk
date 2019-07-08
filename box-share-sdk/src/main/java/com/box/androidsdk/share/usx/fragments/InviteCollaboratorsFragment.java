@@ -175,8 +175,11 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         String message;
 
         if (presenter.isNonNullData()) {
-            if (presenter.getAlreadyAdddedCount() >= 1) {
-                message = getResources().getQuantityString(presenter.getStrCode(), presenter.getAlreadyAdddedCount(), presenter.getData());
+            int alreadyAddedCount = presenter.getAlreadyAdddedCount();
+            if (alreadyAddedCount == 1) {
+                message = getResources().getQuantityString(presenter.getStrCode(), alreadyAddedCount, presenter.getData());
+            } else if (alreadyAddedCount > 1) {
+                message = getResources().getQuantityString(presenter.getStrCode(), alreadyAddedCount, String.valueOf(alreadyAddedCount));
             } else {
                 message = getString(presenter.getStrCode(), presenter.getData());
             }
