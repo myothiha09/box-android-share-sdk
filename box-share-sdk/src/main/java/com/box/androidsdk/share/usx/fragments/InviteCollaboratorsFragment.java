@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.box.androidsdk.share.databinding.UsxFragmentInviteCollaboratorsBinding;
+import com.box.androidsdk.share.fragments.CollaborationsFragment;
 import com.box.androidsdk.share.internal.models.BoxInvitee;
 import com.box.androidsdk.share.vm.InviteCollaboratorsPresenterData;
 import com.box.androidsdk.share.vm.InviteCollaboratorsShareVM;
@@ -46,9 +47,6 @@ import java.util.List;
 /**
  * Fragment to let users invite collaborators on an item.
  *
- * There are two listeners used here:
- * 1. InviteCollaboratorsListener is used to set up a listener by the parent Activity or Fragment on this Fragment.
- * 2. ShowCollaboratorsListener is used to set up a listener by this fragment on the child custom view called CollaboratorsInitialsView.
  */
 
 public class InviteCollaboratorsFragment extends BoxFragment implements TokenCompleteTextView.TokenListener<BoxInvitee> {

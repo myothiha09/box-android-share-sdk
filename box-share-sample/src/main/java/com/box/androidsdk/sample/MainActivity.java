@@ -27,7 +27,6 @@ import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.content.models.BoxSharedLink;
 import com.box.androidsdk.share.usx.activities.BoxActivity;
 import com.box.androidsdk.share.usx.activities.BoxInviteCollaboratorsActivity;
-import com.box.androidsdk.share.usx.activities.BoxSharedLinkActivity;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -61,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.box_sharesdk_sample_name);
 
         BoxConfig.IS_LOG_ENABLED = true;
-        BoxConfig.CLIENT_ID = "CLIENT_ID";
-        BoxConfig.CLIENT_SECRET = "CLIENT_SECRET";
+        BoxConfig.CLIENT_ID = "9itlbj9i8mh5qxpj5vr2pjy08t43n3yy";
+        BoxConfig.CLIENT_SECRET = "MVLrHgvscnPCpkNhiD2rrETuh2vNBftz";
 
         if (savedInstanceState != null) {
             mSampleItem = (BoxFolder) savedInstanceState.getSerializable(EXTRA_SAMPLE_FOLDER);
@@ -187,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onShareLinkButtonClickNew(final View view){
         if (mSampleItem != null)
-            startActivityForResult(BoxSharedLinkActivity.getLaunchIntent(this, mSampleItem, mSession), REQUEST_CODE_SHARE_LINK);
+            startActivityForResult(com.box.androidsdk.share.activities.BoxSharedLinkActivity.getLaunchIntent(this, mSampleItem, mSession), REQUEST_CODE_SHARE_LINK);
     }
 
     /**

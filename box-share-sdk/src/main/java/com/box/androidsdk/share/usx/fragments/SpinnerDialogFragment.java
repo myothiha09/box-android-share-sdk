@@ -3,6 +3,7 @@ package com.box.androidsdk.share.usx.fragments;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+
 import androidx.fragment.app.DialogFragment;
 
 import com.box.androidsdk.share.R;
