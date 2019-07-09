@@ -52,21 +52,7 @@ public class BoxUsxActivity extends BoxActivity {
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession)));
     }
 
-    @Override
-    protected void initToolbar() {
-        super.initToolbar();
-        getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
-        getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));
-    }
 
-    private String capitalizeFirstLetter(String str) {
-        StringBuilder sb = new StringBuilder();
-        for(String curr: str.split(" ")) {
-            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
-        }
-        sb.setLength(sb.length() - 1);
-        return sb.toString();
-    }
     //
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {

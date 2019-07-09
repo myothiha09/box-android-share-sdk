@@ -30,12 +30,11 @@
         </activity>
         <activity
             android:name=".usx.activities.BoxUsxActivity"
-            android:label="@string/box_sharesdk_invite_collaborators_activity_title"
             android:theme="@style/ShareThemeNew" >
         </activity>
         <activity
             android:name=".usx.activities.BoxCollaborationsActivity"
-            android:label="@string/box_sharesdk_invite_collaborators_activity_title"
+            android:label="@string/box_sharesdk_shared_with"
             android:theme="@style/ShareThemeNew" >
         </activity>
     </application>

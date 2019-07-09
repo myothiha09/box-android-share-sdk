@@ -159,7 +159,21 @@ public abstract class BoxActivity extends AppCompatActivity {
                 finish();
             }
         });
+        if (this instanceof BoxCollaborationsActivity || this instanceof BoxUsxActivity) {
+            getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
+            getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));
+        }
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    }
+
+    private String capitalizeFirstLetter(String str) {
+        StringBuilder sb = new StringBuilder();
+        for(String curr: str.split(" ")) {
+            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
 
     // Class to interpret result from share SDK activities
