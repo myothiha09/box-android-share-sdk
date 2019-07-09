@@ -179,4 +179,11 @@ public abstract class BoxActivity extends AppCompatActivity {
             return (BoxIteratorCollaborations) mData.getSerializableExtra(CollaborationUtils.EXTRA_COLLABORATIONS);
         }
     }
+
+    protected void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    protected void showToast(int strRes) {
+        Toast.makeText(this, getString(strRes), Toast.LENGTH_SHORT).show();
+    }
 }

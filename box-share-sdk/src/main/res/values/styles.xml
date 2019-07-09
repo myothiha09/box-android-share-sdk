@@ -107,6 +107,13 @@
         <item name="android:layout_gravity">left|start|center_vertical</item>
     </style>
 
+    <style name="BoxSwitchNew"  parent="@android:style/Widget.CompoundButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/BoxCellSubHeader</item>
+        <item name="android:gravity">left|start|center_vertical</item>
+        <item name="android:layout_gravity">left|start|center_vertical</item>
+    </style>
     <style name="BoxDivider">
         <item name="android:layout_height">@dimen/box_sharesdk_horizontal_rule_height</item>
         <item name="android:layout_width">fill_parent</item>

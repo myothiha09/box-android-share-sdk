@@ -234,4 +234,10 @@ public abstract class BoxFragment extends Fragment {
     public interface ActionBarTitleChanger {
         void setTitle(String title);
     }
+
+    protected ShareController mController;
+
+    public void setController(ShareController controller) {
+        this.mController = controller;
+    }
 }

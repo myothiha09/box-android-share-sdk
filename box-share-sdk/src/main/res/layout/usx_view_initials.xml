@@ -11,5 +11,7 @@ android:layout_height="wrap_content">
         android:textAlignment="center"
         android:gravity="center"
         android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/box_sharesdk_horizontal_list_item_margin"
+        android:layout_marginRight="@dimen/box_sharesdk_horizontal_list_item_margin"
         />
 </LinearLayout>
