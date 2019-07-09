@@ -17,7 +17,7 @@ import com.box.androidsdk.share.usx.fragments.SharedLinkFragment;
 /**
  * Activity used to share/unshare an item from Box. The intent to launch this activity can be retrieved via the static getLaunchIntent method
  */
-public class BoxSharedLinkActivity extends BoxActivity {
+public class BoxUsxActivity extends BoxActivity {
 
     private static final int REQUEST_SHARED_LINK_ACCESS = 100;
     private static int REQUEST_SHOW_COLLABORATORS = 32;
@@ -25,7 +25,7 @@ public class BoxSharedLinkActivity extends BoxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.usx_activity_shared_link);
+        setContentView(R.layout.usx_activity_usx);
         initToolbar();
     }
 
@@ -42,16 +42,32 @@ public class BoxSharedLinkActivity extends BoxActivity {
         mFragment.setController(new BoxShareController(mSession));
 
 //        ((SharedLinkFragment)mFragment).setOnEditLinkAccessButtonClickListener(v ->
-//                startActivityForResult(BoxSharedLinkAccessActivity.getLaunchIntent(BoxSharedLinkActivity.this,
+//                startActivityForResult(BoxSharedLinkAccessActivity.getLaunchIntent(BoxUsxActivity.this,
 //                        mShareItem, mSession), REQUEST_SHARED_LINK_ACCESS));
         ((SharedLinkFragment)mFragment).setOnInviteCollabsClickListener( v ->
-                startActivity(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxSharedLinkActivity.this,
+                startActivity(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession)));
         ((SharedLinkFragment)mFragment).setOnCollabsListener( v ->
-                startActivity(BoxCollaborationsActivity.getLaunchIntent(BoxSharedLinkActivity.this,
+                startActivity(BoxCollaborationsActivity.getLaunchIntent(BoxUsxActivity.this,
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession)));
     }
-//
+
+    @Override
+    protected void initToolbar() {
+        super.initToolbar();
+        getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
+        getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));
+    }
+
+    private String capitalizeFirstLetter(String str) {
+        StringBuilder sb = new StringBuilder();
+        for(String curr: str.split(" ")) {
+            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
+    }
+    //
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == REQUEST_SHARED_LINK_ACCESS){
@@ -72,7 +88,7 @@ public class BoxSharedLinkActivity extends BoxActivity {
         if (session == null || session.getUser() == null)
             throw new IllegalArgumentException("Invalid user associated with Box session.");
 
-        Intent intent = new Intent(context, BoxSharedLinkActivity.class);
+        Intent intent = new Intent(context, BoxUsxActivity.class);
         intent.putExtra(CollaborationUtils.EXTRA_ITEM, item);
         intent.putExtra(CollaborationUtils.EXTRA_USER_ID, session.getUser().getId());
         return intent;

@@ -29,7 +29,7 @@
             android:theme="@style/ShareThemeNew" >
         </activity>
         <activity
-            android:name=".usx.activities.BoxSharedLinkActivity"
+            android:name=".usx.activities.BoxUsxActivity"
             android:label="@string/box_sharesdk_invite_collaborators_activity_title"
             android:theme="@style/ShareThemeNew" >
         </activity>
