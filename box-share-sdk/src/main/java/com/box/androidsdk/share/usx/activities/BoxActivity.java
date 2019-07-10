@@ -114,6 +114,13 @@ public abstract class BoxActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getSupportFragmentManager().popBackStack();
+    }
+
+
+    @Override
     protected void onDestroy() {
         if (mProgress != null && mProgress.isShowing()){
             mProgress.dismiss();
@@ -153,12 +160,7 @@ public abstract class BoxActivity extends AppCompatActivity {
         setSupportActionBar(actionBar);
         actionBar.setTitle(getTitle());
         actionBar.setNavigationIcon(R.drawable.ic_box_sharesdk_arrow_back_black_24dp);
-        actionBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        actionBar.setNavigationOnClickListener(v -> onBackPressed());
         if (this instanceof BoxCollaborationsActivity || this instanceof BoxUsxActivity) {
             getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
             getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));

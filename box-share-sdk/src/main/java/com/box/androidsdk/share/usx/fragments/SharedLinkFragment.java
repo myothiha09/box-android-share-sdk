@@ -50,6 +50,13 @@ public class SharedLinkFragment extends BoxFragment {
         this.mOnCollabsClickListener = onInviteCollabsClickListener;
     }
 
+    public void refreshInitialsViews() {
+        if (binding !=  null && binding.initialViews != null) {
+            binding.initialViews.refreshView();
+        }
+
+    }
+
     public static SharedLinkFragment newInstance(BoxItem item) {
         Bundle args = BoxFragment.getBundle(item);
         SharedLinkFragment fragment = new SharedLinkFragment();

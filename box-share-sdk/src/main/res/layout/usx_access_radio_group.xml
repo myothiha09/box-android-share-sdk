@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.box.androidsdk.share.vm.AccessLevelShareVM" />
+        <import type="com.box.androidsdk.content.models.BoxSharedLink.Access" />
+    </data>
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -10,6 +16,7 @@
             android:layout_width="match_parent"
             android:background="@color/box_sharesdk_components_background"
             android:id="@+id/link_access_layout"
+            android:onClick="@{()->viewModel.setSelectedAccess(Access.OPEN)}"
             android:layout_height="@dimen/box_sharesdk_radio_height">
 
             <RadioButton
@@ -20,6 +27,9 @@
                 android:layout_marginTop="@dimen/box_sharesdk_radio_vertical_margin"
                 android:translationX="@dimen/box_sharesdk_radio_horizontal_offset"
                 android:paddingRight="@dimen/box_sharesdk_radio_horizontal_offset"
+                android:enabled="@{viewModel.activeRadioButtons.contains(Access.OPEN)}"
+                android:checked="@{viewModel.selectedAccess  == Access.OPEN}"
+                android:onCheckedChanged="@{(view, checked) -> checked ? viewModel.setSelectedAccess(Access.OPEN) : viewModel.setSelectedAccess((Access)null)}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,6 +71,7 @@
             android:layout_width="match_parent"
             android:background="@color/box_sharesdk_components_background"
             android:id="@+id/company_access_layout"
+            android:onClick="@{()->viewModel.setSelectedAccess(Access.COMPANY)}"
             android:layout_height="@dimen/box_sharesdk_radio_height_large">
 
             <RadioButton
@@ -71,6 +82,9 @@
                 android:layout_marginTop="@dimen/box_sharesdk_radio_vertical_margin"
                 android:translationX="@dimen/box_sharesdk_radio_horizontal_offset"
                 android:paddingRight="@dimen/box_sharesdk_radio_horizontal_offset"
+                android:enabled="@{viewModel.activeRadioButtons.contains(Access.COMPANY)}"
+                android:onCheckedChanged="@{(view, checked) -> checked ? viewModel.setSelectedAccess(Access.COMPANY) : viewModel.setSelectedAccess((Access)null)}"
+                android:checked="@{viewModel.selectedAccess  == Access.COMPANY}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,16 +125,20 @@
             android:layout_width="match_parent"
             android:background="@color/box_sharesdk_components_background"
             android:id="@+id/folder_access_layout"
+            android:onClick="@{()->viewModel.setSelectedAccess(Access.COLLABORATORS)}"
             android:layout_height="@dimen/box_sharesdk_radio_height">
 
             <RadioButton
-                android:id="@+id/folder_access_radio"
+                android:id="@+id/folder_access"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/box_sharesdk_radio_button_size"
                 android:layout_marginLeft="@dimen/box_sharesdk_radio_horizontal_margin_left"
                 android:layout_marginTop="@dimen/box_sharesdk_radio_vertical_margin"
                 android:translationX="@dimen/box_sharesdk_radio_horizontal_offset"
                 android:paddingRight="@dimen/box_sharesdk_radio_horizontal_offset"
+                android:onCheckedChanged="@{(view, checked) -> checked ? viewModel.setSelectedAccess(Access.COLLABORATORS) : viewModel.setSelectedAccess((Access)null)}"
+                android:enabled="@{viewModel.activeRadioButtons.contains(Access.COLLABORATORS)}"
+                android:checked="@{viewModel.selectedAccess  == Access.COLLABORATORS}"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -133,7 +151,7 @@
                 android:layout_marginTop="@dimen/box_sharesdk_radio_vertical_margin"
                 android:layout_marginLeft="@dimen/box_sharesdk_radio_horizontal_margin_components"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/folder_access_radio"/>
+                app:layout_constraintLeft_toRightOf="@id/folder_access"/>
 
             <TextView
                 style="@style/BoxCellText"
@@ -146,7 +164,7 @@
                 android:layout_marginBottom="@dimen/box_sharesdk_radio_vertical_margin"
                 android:text="@string/box_sharesdk_accessible_collaborator_new"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/folder_access_radio"
+                app:layout_constraintLeft_toRightOf="@id/folder_access"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/folder_access_name" />
         </androidx.constraintlayout.widget.ConstraintLayout>

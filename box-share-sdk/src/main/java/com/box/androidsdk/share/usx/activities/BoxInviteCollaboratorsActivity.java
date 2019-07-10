@@ -85,11 +85,6 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         ft.commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        getSupportFragmentManager().popBackStack();
-    }
 
     /**
      * Gets a fully formed intent that can be used to start the activity with
