@@ -63,9 +63,9 @@ public class BoxUsxActivity extends BoxActivity {
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         changeTitleBar();
         SharedLinkAccessFragment fragment = SharedLinkAccessFragment.newInstance(baseShareVM.getShareItem());
-        fragment.setCallback(() -> {
+        fragment.setFragmentCallBack(() -> {
             resetTitleBar();
-            showToast("Make network call here.");
+            showToast("SharedLinkAccessFragment callback.");
         });
         ft.replace(R.id.fragmentContainer, fragment).addToBackStack(null);
         ft.commit();

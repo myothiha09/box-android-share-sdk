@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.BoxFutureTask;
@@ -31,6 +32,8 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.adapters.CollaboratorsAdapter;
 import com.box.androidsdk.share.fragments.CollaborationRolesDialog;
+import com.box.androidsdk.share.utils.FragmentCallback;
+import com.box.androidsdk.share.vm.SelectRoleShareVM;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -42,6 +45,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
     protected TextView mNoCollaboratorsText;
     protected CollaboratorsAdapter mCollaboratorsAdapter;
     protected BoxIteratorCollaborations mCollaborations;
+
 
     private boolean mOwnerUpdated = false;
 
@@ -61,6 +65,8 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         mCollaboratorsListView.setAdapter(mCollaboratorsAdapter);
         mCollaboratorsListView.setOnItemClickListener(this);
         mNoCollaboratorsText = (TextView) view.findViewById(R.id.no_collaborators_text);
+
+        mActionBarTitleChanger.setTitle(getString(R.string.box_sharesdk_shared_with));
 
         if (savedInstanceState == null) {
             if (getArguments() != null){
@@ -118,12 +124,17 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
                 // currently changing owner only seems to be supported for folders (does not show up as a allowed invitee role).
                 allowOwner = getItem() instanceof BoxFolder;
             }
-
-            CollaborationRolesDialog rolesDialog = CollaborationRolesDialog.newInstance(rolesArr, role, name, true, allowOwner, holder.collaboration);
-            rolesDialog.setOnRoleSelectedListener(this);
-            rolesDialog.show(getFragmentManager(), TAG);
+            SelectRoleShareVM selectRoleShareVM = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
+            selectRoleShareVM.setSelectedRole(role);
+            selectRoleShareVM.setRoles(rolesArr);
+            selectRoleShareVM.setAllowRemove(true);
+            selectRoleShareVM.setAllowOwnerRole(allowOwner);
+            selectRoleShareVM.setCollaboration(holder.collaboration);
+            mFragmentCallback.callBack(); //callback to switch fragment
         }
     }
+
+
 
     @Override
     public void onRoleSelected(CollaborationRolesDialog rolesDialog) {
@@ -426,4 +437,6 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         fragment.setArguments(args);
         return fragment;
     }
+
+
 }

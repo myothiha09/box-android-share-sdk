@@ -3,7 +3,9 @@ package com.box.androidsdk.share.usx.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.box.androidsdk.content.models.BoxCollaborationItem;
@@ -14,6 +16,7 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.BoxShareController;
 import com.box.androidsdk.share.usx.fragments.CollaborationsFragment;
+import com.box.androidsdk.share.usx.fragments.CollaboratorsRolesFragment;
 
 /**
  * Activity used to show and modify the collaborations of an item. The intent to launch this activity can be retrieved via the static getLaunchIntent method
@@ -35,6 +38,16 @@ public class BoxCollaborationsActivity extends BoxActivity {
         }
 
     }
+    @Override
+    protected void initToolbar() {
+        Toolbar actionBar = (Toolbar) findViewById(R.id.box_action_bar);
+        setSupportActionBar(actionBar);
+        actionBar.setTitle(getTitle());
+        actionBar.setNavigationIcon(R.drawable.ic_box_sharesdk_arrow_back_black_24dp);
+        actionBar.setNavigationOnClickListener(v -> onBackPressed());
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+    }
+
 
     @Override
     protected void initializeUi() {
@@ -52,7 +65,20 @@ public class BoxCollaborationsActivity extends BoxActivity {
             ft.commit();
         }
         mFragment.setController(new BoxShareController(mSession));
+        mFragment.setActionBarTitleChanger(actionBarTitleChanger);
+        mFragment.setFragmentCallBack(() -> switchToRolesFragment());
 
+    }
+
+    private void switchToRolesFragment() {
+        CollaboratorsRolesFragment fragment = CollaboratorsRolesFragment.newInstance();
+        fragment.setActionBarTitleChanger(actionBarTitleChanger);
+        fragment.setFragmentCallback(() -> onRolesFragmentCallback());
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit();
+    }
+
+    private void onRolesFragmentCallback() {
+        showToast("Roles Fragment Callback");
     }
 
     /**

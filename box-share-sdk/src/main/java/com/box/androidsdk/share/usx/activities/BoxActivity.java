@@ -43,6 +43,10 @@ public abstract class BoxActivity extends AppCompatActivity {
 
     protected BaseShareVM baseShareVM;
 
+    protected BoxFragment.ActionBarTitleChanger actionBarTitleChanger = title -> {
+        setTitle(title);
+        getSupportActionBar().setTitle(getTitle());
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         BoxItem mShareItem = null;

@@ -32,7 +32,6 @@ public class SharedLinkAccessFragment extends BoxFragment {
     private boolean mPasswordProtectedLinksSupported = false;
     AccessLevelShareVM mAccessLevelShareVM;
     UsxFragmentSharedLinkAccessBinding binding;
-    FragmentCallback mCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,9 +74,7 @@ public class SharedLinkAccessFragment extends BoxFragment {
         return activeRadioButtons;
     }
 
-    public void setCallback(FragmentCallback callback) {
-        this.mCallback = callback;
-    }
+
 
     public static SharedLinkAccessFragment newInstance(BoxItem boxItem) {
         Bundle args = BoxFragment.getBundle(boxItem);
@@ -86,9 +83,13 @@ public class SharedLinkAccessFragment extends BoxFragment {
         return fragment;
     }
 
+    /**
+     * Callback for updating shared link access
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mCallback.callBack();
+        if (mFragmentCallback != null) mFragmentCallback.callBack();
     }
+
 }

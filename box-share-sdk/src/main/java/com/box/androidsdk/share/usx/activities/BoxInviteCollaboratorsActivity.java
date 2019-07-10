@@ -18,7 +18,6 @@ import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.BoxShareController;
-import com.box.androidsdk.share.usx.fragments.BoxFragment;
 import com.box.androidsdk.share.usx.fragments.CollaboratorsRolesFragment;
 import com.box.androidsdk.share.usx.fragments.InviteCollaboratorsFragment;
 import com.box.androidsdk.share.sharerepo.ShareRepo;
@@ -33,10 +32,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
 
     private static int REQUEST_SHOW_COLLABORATORS = 32;
     SelectRoleShareVM selectRoleShareVM;
-    private BoxFragment.ActionBarTitleChanger changer = title -> {
-        setTitle(title);
-        getSupportActionBar().setTitle(getTitle());
-    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +62,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
             ft.add(R.id.fragmentContainer, mFragment, InviteCollaboratorsFragment.TAG);
             ft.commit();
         }
-        mFragment.setActionBarTitleChanger(changer);
+        mFragment.setActionBarTitleChanger(actionBarTitleChanger);
         ((InviteCollaboratorsFragment)mFragment).setOnEditAccessListener(this);
         mFragment.setVMFactory(new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) baseShareVM.getShareItem()));
     }
@@ -80,7 +76,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         CollaboratorsRolesFragment rolesFragment = CollaboratorsRolesFragment.newInstance();
-        rolesFragment.setActionBarTitleChanger(changer);
+        rolesFragment.setActionBarTitleChanger(actionBarTitleChanger);
         ft.replace(R.id.fragmentContainer, rolesFragment, CollaboratorsRolesFragment.TAG).addToBackStack(null);
         ft.commit();
     }
