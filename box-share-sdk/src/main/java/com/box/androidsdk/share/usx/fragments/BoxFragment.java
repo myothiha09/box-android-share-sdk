@@ -235,7 +235,7 @@ public abstract class BoxFragment extends Fragment {
         void setTitle(String title);
     }
 
-    protected ShareController mController;
+    protected ShareController mController; //temporarily added to test UI changes
 
     public void setController(ShareController controller) {
         this.mController = controller;
