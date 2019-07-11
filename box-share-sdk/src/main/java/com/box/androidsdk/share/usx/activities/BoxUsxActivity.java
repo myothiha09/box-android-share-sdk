@@ -17,7 +17,7 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.BoxShareController;
 import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
-import com.box.androidsdk.share.usx.fragments.SharedLinkFragment;
+import com.box.androidsdk.share.usx.fragments.UsxFragment;
 
 /**
  * Activity used to share/unshare an item from Box. The intent to launch this activity can be retrieved via the static getLaunchIntent method
@@ -48,19 +48,19 @@ public class BoxUsxActivity extends BoxActivity {
             if (fragment == null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-                mFragment = SharedLinkFragment.newInstance(baseShareVM.getShareItem());
+                mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
                 ft.add(R.id.fragmentContainer, mFragment);
                 ft.commit();
             } else {
-                mFragment = (SharedLinkFragment)fragment;
+                mFragment = (UsxFragment)fragment;
             }
             mFragment.setController(new BoxShareController(mSession));
 
-            ((SharedLinkFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> switchToShareAccessFragment());
-            ((SharedLinkFragment)mFragment).setOnInviteCollabsClickListener( v ->
+            ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> switchToShareAccessFragment());
+            ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                     startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
                             (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
-            ((SharedLinkFragment)mFragment).setOnCollabsListener( v ->
+            ((UsxFragment)mFragment).setOnCollabsListener(v ->
                     startActivityForResult(BoxCollaborationsActivity.getLaunchIntent(BoxUsxActivity.this,
                             (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
         }
@@ -104,7 +104,7 @@ public class BoxUsxActivity extends BoxActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_COLLABORATORS){
-            ((SharedLinkFragment)mFragment).refreshInitialsViews();
+            ((UsxFragment)mFragment).refreshInitialsViews();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

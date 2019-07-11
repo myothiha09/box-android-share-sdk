@@ -16,10 +16,9 @@ import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkBinding;
 /**
  * Created by varungupta on 3/5/2016.
  */
-public class SharedLinkFragment extends BoxFragment {
+public class UsxFragment extends BoxFragment {
 
     private static final String UNSHARE_WARNING_TAG = "com.box.sharesdk.unshare_warning";
-    private boolean hasSetupUi = false;
 
     private View.OnClickListener mOnEditAccessClickListener;
     private View.OnClickListener mOnInviteCollabsClickListener;
@@ -57,9 +56,9 @@ public class SharedLinkFragment extends BoxFragment {
 
     }
 
-    public static SharedLinkFragment newInstance(BoxItem item) {
+    public static UsxFragment newInstance(BoxItem item) {
         Bundle args = BoxFragment.getBundle(item);
-        SharedLinkFragment fragment = new SharedLinkFragment();
+        UsxFragment fragment = new UsxFragment();
         fragment.setArguments(args);
         return fragment;
     }
