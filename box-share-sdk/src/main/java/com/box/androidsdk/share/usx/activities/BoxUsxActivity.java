@@ -31,44 +31,56 @@ public class BoxUsxActivity extends BoxActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.usx_activity_usx);
-        initToolbar();
         secondaryBar();
+        initToolbar();
+        if (getSupportFragmentManager().findFragmentById(R.id.fragmentContainer) instanceof SharedLinkAccessFragment) {
+            changeTitleBar();
+        }
+
     }
 
     @Override
     protected void initializeUi() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
-        if (fragment instanceof SharedLinkFragment) {
-            mFragment = (SharedLinkFragment) fragment;
-        } else  {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-            mFragment = SharedLinkFragment.newInstance(baseShareVM.getShareItem());
-            ft.add(R.id.fragmentContainer, mFragment);
-            ft.commit();
-        }
-        mFragment.setController(new BoxShareController(mSession));
+        if (fragment instanceof SharedLinkAccessFragment) {
+            setupSwitchLinkedAccessFragment((SharedLinkAccessFragment) fragment);
+        } else {
+            if (fragment == null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+                mFragment = SharedLinkFragment.newInstance(baseShareVM.getShareItem());
+                ft.add(R.id.fragmentContainer, mFragment);
+                ft.commit();
+            } else {
+                mFragment = (SharedLinkFragment)fragment;
+            }
+            mFragment.setController(new BoxShareController(mSession));
 
-        ((SharedLinkFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> switchToShareAccessFragment());
-        ((SharedLinkFragment)mFragment).setOnInviteCollabsClickListener( v ->
-                startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
-                        (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
-        ((SharedLinkFragment)mFragment).setOnCollabsListener( v ->
-                startActivityForResult(BoxCollaborationsActivity.getLaunchIntent(BoxUsxActivity.this,
-                        (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
+            ((SharedLinkFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> switchToShareAccessFragment());
+            ((SharedLinkFragment)mFragment).setOnInviteCollabsClickListener( v ->
+                    startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
+                            (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
+            ((SharedLinkFragment)mFragment).setOnCollabsListener( v ->
+                    startActivityForResult(BoxCollaborationsActivity.getLaunchIntent(BoxUsxActivity.this,
+                            (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
+        }
     }
 
     private void switchToShareAccessFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-        changeTitleBar();
         SharedLinkAccessFragment fragment = SharedLinkAccessFragment.newInstance(baseShareVM.getShareItem());
+        setupSwitchLinkedAccessFragment(fragment);
+        changeTitleBar();
+        ft.replace(R.id.fragmentContainer, fragment).addToBackStack(null);
+        ft.commit();
+    }
+
+    private void setupSwitchLinkedAccessFragment(SharedLinkAccessFragment fragment) {
         fragment.setFragmentCallBack(() -> {
             resetTitleBar();
             showToast("SharedLinkAccessFragment callback.");
         });
-        ft.replace(R.id.fragmentContainer, fragment).addToBackStack(null);
-        ft.commit();
     }
 
     private void changeTitleBar() {

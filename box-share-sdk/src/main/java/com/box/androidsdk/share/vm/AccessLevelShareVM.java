@@ -14,7 +14,7 @@ public class AccessLevelShareVM extends ViewModel {
     HashSet<BoxSharedLink.Access> mActiveRadioButtons = new HashSet<>();
 
     public void setSelectedAccess(BoxSharedLink.Access access) {
-        if (access != mSelectedAccess.getValue() && access != null) mSelectedAccess.postValue(access);
+        if (access != null) mSelectedAccess.postValue(access);
     }
 
     public LiveData<BoxSharedLink.Access> getSelectedAccess() {

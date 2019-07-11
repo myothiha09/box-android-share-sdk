@@ -51,8 +51,8 @@ public class SharedLinkAccessFragment extends BoxFragment {
 
     private void setupUi() {
         binding.accessRadioGroup.setViewModel(mAccessLevelShareVM);
-        mAccessLevelShareVM.setSelectedAccess(mShareItem.getSharedLink().getEffectiveAccess());
-        mAccessLevelShareVM.setActiveRadioButtons(generateActiveButtons());
+        if (mAccessLevelShareVM.getSelectedAccess().getValue() == null) mAccessLevelShareVM.setSelectedAccess(mShareItem.getSharedLink().getEffectiveAccess());
+        if (mAccessLevelShareVM.getActiveRadioButtons().isEmpty()) mAccessLevelShareVM.setActiveRadioButtons(generateActiveButtons());
     }
 
     public HashSet<BoxSharedLink.Access> generateActiveButtons() { //move to VM in the future
