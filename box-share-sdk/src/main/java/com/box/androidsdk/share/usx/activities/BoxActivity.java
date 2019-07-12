@@ -205,12 +205,15 @@ public abstract class BoxActivity extends AppCompatActivity {
 
     protected void notifyActionBarChanged() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(getTitle());
-        if (getSubtitle() != -1) {
-            actionBar.setSubtitle(getSubtitle());
-        } else {
-            actionBar.setSubtitle(null);
+        if (actionBar != null) {
+            actionBar.setTitle(getTitle());
+            if (getSubtitle() != -1) {
+                actionBar.setSubtitle(getSubtitle());
+            } else {
+                actionBar.setSubtitle(null);
+            }
         }
+
     }
 
     protected void setTitles(Fragment fragment) {

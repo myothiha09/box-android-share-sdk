@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -12,6 +14,7 @@ import com.box.androidsdk.content.models.BoxCollaborationItem;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkBinding;
+import com.box.androidsdk.share.generated.callback.OnCheckedChangeListener;
 
 /**
  * Created by varungupta on 3/5/2016.
@@ -40,6 +43,12 @@ public class UsxFragment extends BoxFragment {
         binding.setOnEditAccessClickListener(mOnEditAccessClickListener);
         binding.initialViews.setArguments((BoxCollaborationItem) mShareItem, mController);
         binding.setOnCollabsListener(mOnCollabsClickListener);
+        binding.sharedLinkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                showToast(isChecked + "dsfsadfads");
+            }
+        });
         View view = binding.getRoot();
         mSpecialToolbar.specialToolbar();
         return view;
