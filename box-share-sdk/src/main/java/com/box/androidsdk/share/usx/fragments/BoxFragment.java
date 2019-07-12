@@ -20,6 +20,7 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.utils.FragmentCallback;
+import com.box.androidsdk.share.utils.FragmentTitle;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
 import java.util.concurrent.locks.Lock;
@@ -29,7 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Base class for Fragments in Share SDK
  * This fragment contains common code for all fragments
  */
-public abstract class BoxFragment extends Fragment {
+public abstract class BoxFragment extends Fragment implements FragmentTitle {
 
     protected static final String TAG = BoxFragment.class.getName();
     protected BoxItem mShareItem;
@@ -40,7 +41,6 @@ public abstract class BoxFragment extends Fragment {
     private LastRunnableHandler mDialogHandler;
 
     protected ViewModelProvider.Factory mShareVMFactory;
-    protected ActionBarTitleChanger mActionBarTitleChanger;
     private Lock mSpinnerLock;
 
     protected FragmentCallback mFragmentCallback;
@@ -224,9 +224,6 @@ public abstract class BoxFragment extends Fragment {
     }
     protected void showToast(int strRes) {
         Toast.makeText(getContext(), getString(strRes), Toast.LENGTH_SHORT).show();
-    }
-    public void setActionBarTitleChanger(ActionBarTitleChanger changer) {
-        this.mActionBarTitleChanger = changer;
     }
 
 
