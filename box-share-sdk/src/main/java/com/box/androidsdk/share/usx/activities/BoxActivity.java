@@ -124,13 +124,6 @@ public abstract class BoxActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        getSupportFragmentManager().popBackStack();
-    }
-
-
-    @Override
     protected void onDestroy() {
         if (mProgress != null && mProgress.isShowing()){
             mProgress.dismiss();
@@ -173,14 +166,6 @@ public abstract class BoxActivity extends AppCompatActivity {
         actionBar.setTitle(getTitle());
         actionBar.setNavigationIcon(R.drawable.ic_box_sharesdk_arrow_back_black_24dp);
         actionBar.setNavigationOnClickListener(v -> onBackPressed());
-
-        if (this instanceof BoxCollaborationsActivity || this instanceof BoxUsxActivity) {
-            getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
-            getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));
-        }
-
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-
     }
 
     private String capitalizeFirstLetter(String str) {
@@ -229,6 +214,8 @@ public abstract class BoxActivity extends AppCompatActivity {
         actionBar.setTitle(getTitle());
         if (getSubtitle() != -1) {
             actionBar.setSubtitle(getSubtitle());
+            actionBar.setTitleTextAppearance(this, R.style.ToolbarTitleTheme);
+            actionBar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleTheme);
         }
     }
 

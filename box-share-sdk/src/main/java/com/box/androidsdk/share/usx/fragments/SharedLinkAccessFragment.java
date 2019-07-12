@@ -95,7 +95,7 @@ public class SharedLinkAccessFragment extends BoxFragment {
 
     @Override
     public int getFragmentTitle() {
-        return R.string.box_sharesdk_title_access_level;
+        return R.string.box_sharesdk_title_link_access;
     }
 
     @Override

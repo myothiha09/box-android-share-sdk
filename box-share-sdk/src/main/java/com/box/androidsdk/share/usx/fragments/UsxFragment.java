@@ -71,6 +71,6 @@ public class UsxFragment extends BoxFragment {
 
     @Override
     public int getFragmentSubtitle() {
-        return R.string.box_sharedsdk_collaborators_title;
+        return -1;
     }
 }

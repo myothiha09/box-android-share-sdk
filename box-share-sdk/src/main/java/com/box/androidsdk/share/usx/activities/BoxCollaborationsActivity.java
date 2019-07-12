@@ -38,16 +38,6 @@ public class BoxCollaborationsActivity extends BoxActivity {
         }
 
     }
-    @Override
-    protected void initToolbar() {
-        Toolbar actionBar = (Toolbar) findViewById(R.id.box_action_bar);
-        setSupportActionBar(actionBar);
-        actionBar.setTitle(getTitle());
-        actionBar.setNavigationIcon(R.drawable.ic_box_sharesdk_arrow_back_black_24dp);
-        actionBar.setNavigationOnClickListener(v -> onBackPressed());
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-    }
-
 
     @Override
     protected void initializeUi() {

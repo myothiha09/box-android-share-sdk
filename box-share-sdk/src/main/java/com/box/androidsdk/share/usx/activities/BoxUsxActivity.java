@@ -3,6 +3,7 @@ package com.box.androidsdk.share.usx.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -50,7 +51,10 @@ public class BoxUsxActivity extends BoxActivity {
         setTitles(mFragment);
         mFragment.setController(new BoxShareController(mSession));
 
-        ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
+        ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> {
+            setupSharedLinkAccessFragment();
+            notifyActionBarChanged();
+        });
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                 startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
@@ -64,12 +68,25 @@ public class BoxUsxActivity extends BoxActivity {
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         SharedLinkAccessFragment fragment = SharedLinkAccessFragment.newInstance(baseShareVM.getShareItem());
         fragment.setFragmentCallBack(() -> {
-            showToast("SharedLinkAccessFragment callback.");
+//            showToast("SharedLinkAccessFragment callback.");
         });
         setTitles(fragment);
-        ft.replace(R.id.fragmentContainer, fragment).addToBackStack(null);
+        ft.replace(R.id.fragmentContainer, fragment);
         ft.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (fragment instanceof SharedLinkAccessFragment) {
+            setupUsxFragment();
+            initToolbar();
+        } else {
+            super.onBackPressed();
+        }
+
+    }
+
     //
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
