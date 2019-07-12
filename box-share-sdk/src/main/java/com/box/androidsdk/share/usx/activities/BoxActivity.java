@@ -1,5 +1,6 @@
 package com.box.androidsdk.share.usx.activities;
 
+import androidx.appcompat.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -168,14 +169,7 @@ public abstract class BoxActivity extends AppCompatActivity {
         actionBar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-    private String capitalizeFirstLetter(String str) {
-        StringBuilder sb = new StringBuilder();
-        for(String curr: str.split(" ")) {
-            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
-        }
-        sb.setLength(sb.length() - 1);
-        return sb.toString();
-    }
+
 
     // Class to interpret result from share SDK activities
     public static class ResultInterpreter {
@@ -210,12 +204,10 @@ public abstract class BoxActivity extends AppCompatActivity {
     }
 
     protected void notifyActionBarChanged() {
-        Toolbar actionBar = (Toolbar) findViewById(R.id.box_action_bar);
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(getTitle());
         if (getSubtitle() != -1) {
             actionBar.setSubtitle(getSubtitle());
-            actionBar.setTitleTextAppearance(this, R.style.ToolbarTitleTheme);
-            actionBar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleTheme);
         } else {
             actionBar.setSubtitle(null);
         }

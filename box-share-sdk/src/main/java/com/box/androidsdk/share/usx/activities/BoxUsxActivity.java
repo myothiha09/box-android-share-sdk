@@ -55,7 +55,7 @@ public class BoxUsxActivity extends BoxActivity {
             setupSharedLinkAccessFragment();
             notifyActionBarChanged();
         });
-        ((UsxFragment) mFragment).setSpecialToolbar(this::usxSpecialToolbar);
+        ((UsxFragment)mFragment).setSpecialToolbar(this::usxSpecialToolbar);
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                 startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
@@ -87,9 +87,17 @@ public class BoxUsxActivity extends BoxActivity {
     }
 
     public void usxSpecialToolbar() {
-        Toolbar actionBar = findViewById(R.id.box_action_bar);
-        actionBar.setTitle(baseShareVM.getShareItem().getName());
-        actionBar.setSubtitle(baseShareVM.getShareItem().getType());
+        getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
+        getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));
+    }
+
+    private String capitalizeFirstLetter(String str) {
+        StringBuilder sb = new StringBuilder();
+        for(String curr: str.split(" ")) {
+            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
 
     //
