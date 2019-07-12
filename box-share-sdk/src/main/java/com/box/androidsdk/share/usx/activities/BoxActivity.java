@@ -216,6 +216,8 @@ public abstract class BoxActivity extends AppCompatActivity {
             actionBar.setSubtitle(getSubtitle());
             actionBar.setTitleTextAppearance(this, R.style.ToolbarTitleTheme);
             actionBar.setSubtitleTextAppearance(this, R.style.ToolbarSubtitleTheme);
+        } else {
+            actionBar.setSubtitle(null);
         }
     }
 

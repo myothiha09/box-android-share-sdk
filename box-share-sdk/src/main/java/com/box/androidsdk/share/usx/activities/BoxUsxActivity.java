@@ -55,6 +55,7 @@ public class BoxUsxActivity extends BoxActivity {
             setupSharedLinkAccessFragment();
             notifyActionBarChanged();
         });
+        ((UsxFragment) mFragment).setSpecialToolbar(this::usxSpecialToolbar);
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                 startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
@@ -80,11 +81,15 @@ public class BoxUsxActivity extends BoxActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
         if (fragment instanceof SharedLinkAccessFragment) {
             setupUsxFragment();
-            initToolbar();
         } else {
             super.onBackPressed();
         }
+    }
 
+    public void usxSpecialToolbar() {
+        Toolbar actionBar = findViewById(R.id.box_action_bar);
+        actionBar.setTitle(baseShareVM.getShareItem().getName());
+        actionBar.setSubtitle(baseShareVM.getShareItem().getType());
     }
 
     //

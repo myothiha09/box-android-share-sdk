@@ -25,6 +25,13 @@ public class UsxFragment extends BoxFragment {
     private View.OnClickListener mOnCollabsClickListener;
     UsxFragmentSharedLinkBinding binding;
 
+    /**
+     * A speical interface used by UsxFragment only to give non string resources title and subtitle with theme changes.
+     */
+    public interface SpecialToolbar {
+        void specialToolbar();
+    }
+    SpecialToolbar mSpecialToolbar;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,6 +41,7 @@ public class UsxFragment extends BoxFragment {
         binding.initialViews.setArguments((BoxCollaborationItem) mShareItem, mController);
         binding.setOnCollabsListener(mOnCollabsClickListener);
         View view = binding.getRoot();
+        mSpecialToolbar.specialToolbar();
         return view;
     }
 
@@ -61,6 +69,10 @@ public class UsxFragment extends BoxFragment {
         UsxFragment fragment = new UsxFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setSpecialToolbar(SpecialToolbar toolbar) {
+        this.mSpecialToolbar = toolbar;
     }
 
 
