@@ -64,4 +64,13 @@ public class UsxFragment extends BoxFragment {
     }
 
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.box_sharesdk_title_access_level;
+    }
+
+    @Override
+    public int getFragmentSubtitle() {
+        return R.string.box_sharedsdk_collaborators_title;
+    }
 }

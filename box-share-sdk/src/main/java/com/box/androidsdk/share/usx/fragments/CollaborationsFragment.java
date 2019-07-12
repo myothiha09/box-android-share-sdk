@@ -66,8 +66,6 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         mCollaboratorsListView.setOnItemClickListener(this);
         mNoCollaboratorsText = (TextView) view.findViewById(R.id.no_collaborators_text);
 
-        mActionBarTitleChanger.setTitle(getString(R.string.box_sharesdk_shared_with));
-
         if (savedInstanceState == null) {
             if (getArguments() != null){
                 Bundle args = getArguments();
@@ -439,4 +437,13 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
     }
 
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.box_sharesdk_shared_with;
+    }
+
+    @Override
+    public int getFragmentSubtitle() {
+        return -1;
+    }
 }

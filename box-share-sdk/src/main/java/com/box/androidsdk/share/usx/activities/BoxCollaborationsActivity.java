@@ -65,14 +65,12 @@ public class BoxCollaborationsActivity extends BoxActivity {
             ft.commit();
         }
         mFragment.setController(new BoxShareController(mSession));
-        mFragment.setActionBarTitleChanger(actionBarTitleChanger);
         mFragment.setFragmentCallBack(() -> switchToRolesFragment());
 
     }
 
     private void switchToRolesFragment() {
         CollaboratorsRolesFragment fragment = CollaboratorsRolesFragment.newInstance();
-        fragment.setActionBarTitleChanger(actionBarTitleChanger);
         fragment.setFragmentCallback(() -> onRolesFragmentCallback());
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit();
     }

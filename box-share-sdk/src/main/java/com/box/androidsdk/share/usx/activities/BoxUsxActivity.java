@@ -3,9 +3,6 @@ package com.box.androidsdk.share.usx.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -31,75 +28,48 @@ public class BoxUsxActivity extends BoxActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.usx_activity_usx);
-        secondaryBar();
         initToolbar();
-        if (getSupportFragmentManager().findFragmentById(R.id.fragmentContainer) instanceof SharedLinkAccessFragment) {
-            changeTitleBar();
-        }
-
     }
 
     @Override
     protected void initializeUi() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
-        if (fragment instanceof SharedLinkAccessFragment) {
-            setupSwitchLinkedAccessFragment((SharedLinkAccessFragment) fragment);
+        if (fragment == null || fragment instanceof UsxFragment) {
+            setupUsxFragment();
         } else {
-            if (fragment == null) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-                mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
-                ft.add(R.id.fragmentContainer, mFragment);
-                ft.commit();
-            } else {
-                mFragment = (UsxFragment)fragment;
-            }
-            mFragment.setController(new BoxShareController(mSession));
-
-            ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> switchToShareAccessFragment());
-            ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
-                    startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
-                            (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
-            ((UsxFragment)mFragment).setOnCollabsListener(v ->
-                    startActivityForResult(BoxCollaborationsActivity.getLaunchIntent(BoxUsxActivity.this,
-                            (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
+            setupSharedLinkAccessFragment();
         }
     }
 
-    private void switchToShareAccessFragment() {
+    private void setupUsxFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+        mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
+        ft.add(R.id.fragmentContainer, mFragment);
+        ft.commit();
+        setTitles(mFragment);
+        mFragment.setController(new BoxShareController(mSession));
+
+        ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
+        ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
+                startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
+                        (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
+        ((UsxFragment)mFragment).setOnCollabsListener(v ->
+                startActivityForResult(BoxCollaborationsActivity.getLaunchIntent(BoxUsxActivity.this,
+                        (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
+    }
+
+    private void setupSharedLinkAccessFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         SharedLinkAccessFragment fragment = SharedLinkAccessFragment.newInstance(baseShareVM.getShareItem());
-        setupSwitchLinkedAccessFragment(fragment);
-        changeTitleBar();
+        fragment.setFragmentCallBack(() -> {
+            showToast("SharedLinkAccessFragment callback.");
+        });
+        setTitles(fragment);
         ft.replace(R.id.fragmentContainer, fragment).addToBackStack(null);
         ft.commit();
     }
-
-    private void setupSwitchLinkedAccessFragment(SharedLinkAccessFragment fragment) {
-        fragment.setFragmentCallBack(() -> {
-            resetTitleBar();
-            showToast("SharedLinkAccessFragment callback.");
-        });
-    }
-
-    private void changeTitleBar() {
-        findViewById(R.id.no_subtitle_action_bar).setVisibility(View.VISIBLE);
-        findViewById(R.id.box_action_bar).setVisibility(View.GONE);
-    }
-
-    private void resetTitleBar() {
-        findViewById(R.id.no_subtitle_action_bar).setVisibility(View.GONE);
-        findViewById(R.id.box_action_bar).setVisibility(View.VISIBLE);
-    }
-
-    private void secondaryBar() {
-        Toolbar actionBar = findViewById(R.id.no_subtitle_action_bar);
-        actionBar.setTitle(getString(R.string.box_sharesdk_title_link_access));
-        actionBar.setNavigationIcon(R.drawable.ic_box_sharesdk_arrow_back_black_24dp);
-        actionBar.setNavigationOnClickListener(v -> onBackPressed());
-    }
-
     //
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

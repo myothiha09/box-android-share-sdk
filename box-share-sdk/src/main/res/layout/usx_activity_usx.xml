@@ -6,8 +6,7 @@
     android:background="@color/box_sharesdk_background"
     android:orientation="vertical"
     android:filterTouchesWhenObscured="false">
-    <include layout="@layout/usx_view_action_bar_modified" />
-    <include layout="@layout/usx_view_action_bar" android:id="@+id/no_subtitle_action_bar" android:visibility="gone"/>
+    <include layout="@layout/usx_view_action_bar" />
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"

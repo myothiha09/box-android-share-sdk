@@ -80,7 +80,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         CollaboratorsRolesFragment rolesFragment = CollaboratorsRolesFragment.newInstance();
-        ft.replace(R.id.fragmentContainer, rolesFragment, CollaboratorsRolesFragment.TAG).addToBackStack(null);
+        ft.replace(R.id.fragmentContainer, rolesFragment, CollaboratorsRolesFragment.TAG);
         setTitles(rolesFragment);
         ft.replace(R.id.fragmentContainer, rolesFragment, CollaboratorsRolesFragment.TAG);
         selectRoleShareVM.setShowSend(false);
