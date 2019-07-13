@@ -50,7 +50,7 @@ public class InviteCollaboratorsShareVM extends BaseShareVM {
      * Makes a backend call through share repo for fetching roles.
      * @param item the item to fetch roles on
      */
-    public void fetchRolesFromRemote(BoxCollaborationItem item) {
+    public void fetchRoles(BoxCollaborationItem item) {
         mShareRepo.fetchRolesFromRemote(item);
     }
 
@@ -69,7 +69,7 @@ public class InviteCollaboratorsShareVM extends BaseShareVM {
      * @param boxCollaborationItem the item to get invitees on
      * @param filter the term used for filtering invitees
      */
-    public void fetchInviteesFromRemote(BoxCollaborationItem boxCollaborationItem, String filter) {
+    public void fetchInvitees(BoxCollaborationItem boxCollaborationItem, String filter) {
         mShareRepo.fetchInviteesFromRemote(boxCollaborationItem, filter);
     }
 
