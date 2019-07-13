@@ -42,13 +42,6 @@ public class UsxFragment extends BoxFragment {
         binding.setOnInviteCollabsClickListener(mOnInviteCollabsClickListener);
         binding.setOnEditAccessClickListener(mOnEditAccessClickListener);
         binding.initialViews.setArguments((BoxCollaborationItem) mShareItem, mController);
-        binding.setOnCollabsListener(mOnCollabsClickListener);
-        binding.sharedLinkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                showToast(isChecked + "dsfsadfads");
-            }
-        });
         View view = binding.getRoot();
         mSpecialToolbar.specialToolbar();
         return view;

@@ -90,6 +90,7 @@
                             android:checked="true"
                             app:layout_constraintVertical_weight="1"
                             tools:text="@string/box_sharesdk_share_link_enabled"
+                            android:onCheckedChanged="@{(view, checked) -> SharedLinkBindingAdapters.onLinkClick2(checked, temp)}"
                             android:text="@{sharedLinkSwitch.checked ? @string/box_sharesdk_share_link_enabled: @string/box_sharesdk_enable_share_link}"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"

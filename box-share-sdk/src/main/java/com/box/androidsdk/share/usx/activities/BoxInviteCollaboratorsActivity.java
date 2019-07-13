@@ -64,6 +64,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
                 new ShareRepo(new BoxShareController(mSession)),
                 (BoxCollaborationItem) baseShareVM.getShareItem()));
         setTitles(mFragment);
+        notifyActionBarChanged();
     }
 
 
