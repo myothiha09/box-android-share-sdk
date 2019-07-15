@@ -147,7 +147,7 @@ public class ShareRepo  {
      * @param boxCollaborationItem the item to change download permission on
      * @param canDownload the new download permission
      */
-    public void changeDownloadPermission(BoxCollaborationItem boxCollaborationItem, boolean canDownload) {
+    public void changeDownloadPermission(BoxCollaborationItem boxCollaborationItem, boolean canDownload) throws IllegalArgumentException {
         if (boxCollaborationItem instanceof BoxFile) {
             handleTaskAndPostValue(mController.executeRequest(BoxItem.class, ((BoxRequestsFile.UpdatedSharedFile) mController.getCreatedSharedLinkRequest(boxCollaborationItem)).setCanDownload(canDownload)), mSharedLinkedItem);
         }

@@ -39,6 +39,8 @@ public class UsxFragment extends BoxFragment {
         void notifyUnshare();
 
         void notifyShare();
+
+        void linkClicked();
     }
 
     private static final String UNSHARE_WARNING_TAG = "com.box.sharesdk.unshare_warning";
@@ -69,6 +71,9 @@ public class UsxFragment extends BoxFragment {
             public void notifyShare() {
                 createDefaultShareItem();
             }
+
+            @Override
+            public void linkClicked() { copyLink();}
         });
 
         setTitles();

@@ -5,21 +5,24 @@ import android.widget.Toast;
 
 import androidx.databinding.BindingAdapter;
 
+import com.box.androidsdk.content.models.BoxBookmark;
+import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSharedLink;
 import com.box.androidsdk.share.R;
+import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
 import com.box.androidsdk.share.usx.fragments.UsxFragment;
 import com.box.androidsdk.share.vm.SharedLinkVM;
 
 public class SharedLinkBindingAdapters {
 
-    public static void onLinkClick(boolean checked, TextView textView) {
-        if (checked) Toast.makeText(textView.getContext(), "Link Copied (P.S Just toasting)", Toast.LENGTH_SHORT).show();
+    public static void onLinkClick(boolean checked, UsxFragment.UsxNotifiers notifiers) {
+        if (checked) notifiers.linkClicked();
     }
 
-    public static void onSharedLinkToggle(boolean checked, SharedLinkVM sharedLinkVM, UsxFragment.UsxNotifiers notifiers) {
-        if (checked && sharedLinkVM.getShareItem().getSharedLink() == null) {
+    public static void onSharedLinkToggle(boolean checked, BoxSharedLink link, UsxFragment.UsxNotifiers notifiers) {
+        if (checked && link == null) {
             notifiers.notifyShare();
-        }  else if (!checked && sharedLinkVM.getShareItem().getSharedLink() != null){
+        }  else if (!checked && link != null){
             notifiers.notifyUnshare();
         }
     }

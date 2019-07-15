@@ -8,7 +8,12 @@
         <variable
             name="shareItem"
             type="com.box.androidsdk.content.models.BoxItem" />
+        <variable
+            name="sharedLinkAccessNotifier"
+            type="com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment.SharedLinkAccessNotifiers" />
+        <import type="android.view.View" />
         <import type="com.box.androidsdk.content.models.BoxSharedLink.Access" />
+        <import type="com.box.androidsdk.share.utils.SharedLinkAccessBindingAdapters" />
     </data>
     <ScrollView
         android:layout_width="match_parent"
@@ -31,28 +36,36 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_title_to_cell"
                 android:id="@+id/access_radio_group"/>
-
-            <Switch
+            <LinearLayout
                 android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_cell_component"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
                 android:background="@color/box_sharesdk_components_background"
-                android:textAppearance="@style/BoxCellSubHeader"
-                android:id="@+id/shared_link_allow_download_btn"
-                android:layout_height="@dimen/box_sharesdk_small_cell_height"
-                android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
-                android:paddingRight="@dimen/box_sharesdk_horizontal_margin_new"
-                style="@style/BoxSwitchNew"
-                android:text="@string/box_sharesdk_downloads_allowed_new" />
-            <View
-                style="@style/BoxDivider" />
-            <Switch
-                android:background="@color/box_sharesdk_components_background"
-                android:textAppearance="@style/BoxCellSubHeader"
-                android:id="@+id/shared_link_expire_link_btn"
-                android:layout_height="@dimen/box_sharesdk_small_cell_height"
-                android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
-                android:paddingRight="@dimen/box_sharesdk_horizontal_margin_new"
-                style="@style/BoxSwitchNew"
-                android:text="@string/box_sharesdk_link_expire_link" />
+                android:layout_height="wrap_content">
+                <Switch
+                    android:textAppearance="@style/BoxCellSubHeader"
+                    android:id="@+id/shared_link_allow_download_btn"
+                    android:visibility="@{shareItem.sharedLink.effectiveAccess != Access.COLLABORATORS ? View.VISIBLE : View.GONE}"
+                    android:checked="@{shareItem.sharedLink.permissions.canDownload}"
+                    android:onCheckedChanged="@{(view, checked) -> SharedLinkAccessBindingAdapters.onDownloadToggle(checked, shareItem, sharedLinkAccessNotifier)}"
+                    android:layout_height="@dimen/box_sharesdk_small_cell_height"
+                    android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
+                    android:paddingRight="@dimen/box_sharesdk_horizontal_margin_new"
+                    style="@style/BoxSwitchNew"
+                    android:text="@string/box_sharesdk_downloads_allowed_new" />
+                <View
+                    android:visibility="@{shareItem.sharedLink.effectiveAccess != Access.COLLABORATORS ? View.VISIBLE : View.GONE}"
+                    style="@style/BoxDivider" />
+                <Switch
+                    android:textAppearance="@style/BoxCellSubHeader"
+                    android:id="@+id/shared_link_expire_link_btn"
+                    android:layout_height="@dimen/box_sharesdk_small_cell_height"
+                    android:paddingLeft="@dimen/box_sharesdk_horizontal_margin_new"
+                    android:paddingRight="@dimen/box_sharesdk_horizontal_margin_new"
+                    style="@style/BoxSwitchNew"
+                    android:text="@string/box_sharesdk_link_expire_link" />
+            </LinearLayout>
+
 
         </LinearLayout>
     </ScrollView>

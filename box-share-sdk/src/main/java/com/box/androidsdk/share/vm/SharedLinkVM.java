@@ -84,7 +84,7 @@ public class SharedLinkVM extends BaseShareVM {
     }
 
 
-    public void changeDownloadPermission(BoxCollaborationItem item, boolean canDownload) {
+    public void changeDownloadPermission(BoxCollaborationItem item, boolean canDownload) throws IllegalArgumentException {
         mShareRepo.changeDownloadPermission(item, canDownload);
     }
 

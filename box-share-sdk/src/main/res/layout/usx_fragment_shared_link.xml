@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/box_sharesdk_big_cell_height">
+                        android:layout_height="wrap_content">
                         <Switch
                             android:id="@+id/shared_link_switch"
                             style="@style/BoxSwitchNew"
@@ -103,7 +103,7 @@
                             android:checked="@{shareItem.sharedLink != null}"
                             app:layout_constraintVertical_weight="1"
                             tools:text="@string/box_sharesdk_share_link_enabled"
-                            android:onCheckedChanged="@{(view, checked) -> SharedLinkBindingAdapters.onSharedLinkToggle(checked, shareLinkVm, usxNotifier)}"
+                            android:onCheckedChanged="@{(view, checked) -> SharedLinkBindingAdapters.onSharedLinkToggle(checked, shareItem.sharedLink, usxNotifier)}"
                             android:text="@{sharedLinkSwitch.checked ? @string/box_sharesdk_share_link_enabled: @string/box_sharesdk_enable_share_link}"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -114,10 +114,11 @@
                             style="@style/BoxCellText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_new_small"
                             android:layout_marginRight="@dimen/box_sharesdk_horizontal_margin_new"
                             android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
                             android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin_cell_component"
-                            android:onClick="@{() -> SharedLinkBindingAdapters.onLinkClick(sharedLinkSwitch.isChecked(), temp)}"
+                            android:onClick="@{() -> SharedLinkBindingAdapters.onLinkClick(sharedLinkSwitch.isChecked(), usxNotifier)}"
                             android:text="@{sharedLinkSwitch.checked ? shareItem.sharedLink.URL: @string/box_sharesdk_no_shared_link_instructions}"
                             app:layout_constraintTop_toBottomOf="@id/shared_link_switch"
                             app:layout_constraintRight_toRightOf="parent"
@@ -133,7 +134,7 @@
                         android:onClickListener="@{onEditAccessClickListener}"
                         android:visibility="@{sharedLinkSwitch.checked ? View.VISIBLE : View.GONE}"
                         android:background="@drawable/box_ripple_btn_blue"
-                        android:layout_height="@dimen/box_sharesdk_big_cell_height">
+                        android:layout_height="wrap_content">
                         <TextView
                             android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_cell_component"
                             android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
@@ -144,6 +145,7 @@
                             android:visibility="@{sharedLinkSwitch.checked ? View.VISIBLE : View.GONE}"
                             android:layout_height="wrap_content" />
                         <TextView
+                            android:layout_marginTop="@dimen/box_sharesdk_vertical_margin_new_small"
                             android:layout_marginLeft="@dimen/box_sharesdk_horizontal_margin_new"
                             android:layout_marginBottom="@dimen/box_sharesdk_vertical_margin_cell_component"
                             style="@style/BoxCellText"

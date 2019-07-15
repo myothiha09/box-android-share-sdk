@@ -23,6 +23,7 @@
 
     <dimen name="box_sharesdk_horizontal_margin_new">24dp</dimen>
     <dimen name="box_sharesdk_vertical_margin_new">24dp</dimen>
+
     <dimen name="box_sharesdk_vertical_margin_new_small">8dp</dimen>
 
 

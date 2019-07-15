@@ -10,9 +10,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.box.androidsdk.content.models.BoxBookmark;
 import com.box.androidsdk.content.models.BoxCollaborationItem;
+import com.box.androidsdk.content.models.BoxFile;
+import com.box.androidsdk.content.models.BoxFolder;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSharedLink;
+import com.box.androidsdk.content.requests.BoxRequestsFile;
+import com.box.androidsdk.content.requests.BoxRequestsFolder;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkAccessBinding;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
@@ -31,6 +36,7 @@ public class SharedLinkAccessFragment extends BoxFragment {
 
     public interface SharedLinkAccessNotifiers {
         void notifyAccessLevelChange(BoxSharedLink.Access access);
+        void notifyDownloadChange(boolean download);
     }
 
 
@@ -70,17 +76,25 @@ public class SharedLinkAccessFragment extends BoxFragment {
         binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
         if (mShareLinkVM.getActiveRadioButtons().isEmpty()) mShareLinkVM.setActiveRadioButtons(mShareLinkVM.generateActiveButtons());
 
-        binding.accessRadioGroup.setNotifiers(new SharedLinkAccessNotifiers() {
-            @Override
-            public void notifyAccessLevelChange(BoxSharedLink.Access access) {
-                if (access != null && access != mShareLinkVM.getShareItem().getSharedLink().getEffectiveAccess()) {
-                    changeAccess(access);
-                }
-
-            }
-        });
+        binding.setSharedLinkAccessNotifier(notifiers);
+        binding.accessRadioGroup.setSharedLinkAccessNotifier(notifiers);
 
     }
+
+    private SharedLinkAccessNotifiers notifiers = new SharedLinkAccessNotifiers() {
+        @Override
+        public void notifyAccessLevelChange(BoxSharedLink.Access access) {
+            if (access != null && access != mShareLinkVM.getShareItem().getSharedLink().getEffectiveAccess()) {
+                changeAccess(access);
+            }
+
+        }
+
+        @Override
+        public void notifyDownloadChange(boolean download) {
+            changeDownloadPermission(download);
+        }
+    };
 
     /**
      * Modifies the share link access
@@ -97,11 +111,18 @@ public class SharedLinkAccessFragment extends BoxFragment {
         mShareLinkVM.changeAccessLevel((BoxCollaborationItem) mShareLinkVM.getShareItem(), access);
     }
 
-
-
-
-
-
+    /**
+     * Modifies the download permssion of the share item
+     *
+     * @param canDownload whether or not the item can be downloaded
+     */
+    private void changeDownloadPermission(boolean canDownload){
+        try {
+            mShareLinkVM.changeDownloadPermission((BoxCollaborationItem) mShareLinkVM.getShareItem(), canDownload);
+        } catch (Exception e){
+            showToast("Bookmarks do not have a permission that can be changed.");
+        }
+    }
     public static SharedLinkAccessFragment newInstance(BoxItem boxItem) {
         Bundle args = BoxFragment.getBundle(boxItem);
         SharedLinkAccessFragment fragment = new SharedLinkAccessFragment();
