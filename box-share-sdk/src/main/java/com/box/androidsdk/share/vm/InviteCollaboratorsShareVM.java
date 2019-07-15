@@ -30,9 +30,9 @@ public class InviteCollaboratorsShareVM extends BaseShareVM {
     public InviteCollaboratorsShareVM(ShareRepo shareRepo, BoxCollaborationItem shareItem) {
         super(shareRepo, shareItem);
         ShareSDKTransformer transformer = new ShareSDKTransformer();
-        mRoleItem = Transformations.map(shareRepo.getRoleItem(), response -> transformer.getFetchRolesItemPresenterData(response));
-        mInviteCollabs = Transformations.map(shareRepo.getInviteCollabsBatchResponse(), response -> transformer.getInviteCollabsPresenterDataFromBoxResponse(response));
-        mInvitees = Transformations.map(shareRepo.getInvitees(), response -> transformer.getInviteesPresenterData(response));
+        mRoleItem = Transformations.map(shareRepo.getRoleItem(),  transformer::getFetchRolesItemPresenterData);
+        mInviteCollabs = Transformations.map(shareRepo.getInviteCollabsBatchResponse(), transformer::getInviteCollabsPresenterDataFromBoxResponse);
+        mInvitees = Transformations.map(shareRepo.getInvitees(), transformer::getInviteesPresenterData);
         mInviteesList = new ArrayList<>();
     }
 
@@ -41,9 +41,9 @@ public class InviteCollaboratorsShareVM extends BaseShareVM {
     @VisibleForTesting
     InviteCollaboratorsShareVM(ShareRepo shareRepo, BoxCollaborationItem shareItem, ShareSDKTransformer transformer) {
         super(shareRepo, shareItem);
-        mRoleItem = Transformations.map(shareRepo.getRoleItem(), response -> transformer.getFetchRolesItemPresenterData(response));
-        mInviteCollabs = Transformations.map(shareRepo.getInviteCollabsBatchResponse(), response -> transformer.getInviteCollabsPresenterDataFromBoxResponse(response));
-        mInvitees = Transformations.map(shareRepo.getInvitees(), response -> transformer.getInviteesPresenterData(response));
+        mRoleItem = Transformations.map(shareRepo.getRoleItem(),  transformer::getFetchRolesItemPresenterData);
+        mInviteCollabs = Transformations.map(shareRepo.getInviteCollabsBatchResponse(), transformer::getInviteCollabsPresenterDataFromBoxResponse);
+        mInvitees = Transformations.map(shareRepo.getInvitees(), transformer::getInviteesPresenterData);
     }
 
     /**
@@ -108,6 +108,7 @@ public class InviteCollaboratorsShareVM extends BaseShareVM {
     public void setInvitationSucceded(boolean failed) {
         this.mInvitationSuccess = failed;
     }
+
     public boolean isInvitationSucceded() {
         return mInvitationSuccess;
     }

@@ -3,7 +3,6 @@ package com.box.androidsdk.share.usx.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,15 +13,16 @@ import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.BoxShareController;
+import com.box.androidsdk.share.sharerepo.ShareRepo;
 import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
 import com.box.androidsdk.share.usx.fragments.UsxFragment;
+import com.box.androidsdk.share.vm.ShareVMFactory;
 
 /**
  * Activity used to share/unshare an item from Box. The intent to launch this activity can be retrieved via the static getLaunchIntent method
  */
 public class BoxUsxActivity extends BoxActivity {
 
-    private static final int REQUEST_SHARED_LINK_ACCESS = 100;
     private static int REQUEST_COLLABORATORS = 32;
 
     @Override
@@ -48,14 +48,10 @@ public class BoxUsxActivity extends BoxActivity {
         mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
         ft.add(R.id.fragmentContainer, mFragment);
         ft.commit();
-        setTitles(mFragment);
         mFragment.setController(new BoxShareController(mSession));
-
-        ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> {
-            setupSharedLinkAccessFragment();
-            notifyActionBarChanged();
-        });
-        ((UsxFragment)mFragment).setSpecialToolbar(this::usxSpecialToolbar);
+        mFragment.setVMFactory(new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)),
+                (BoxCollaborationItem) baseShareVM.getShareItem()));
+        ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                 startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
                         (BoxCollaborationItem) baseShareVM.getShareItem(), mSession), REQUEST_COLLABORATORS));
@@ -71,7 +67,6 @@ public class BoxUsxActivity extends BoxActivity {
         fragment.setFragmentCallBack(() -> {
 //            showToast("SharedLinkAccessFragment callback.");
         });
-        setTitles(fragment);
         ft.replace(R.id.fragmentContainer, fragment);
         ft.commit();
     }
@@ -86,19 +81,7 @@ public class BoxUsxActivity extends BoxActivity {
         }
     }
 
-    public void usxSpecialToolbar() {
-        getSupportActionBar().setTitle(baseShareVM.getShareItem().getName());
-        getSupportActionBar().setSubtitle(capitalizeFirstLetter(baseShareVM.getShareItem().getType()));
-    }
 
-    private String capitalizeFirstLetter(String str) {
-        StringBuilder sb = new StringBuilder();
-        for(String curr: str.split(" ")) {
-            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
-        }
-        sb.setLength(sb.length() - 1);
-        return sb.toString();
-    }
 
     //
     @Override

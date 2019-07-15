@@ -43,6 +43,7 @@ public class BaseShareVM extends ViewModel {
         return mShareItem;
     }
 
+
     /**
      * Update the share item with a new share item.
      * @param shareItem the new share item.
@@ -56,7 +57,7 @@ public class BaseShareVM extends ViewModel {
      * Makes a backend call through share repo to get information about the item.
      * @param item the item to get information on
      */
-    public void fetchItemInfoFromRemote(BoxItem item) {
+    public void fetchItemInfo(BoxItem item) {
         mShareRepo.fetchItemInfo(item);
     }
 

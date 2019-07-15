@@ -20,7 +20,6 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.utils.FragmentCallback;
-import com.box.androidsdk.share.utils.FragmentTitle;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
 import java.util.concurrent.locks.Lock;
@@ -30,10 +29,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * Base class for Fragments in Share SDK
  * This fragment contains common code for all fragments
  */
-public abstract class BoxFragment extends Fragment implements FragmentTitle {
+public abstract class BoxFragment extends Fragment {
 
     protected static final String TAG = BoxFragment.class.getName();
-    protected BoxItem mShareItem;
+    protected BoxItem mShareItem; //changed to private since it should only be used for checking mShareItem's validity during onCreate; throughout the fragment vm will be used instead.
 
     private static final int  DEFAULT_SPINNER_DELAY = 500;
 
@@ -234,5 +233,14 @@ public abstract class BoxFragment extends Fragment implements FragmentTitle {
 
     public void setFragmentCallBack(FragmentCallback callBack) {
         this.mFragmentCallback = callBack;
+    }
+
+    protected String capitalizeFirstLetterOfEveryWord(String str) {
+        StringBuilder sb = new StringBuilder();
+        for(String curr: str.split(" ")) {
+            sb.append(Character.toUpperCase(curr.charAt(0)) + curr.substring(1) + " ");
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
 }

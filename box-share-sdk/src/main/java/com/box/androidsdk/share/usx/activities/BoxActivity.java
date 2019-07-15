@@ -3,7 +3,6 @@ package com.box.androidsdk.share.usx.activities;
 import androidx.appcompat.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -30,7 +29,7 @@ import com.box.androidsdk.share.api.BoxShareController;
 import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.sharerepo.ShareRepo;
 import com.box.androidsdk.share.usx.fragments.BoxFragment;
-import com.box.androidsdk.share.utils.FragmentTitle;
+import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.BaseShareVM;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
@@ -47,8 +46,6 @@ public abstract class BoxActivity extends AppCompatActivity {
     protected ProgressDialog mProgress;
     protected BaseShareVM baseShareVM;
 
-    private int mSubtitle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= 23)
@@ -56,7 +53,8 @@ public abstract class BoxActivity extends AppCompatActivity {
         else {
             setTheme(R.style.ShareTheme);
         }
-        BoxItem mShareItem = null;
+
+        BoxItem shareItem = null;
         super.onCreate(savedInstanceState);
         if (BoxConfig.IS_FLAG_SECURE){
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -64,11 +62,11 @@ public abstract class BoxActivity extends AppCompatActivity {
         String userId = null;
         if (savedInstanceState != null && savedInstanceState.getSerializable(CollaborationUtils.EXTRA_ITEM) != null){
             userId = savedInstanceState.getString(CollaborationUtils.EXTRA_USER_ID);
-            mShareItem = (BoxItem)savedInstanceState.getSerializable(CollaborationUtils.EXTRA_ITEM);
+            shareItem = (BoxItem)savedInstanceState.getSerializable(CollaborationUtils.EXTRA_ITEM);
 
         } else if (getIntent() != null) {
             userId = getIntent().getStringExtra(CollaborationUtils.EXTRA_USER_ID);
-            mShareItem = (BoxItem)getIntent().getSerializableExtra(CollaborationUtils.EXTRA_ITEM);
+            shareItem = (BoxItem)getIntent().getSerializableExtra(CollaborationUtils.EXTRA_ITEM);
         }
 
         if (SdkUtils.isBlank(userId)) {
@@ -76,7 +74,7 @@ public abstract class BoxActivity extends AppCompatActivity {
             finish();
             return;
         }
-        if (mShareItem == null){
+        if (shareItem == null){
             Toast.makeText(this, R.string.box_sharesdk_no_item_selected, Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -106,10 +104,10 @@ public abstract class BoxActivity extends AppCompatActivity {
             }
         });
         mSession.authenticate();
-        baseShareVM = ViewModelProviders.of(this, new ShareVMFactory(new ShareRepo(mController), (BoxCollaborationItem) mShareItem)).get(BaseShareVM.class);
+        baseShareVM = ViewModelProviders.of(this, new ShareVMFactory(new ShareRepo(mController), (BoxCollaborationItem) shareItem)).get(BaseShareVM.class);
         if (!isSharedItemSufficient()){
             mProgress = ProgressDialog.show(this, getText(R.string.boxsdk_Please_wait), getText(R.string.boxsdk_Please_wait), true, false);
-            baseShareVM.fetchItemInfoFromRemote(mShareItem);
+            baseShareVM.fetchItemInfo(shareItem);
             baseShareVM.getItemInfo().observe(this, response -> {
                 if (response.isSuccess()) {
                     baseShareVM.setShareItem(response.getData());
@@ -164,9 +162,16 @@ public abstract class BoxActivity extends AppCompatActivity {
     protected void initToolbar() {
         Toolbar actionBar = (Toolbar) findViewById(R.id.box_action_bar);
         setSupportActionBar(actionBar);
-        actionBar.setTitle(getTitle());
         actionBar.setNavigationIcon(R.drawable.ic_box_sharesdk_arrow_back_black_24dp);
         actionBar.setNavigationOnClickListener(v -> onBackPressed());
+
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(this).get(ActionbarTitleVM.class);
+        actionbarTitleVM.getTitle().observe(this, actionBar::setTitle);
+        actionbarTitleVM.getSubtitle().observe(this, actionBar::setSubtitle);
+
+        if (actionBar.getTitle() == null) {
+            actionBar.setTitle(getTitle()); //set default title if no title is given by fragment
+        }
     }
 
 
@@ -194,32 +199,5 @@ public abstract class BoxActivity extends AppCompatActivity {
     }
     protected void showToast(int strRes) {
         Toast.makeText(this, getString(strRes), Toast.LENGTH_SHORT).show();
-    }
-    public void setSubtitle(int subtitle) {
-        this.mSubtitle = subtitle;
-    }
-
-    public int getSubtitle() {
-        return mSubtitle;
-    }
-
-    protected void notifyActionBarChanged() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(getTitle());
-            if (getSubtitle() != -1) {
-                actionBar.setSubtitle(getSubtitle());
-            } else {
-                actionBar.setSubtitle(null);
-            }
-        }
-
-    }
-
-    protected void setTitles(Fragment fragment) {
-        if (fragment != null) {
-            setTitle(((FragmentTitle)fragment).getFragmentTitle());
-            setSubtitle(((FragmentTitle)fragment).getFragmentSubtitle());
-        }
     }
 }

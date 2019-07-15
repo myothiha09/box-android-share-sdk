@@ -3,9 +3,7 @@ package com.box.androidsdk.share.usx.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.box.androidsdk.content.models.BoxCollaborationItem;

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.share.databinding.UsxFragmentInviteCollaboratorsBinding;
 import com.box.androidsdk.share.internal.models.BoxInvitee;
+import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.InviteCollaboratorsPresenterData;
 import com.box.androidsdk.share.vm.InviteCollaboratorsShareVM;
 import com.box.androidsdk.share.vm.PresenterData;
@@ -74,6 +75,10 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_invite_collaborators, container,false);
         View view = binding.getRoot();
         binding.setLifecycleOwner(getViewLifecycleOwner());
+
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
+        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_invite_collaborators_activity_title));
+        actionbarTitleVM.setSubtitle(null);
 
         mSelectRoleShareVM = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
 
@@ -157,7 +162,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
             //need to log Exception
             BoxLogUtils.e(InviteCollaboratorsFragment.class.getName(), "Fetch roles request failed",
                     presenter.getException());
-            showToast(getString(presenter.getStrCode())); //was just collaborationfragment
+            showToast(getString(presenter.getStrCode()));
         }
     };
 
@@ -284,7 +289,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         }
 
         showSpinner(R.string.box_sharesdk_fetching_collaborators, R.string.boxsdk_Please_wait);
-        mInviteCollaboratorsShareVM.fetchRolesFromRemote(getCollaborationItem());
+        mInviteCollaboratorsShareVM.fetchRoles(getCollaborationItem());
     }
     /**
      * Executes the request to retrieve the invitees that can be auto-completed
@@ -292,7 +297,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
     private void fetchInvitees() {
         if (getCollaborationItem() instanceof BoxFolder) {
             // Currently this request is only supported for folders.
-            mInviteCollaboratorsShareVM.fetchInviteesFromRemote(getCollaborationItem(), mFilterTerm);
+            mInviteCollaboratorsShareVM.fetchInvitees(getCollaborationItem(), mFilterTerm);
         }
     }
 
@@ -366,13 +371,4 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         if (mInviteCollaboratorsShareVM.getInviteesList().isEmpty()) mSelectRoleShareVM.setSendInvitationEnabled(false);
     }
 
-    @Override
-    public int getFragmentTitle() {
-        return R.string.box_sharesdk_invite_collaborators_activity_title;
-    }
-
-    @Override
-    public int getFragmentSubtitle() {
-        return -1;
-    }
 }

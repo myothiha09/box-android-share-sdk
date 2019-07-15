@@ -33,6 +33,7 @@ import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.adapters.CollaboratorsAdapter;
 import com.box.androidsdk.share.fragments.CollaborationRolesDialog;
 import com.box.androidsdk.share.utils.FragmentCallback;
+import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.SelectRoleShareVM;
 
 import java.net.HttpURLConnection;
@@ -65,6 +66,10 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         mCollaboratorsListView.setAdapter(mCollaboratorsAdapter);
         mCollaboratorsListView.setOnItemClickListener(this);
         mNoCollaboratorsText = (TextView) view.findViewById(R.id.no_collaborators_text);
+
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
+        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_shared_with));
+        actionbarTitleVM.setSubtitle(null);
 
         if (savedInstanceState == null) {
             if (getArguments() != null){
@@ -436,14 +441,4 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         return fragment;
     }
 
-
-    @Override
-    public int getFragmentTitle() {
-        return R.string.box_sharesdk_shared_with;
-    }
-
-    @Override
-    public int getFragmentSubtitle() {
-        return -1;
-    }
 }

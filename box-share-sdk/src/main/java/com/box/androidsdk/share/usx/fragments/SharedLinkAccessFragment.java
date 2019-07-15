@@ -15,6 +15,7 @@ import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkAccessBinding;
 import com.box.androidsdk.share.utils.FragmentCallback;
 import com.box.androidsdk.share.vm.AccessLevelShareVM;
+import com.box.androidsdk.share.vm.ActionbarTitleVM;
 
 import java.util.HashSet;
 
@@ -44,6 +45,11 @@ public class SharedLinkAccessFragment extends BoxFragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_shared_link_access, container, false);
         binding.setLifecycleOwner(getViewLifecycleOwner());
         View view = binding.getRoot();
+
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
+        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_title_link_access));
+        actionbarTitleVM.setSubtitle(null);
+
         mAccessLevelShareVM = ViewModelProviders.of(getActivity()).get(AccessLevelShareVM.class);
         setupUi();
         return view;
@@ -90,16 +96,5 @@ public class SharedLinkAccessFragment extends BoxFragment {
     public void onDestroy() {
         super.onDestroy();
         if (mFragmentCallback != null) mFragmentCallback.callBack();
-    }
-
-
-    @Override
-    public int getFragmentTitle() {
-        return R.string.box_sharesdk_title_link_access;
-    }
-
-    @Override
-    public int getFragmentSubtitle() {
-        return -1;
     }
 }

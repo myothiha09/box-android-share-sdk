@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +21,6 @@ import com.box.androidsdk.share.api.BoxShareController;
 import com.box.androidsdk.share.usx.fragments.CollaboratorsRolesFragment;
 import com.box.androidsdk.share.usx.fragments.InviteCollaboratorsFragment;
 import com.box.androidsdk.share.sharerepo.ShareRepo;
-import com.box.androidsdk.share.utils.FragmentTitle;
 import com.box.androidsdk.share.vm.SelectRoleShareVM;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
@@ -48,8 +45,6 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
         if (fragment == null || fragment instanceof InviteCollaboratorsFragment) {
             setupInviteCollabFragment();
-        } else {
-            setTitles(fragment);
         }
     }
 
@@ -63,8 +58,6 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         mFragment.setVMFactory(new ShareVMFactory(
                 new ShareRepo(new BoxShareController(mSession)),
                 (BoxCollaborationItem) baseShareVM.getShareItem()));
-        setTitles(mFragment);
-        notifyActionBarChanged();
     }
 
 
@@ -80,8 +73,6 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         ft.replace(R.id.fragmentContainer, rolesFragment, CollaboratorsRolesFragment.TAG);
         selectRoleShareVM.setShowSend(false);
         ft.commit();
-        setTitles(rolesFragment);
-        notifyActionBarChanged();
     }
 
     @Override

@@ -204,7 +204,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
                     public void onGlobalLayout() {
                         if (initialsView.isShown() && !initialsAdded) {
                             initialsAdded = true;
-                            int viewsCount = 3;
+                            int viewsCount = 5;
                             for (int i = 1; i < viewsCount && i < collaborations.size(); i++) {
                                 View viewAdded = addInitialsToList(collaborations.get(i).getAccessibleBy());
                                 if (i == viewsCount - 1) {
