@@ -76,10 +76,6 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         View view = binding.getRoot();
         binding.setLifecycleOwner(getViewLifecycleOwner());
 
-        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
-        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_invite_collaborators_activity_title));
-        actionbarTitleVM.setSubtitle(null);
-
         mSelectRoleShareVM = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
 
         InviteeAdapter adapter = createInviteeAdapter(getActivity());
@@ -209,6 +205,13 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
 
         }
         return Activity.RESULT_CANCELED;
+    }
+
+    @Override
+    protected void setTitles() {
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
+        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_invite_collaborators_activity_title));
+        actionbarTitleVM.setSubtitle(null);
     }
 
 

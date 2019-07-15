@@ -67,9 +67,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         mCollaboratorsListView.setOnItemClickListener(this);
         mNoCollaboratorsText = (TextView) view.findViewById(R.id.no_collaborators_text);
 
-        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
-        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_shared_with));
-        actionbarTitleVM.setSubtitle(null);
+        setTitles();
 
         if (savedInstanceState == null) {
             if (getArguments() != null){
@@ -100,6 +98,13 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         data.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, mCollaborations);
         data.putExtra(CollaborationUtils.EXTRA_OWNER_UPDATED, mOwnerUpdated);
         super.addResult(data);
+    }
+
+    @Override
+    protected void setTitles() {
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
+        actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_shared_with));
+        actionbarTitleVM.setSubtitle(null);
     }
 
     @Override

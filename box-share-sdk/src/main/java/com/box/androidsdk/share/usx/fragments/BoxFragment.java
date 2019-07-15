@@ -243,4 +243,9 @@ public abstract class BoxFragment extends Fragment {
         sb.setLength(sb.length() - 1);
         return sb.toString();
     }
+
+    /**
+     * Implement this and change title through using ActionBarTitleVM.
+     */
+    protected abstract void setTitles();
 }

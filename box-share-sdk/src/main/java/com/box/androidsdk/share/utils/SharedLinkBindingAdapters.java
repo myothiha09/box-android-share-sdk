@@ -24,21 +24,34 @@ public class SharedLinkBindingAdapters {
         }
     }
 
-    @BindingAdapter(value = "linkAccess")
-    public static void setAccess(TextView textView, BoxSharedLink.Access access) {
-        if (access != null){
-            switch(access){
-                case OPEN:
-                    textView.setText(R.string.box_sharesdk_accessible_public);
-                    break;
-                case COLLABORATORS:
-                    textView.setText(R.string.box_sharesdk_accessible_collaborator);
-                    break;
-                case COMPANY:
-                    textView.setText(R.string.box_sharesdk_accessible_company);
-                    break;
+    @BindingAdapter(value = {"linkAccess"})
+    public static void setAccess(TextView textView, BoxSharedLink link) {
+        String text = "";
+        if (link != null) {
+            BoxSharedLink.Access access = link.getAccess();
+            if (access != null){
+                switch(access){
+                    case OPEN:
+                        text = textView.getResources().getString(R.string.box_sharesdk_accessible_public);
+                        break;
+                    case COLLABORATORS:
+                        text = textView.getResources().getString(R.string.box_sharesdk_accessible_collaborator);
+                        break;
+                    case COMPANY:
+                        text = textView.getResources().getString(R.string.box_sharesdk_accessible_company);
+                        break;
+                }
+            }
+            if (!text.isEmpty()) {
+                text += "\n";
+            }
+            if (link.getPermissions() != null && link.getPermissions().getCanDownload()) {
+                text += textView.getResources().getString(R.string.box_sharesdk_downloads_allowed);
+            } else {
+                text += textView.getResources().getString(R.string.box_sharesdk_downloads_disabled);
             }
         }
+        textView.setText(text);
     }
 
 }

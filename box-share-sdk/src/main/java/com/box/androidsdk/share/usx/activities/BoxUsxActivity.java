@@ -67,6 +67,7 @@ public class BoxUsxActivity extends BoxActivity {
         fragment.setFragmentCallBack(() -> {
 //            showToast("SharedLinkAccessFragment callback.");
         });
+        fragment.setVMFactory(new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) baseShareVM.getShareItem()));
         ft.replace(R.id.fragmentContainer, fragment);
         ft.commit();
     }

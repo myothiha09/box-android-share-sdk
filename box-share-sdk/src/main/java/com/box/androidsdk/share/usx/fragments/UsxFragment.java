@@ -27,6 +27,13 @@ import com.box.androidsdk.share.vm.SharedLinkVM;
  */
 public class UsxFragment extends BoxFragment {
 
+    @Override
+    protected void setTitles() {
+        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
+        actionbarTitleVM.setTitle(mSharedLinkVm.getShareItem().getName());
+        actionbarTitleVM.setSubtitle(capitalizeFirstLetterOfEveryWord(mSharedLinkVm.getShareItem().getType()));
+    }
+
     public interface UsxNotifiers {
         void notifyUnshare();
 
@@ -47,13 +54,7 @@ public class UsxFragment extends BoxFragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_shared_link, container, false);
         mSharedLinkVm = ViewModelProviders.of(getActivity(), mShareVMFactory).get(SharedLinkVM.class);
 
-
-        binding.setOnInviteCollabsClickListener(mOnInviteCollabsClickListener);
-        binding.setOnEditAccessClickListener(mOnEditAccessClickListener);
-        binding.setOnCollabsListener(mOnCollabsClickListener);
-        binding.setOnCopyLinkListener(v -> copyLink());
-        binding.initialViews.setArguments((BoxCollaborationItem) mSharedLinkVm.getShareItem(), mController);
-
+        setupListeners();
 
         binding.setShareItem(mSharedLinkVm.getShareItem());
         binding.setShareLinkVm(mSharedLinkVm);
@@ -69,9 +70,7 @@ public class UsxFragment extends BoxFragment {
             }
         });
 
-        ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
-        actionbarTitleVM.setTitle(mSharedLinkVm.getShareItem().getName());
-        actionbarTitleVM.setSubtitle(capitalizeFirstLetterOfEveryWord(mSharedLinkVm.getShareItem().getType()));
+        setTitles();
 
 
         mSharedLinkVm.getSharedLinkedItem().observe(this, onBoxItemComplete);
@@ -86,6 +85,14 @@ public class UsxFragment extends BoxFragment {
 
         binding.setLifecycleOwner(getViewLifecycleOwner());
         return view;
+    }
+
+    private void setupListeners() {
+        binding.setOnInviteCollabsClickListener(mOnInviteCollabsClickListener);
+        binding.setOnEditAccessClickListener(mOnEditAccessClickListener);
+        binding.setOnCollabsListener(mOnCollabsClickListener);
+        binding.setOnCopyLinkListener(v -> copyLink());
+        binding.initialViews.setArguments((BoxCollaborationItem) mSharedLinkVm.getShareItem(), mController);
     }
 
     private void fetchItemInfo() {
