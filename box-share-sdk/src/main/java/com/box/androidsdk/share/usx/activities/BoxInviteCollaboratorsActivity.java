@@ -55,9 +55,7 @@ public class BoxInviteCollaboratorsActivity extends BoxActivity implements View.
         ft.replace(R.id.fragmentContainer, mFragment, InviteCollaboratorsFragment.TAG);
         ft.commit();
         ((InviteCollaboratorsFragment)mFragment).setOnEditAccessListener(this);
-        mFragment.setVMFactory(new ShareVMFactory(
-                new ShareRepo(new BoxShareController(mSession)),
-                (BoxCollaborationItem) baseShareVM.getShareItem()));
+        mFragment.setVMFactory(mShareVmFactory);
     }
 
 

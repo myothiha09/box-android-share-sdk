@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -20,6 +21,7 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.utils.FragmentCallback;
+import com.box.androidsdk.share.vm.BaseShareVM;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
 import java.util.concurrent.locks.Lock;
@@ -43,14 +45,12 @@ public abstract class BoxFragment extends Fragment {
     private Lock mSpinnerLock;
 
     protected FragmentCallback mFragmentCallback;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mDialogHandler = new LastRunnableHandler();
         mSpinnerLock = new ReentrantLock();
-
         if (savedInstanceState != null && savedInstanceState.getSerializable(CollaborationUtils.EXTRA_ITEM) != null){
             mShareItem = (BoxItem)savedInstanceState.getSerializable(CollaborationUtils.EXTRA_ITEM);
         } else if (getArguments() != null) {
@@ -248,4 +248,5 @@ public abstract class BoxFragment extends Fragment {
      * Implement this and change title through using ActionBarTitleVM.
      */
     protected abstract void setTitles();
+
 }

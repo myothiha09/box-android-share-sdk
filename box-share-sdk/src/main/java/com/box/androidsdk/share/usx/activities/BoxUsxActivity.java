@@ -13,10 +13,8 @@ import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.BoxShareController;
-import com.box.androidsdk.share.sharerepo.ShareRepo;
 import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
 import com.box.androidsdk.share.usx.fragments.UsxFragment;
-import com.box.androidsdk.share.vm.ShareVMFactory;
 
 /**
  * Activity used to share/unshare an item from Box. The intent to launch this activity can be retrieved via the static getLaunchIntent method
@@ -49,8 +47,7 @@ public class BoxUsxActivity extends BoxActivity {
         ft.add(R.id.fragmentContainer, mFragment);
         ft.commit();
         mFragment.setController(new BoxShareController(mSession));
-        mFragment.setVMFactory(new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)),
-                (BoxCollaborationItem) baseShareVM.getShareItem()));
+        mFragment.setVMFactory(mShareVmFactory);
         ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                 startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
@@ -67,7 +64,7 @@ public class BoxUsxActivity extends BoxActivity {
         fragment.setFragmentCallBack(() -> {
 //            showToast("SharedLinkAccessFragment callback.");
         });
-        fragment.setVMFactory(new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) baseShareVM.getShareItem()));
+        fragment.setVMFactory(mShareVmFactory);
         ft.replace(R.id.fragmentContainer, fragment);
         ft.commit();
     }

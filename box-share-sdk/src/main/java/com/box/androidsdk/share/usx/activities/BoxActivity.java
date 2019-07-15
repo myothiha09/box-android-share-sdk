@@ -45,6 +45,7 @@ public abstract class BoxActivity extends AppCompatActivity {
     protected BoxFragment mFragment;
     protected ProgressDialog mProgress;
     protected BaseShareVM baseShareVM;
+    protected ShareVMFactory mShareVmFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +115,12 @@ public abstract class BoxActivity extends AppCompatActivity {
                     if (mProgress != null && mProgress.isShowing()) {
                         mProgress.dismiss();
                     }
+                    mShareVmFactory = new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) response.getData());
                     initializeUi();
                 }
             });
         } else {
+            mShareVmFactory = new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) shareItem);
             initializeUi();
         }
     }

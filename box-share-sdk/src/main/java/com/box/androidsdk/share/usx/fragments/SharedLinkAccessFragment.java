@@ -7,21 +7,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.box.androidsdk.content.models.BoxCollaborationItem;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSharedLink;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkAccessBinding;
-import com.box.androidsdk.share.utils.FragmentCallback;
-import com.box.androidsdk.share.vm.AccessLevelShareVM;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
+import com.box.androidsdk.share.vm.PresenterData;
+import com.box.androidsdk.share.vm.SharedLinkVM;
 
-import java.util.HashSet;
-
-import static com.box.androidsdk.content.models.BoxSharedLink.Access.COLLABORATORS;
-import static com.box.androidsdk.content.models.BoxSharedLink.Access.COMPANY;
-import static com.box.androidsdk.content.models.BoxSharedLink.Access.OPEN;
 
 public class SharedLinkAccessFragment extends BoxFragment {
 
@@ -29,10 +26,13 @@ public class SharedLinkAccessFragment extends BoxFragment {
     private static final String PASSWORD_FRAGMENT_TAG = "passwordFrag";
     private static final String ACCESS_RADIAL_FRAGMENT_TAG = "accessFrag";
 
-
-    private boolean mPasswordProtectedLinksSupported = false;
-    AccessLevelShareVM mAccessLevelShareVM;
+    SharedLinkVM mShareLinkVM;
     UsxFragmentSharedLinkAccessBinding binding;
+
+    public interface SharedLinkAccessNotifiers {
+        void notifyAccessLevelChange(BoxSharedLink.Access access);
+    }
+
 
     @Override
     protected void setTitles() {
@@ -45,27 +45,58 @@ public class SharedLinkAccessFragment extends BoxFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_shared_link_access, container, false);
-        binding.setLifecycleOwner(getViewLifecycleOwner());
+
         View view = binding.getRoot();
 
         setTitles();
 
-        mAccessLevelShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(AccessLevelShareVM.class);
-        setupUi();
+        mShareLinkVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(SharedLinkVM.class);
+        setShareItem(mShareLinkVM.getShareItem());
 
-        setupListeners();
+        mShareLinkVM.getSharedLinkedItem().observe(this, onBoxItemComplete);
+        mShareLinkVM.getItemInfo().observe(this, onBoxItemComplete);
+
+
+
+        setupUi();
+        binding.setLifecycleOwner(getViewLifecycleOwner());
         return view;
     }
 
-    private void setupListeners() {
-
-    }
 
     private void setupUi() {
-        binding.accessRadioGroup.setViewModel(mAccessLevelShareVM);
-        if (mAccessLevelShareVM.getSelectedAccess().getValue() == null) mAccessLevelShareVM.setSelectedAccess(mShareItem.getSharedLink().getEffectiveAccess());
-        if (mAccessLevelShareVM.getActiveRadioButtons().isEmpty()) mAccessLevelShareVM.setActiveRadioButtons(mAccessLevelShareVM.generateActiveButtons());
+        binding.setViewModel(mShareLinkVM);
+        binding.accessRadioGroup.setViewModel(mShareLinkVM);
+        binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
+        if (mShareLinkVM.getActiveRadioButtons().isEmpty()) mShareLinkVM.setActiveRadioButtons(mShareLinkVM.generateActiveButtons());
+
+        binding.accessRadioGroup.setNotifiers(new SharedLinkAccessNotifiers() {
+            @Override
+            public void notifyAccessLevelChange(BoxSharedLink.Access access) {
+                if (access != null && access != mShareLinkVM.getShareItem().getSharedLink().getEffectiveAccess()) {
+                    changeAccess(access);
+                }
+
+            }
+        });
+
     }
+
+    /**
+     * Modifies the share link access
+     *
+     * @param access the share link access level
+     */
+    private void changeAccess(final BoxSharedLink.Access access){
+        if (access == null){
+            // Should not be possible to get here.
+            return;
+        }
+
+        showSpinner(R.string.box_sharesdk_updating_link_access, R.string.boxsdk_Please_wait);
+        mShareLinkVM.changeAccessLevel((BoxCollaborationItem) mShareLinkVM.getShareItem(), access);
+    }
+
 
 
 
@@ -85,5 +116,23 @@ public class SharedLinkAccessFragment extends BoxFragment {
     public void onDestroy() {
         super.onDestroy();
         if (mFragmentCallback != null) mFragmentCallback.callBack();
+    }
+
+    private Observer<PresenterData<BoxItem>> onBoxItemComplete = boxItemPresenterData -> {
+        dismissSpinner();
+        if (boxItemPresenterData.isSuccess() && boxItemPresenterData.getData() != null) {
+            //data might still be null if the original request was not BoxRequestItem
+            setShareItem(boxItemPresenterData.getData());
+        } else {
+            if(boxItemPresenterData.getStrCode() != PresenterData.NO_MESSAGE) {
+                showToast(boxItemPresenterData.getStrCode());
+            }
+        }
+    };
+
+    public void setShareItem(BoxItem item) {
+        mShareLinkVM.setShareItem(item);
+        binding.setShareItem(mShareLinkVM.getShareItem());
+        binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
     }
 }

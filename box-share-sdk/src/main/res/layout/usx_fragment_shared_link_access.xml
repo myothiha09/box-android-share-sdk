@@ -2,7 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.box.androidsdk.share.vm.SharedLinkVM" />
+        <variable
+            name="shareItem"
+            type="com.box.androidsdk.content.models.BoxItem" />
+        <import type="com.box.androidsdk.content.models.BoxSharedLink.Access" />
     </data>
     <ScrollView
         android:layout_width="match_parent"

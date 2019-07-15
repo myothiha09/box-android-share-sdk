@@ -19,6 +19,7 @@ import com.box.androidsdk.content.models.BoxSharedLink;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkBinding;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
+import com.box.androidsdk.share.vm.BaseShareVM;
 import com.box.androidsdk.share.vm.PresenterData;
 import com.box.androidsdk.share.vm.SharedLinkVM;
 
@@ -48,12 +49,12 @@ public class UsxFragment extends BoxFragment {
     UsxFragmentSharedLinkBinding binding;
     SharedLinkVM mSharedLinkVm;
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_shared_link, container, false);
         mSharedLinkVm = ViewModelProviders.of(getActivity(), mShareVMFactory).get(SharedLinkVM.class);
-
         setupListeners();
 
         binding.setShareItem(mSharedLinkVm.getShareItem());
@@ -76,8 +77,9 @@ public class UsxFragment extends BoxFragment {
         mSharedLinkVm.getSharedLinkedItem().observe(this, onBoxItemComplete);
 
         if (mSharedLinkVm.getShareItem().getSharedLink() == null) {
-            fetchItemInfo();
+            refreshItemInfo();
         }
+        mSharedLinkVm.getItemInfo().observe(this, onBoxItemComplete);
 
 
 
@@ -95,7 +97,8 @@ public class UsxFragment extends BoxFragment {
         binding.initialViews.setArguments((BoxCollaborationItem) mSharedLinkVm.getShareItem(), mController);
     }
 
-    private void fetchItemInfo() {
+    public void refreshItemInfo() {
+        showSpinner();
         mSharedLinkVm.fetchItemInfo(mSharedLinkVm.getShareItem());
     }
 
@@ -161,6 +164,12 @@ public class UsxFragment extends BoxFragment {
             clipboard.setPrimaryClip(clipData);
             showToast(R.string.box_sharesdk_link_copied_to_clipboard);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshItemInfo();
     }
 
     /**
