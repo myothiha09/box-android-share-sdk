@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.box.androidsdk.content.models.BoxCollaborationItem;
@@ -44,18 +45,26 @@ public class BoxCollaborationsActivity extends BoxActivity {
             collaborations = (BoxIteratorCollaborations)getIntent().getSerializableExtra(CollaborationUtils.EXTRA_COLLABORATIONS);
         }
 
-        mFragment = (CollaborationsFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
-        if (mFragment == null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setTransition(FragmentTransaction.TRANSIT_NONE);
-            mFragment = CollaborationsFragment.newInstance( (BoxCollaborationItem) baseShareVM.getShareItem(), collaborations);
-            ft.add(R.id.fragmentContainer, mFragment);
-            ft.commit();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (fragment == null || fragment instanceof CollaborationsFragment) {
+            setupCollaborationsFragment(collaborations);
         }
-        mFragment.setController(new BoxShareController(mSession));
-
     }
 
+    private void setupCollaborationsFragment(BoxIteratorCollaborations collaborations) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_NONE);
+        mFragment = CollaborationsFragment.newInstance( (BoxCollaborationItem) baseShareVM.getShareItem(), collaborations);
+        mFragment.setController(new BoxShareController(mSession));
+        ((CollaborationsFragment)mFragment).setCallback(this::switchToRolesFragment);
+        ft.add(R.id.fragmentContainer, mFragment);
+        ft.commit();
+    }
+
+    private void switchToRolesFragment() {
+        CollaboratorsRolesFragment fragment = CollaboratorsRolesFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit();
+    }
     /**
      * Gets a fully formed intent that can be used to start the activity with
      *
