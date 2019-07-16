@@ -5,7 +5,7 @@ import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSharedLink;
 import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
 
-public class SharedLinkAccessBindingAdapters {
+public class SharedLinkAccessToggleListeners {
 
     public static void onAccessLevelCheckChanged(boolean checked, BoxSharedLink.Access access, SharedLinkAccessFragment.SharedLinkAccessNotifiers notifiers) {
         if (checked) {

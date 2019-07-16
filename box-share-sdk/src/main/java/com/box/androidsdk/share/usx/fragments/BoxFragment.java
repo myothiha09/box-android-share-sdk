@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -20,8 +19,6 @@ import com.box.androidsdk.content.utils.BoxLogUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.ShareController;
-import com.box.androidsdk.share.utils.FragmentCallback;
-import com.box.androidsdk.share.vm.BaseShareVM;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
 import java.util.concurrent.locks.Lock;
@@ -44,7 +41,6 @@ public abstract class BoxFragment extends Fragment {
     protected ViewModelProvider.Factory mShareVMFactory;
     private Lock mSpinnerLock;
 
-    protected FragmentCallback mFragmentCallback;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -229,10 +225,6 @@ public abstract class BoxFragment extends Fragment {
 
     public void setController(ShareController controller) {
         this.mController = controller;
-    }
-
-    public void setFragmentCallBack(FragmentCallback callBack) {
-        this.mFragmentCallback = callBack;
     }
 
     protected String capitalizeFirstLetterOfEveryWord(String str) {

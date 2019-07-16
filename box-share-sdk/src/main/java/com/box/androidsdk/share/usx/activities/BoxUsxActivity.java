@@ -61,9 +61,6 @@ public class BoxUsxActivity extends BoxActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         SharedLinkAccessFragment fragment = SharedLinkAccessFragment.newInstance(baseShareVM.getShareItem());
-        fragment.setFragmentCallBack(() -> {
-//            showToast("SharedLinkAccessFragment callback.");
-        });
         fragment.setVMFactory(mShareVmFactory);
         ft.replace(R.id.fragmentContainer, fragment);
         ft.commit();

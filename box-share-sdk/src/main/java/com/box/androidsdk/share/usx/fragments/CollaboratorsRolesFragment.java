@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.box.androidsdk.content.models.BoxCollaboration;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentCollaborationRolesBinding;
-import com.box.androidsdk.share.utils.FragmentCallback;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.SelectRoleShareVM;
 
@@ -27,7 +26,6 @@ public class CollaboratorsRolesFragment extends Fragment {
 
     public static final String TAG = CollaboratorsRolesFragment.class.getName();
     SelectRoleShareVM vm;
-    private FragmentCallback mFragmentCallback;
 
     @Nullable
     @Override
@@ -48,17 +46,5 @@ public class CollaboratorsRolesFragment extends Fragment {
 
     public static CollaboratorsRolesFragment newInstance() {
         return new CollaboratorsRolesFragment();
-    }
-
-    public void setFragmentCallback(FragmentCallback callback) {
-        this.mFragmentCallback = callback;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mFragmentCallback != null) {
-            mFragmentCallback.callBack();
-        }
     }
 }

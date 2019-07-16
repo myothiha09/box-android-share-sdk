@@ -32,7 +32,6 @@ import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.adapters.CollaboratorsAdapter;
 import com.box.androidsdk.share.fragments.CollaborationRolesDialog;
-import com.box.androidsdk.share.utils.FragmentCallback;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.SelectRoleShareVM;
 
@@ -138,7 +137,6 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
             selectRoleShareVM.setAllowRemove(true);
             selectRoleShareVM.setAllowOwnerRole(allowOwner);
             selectRoleShareVM.setCollaboration(holder.collaboration);
-            mFragmentCallback.callBack(); //callback to switch fragment
         }
     }
 

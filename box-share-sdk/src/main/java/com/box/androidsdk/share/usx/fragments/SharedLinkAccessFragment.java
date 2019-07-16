@@ -116,12 +116,12 @@ public class SharedLinkAccessFragment extends BoxFragment {
 
     private void setupUi() {
         binding.setViewModel(mShareLinkVM);
-        binding.accessRadioGroup.setViewModel(mShareLinkVM);
-        binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
+        //binding.accessRadioGroup.setViewModel(mShareLinkVM);
+        //binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
         if (mShareLinkVM.getActiveRadioButtons().isEmpty()) mShareLinkVM.setActiveRadioButtons(mShareLinkVM.generateActiveButtons());
 
         binding.setSharedLinkAccessNotifier(notifier);
-        binding.accessRadioGroup.setSharedLinkAccessNotifier(notifier);
+       // binding.accessRadioGroup.setSharedLinkAccessNotifier(notifier);
         binding.setOnPasswordListener(v -> showPasswordChooserDialog());
         binding.setOnDateListener(v -> showDatePicker(new Date()));
 
@@ -247,14 +247,6 @@ public class SharedLinkAccessFragment extends BoxFragment {
         return fragment;
     }
 
-    /**
-     * Callback for updating shared link access
-     */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mFragmentCallback != null) mFragmentCallback.callBack();
-    }
 
     private Observer<PresenterData<BoxItem>> onBoxItemComplete = boxItemPresenterData -> {
         dismissSpinner();
@@ -276,6 +268,6 @@ public class SharedLinkAccessFragment extends BoxFragment {
     public void setShareItem(BoxItem item) {
         mShareLinkVM.setShareItem(item);
         binding.setShareItem(mShareLinkVM.getShareItem());
-        binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
+       // binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
     }
 }
