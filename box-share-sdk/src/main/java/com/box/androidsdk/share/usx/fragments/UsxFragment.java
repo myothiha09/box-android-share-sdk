@@ -81,9 +81,6 @@ public class UsxFragment extends BoxFragment {
 
         mSharedLinkVm.getSharedLinkedItem().observe(this, onBoxItemComplete);
 
-        if (mSharedLinkVm.getShareItem().getSharedLink() == null) {
-            refreshItemInfo();
-        }
         mSharedLinkVm.getItemInfo().observe(this, onBoxItemComplete);
 
 

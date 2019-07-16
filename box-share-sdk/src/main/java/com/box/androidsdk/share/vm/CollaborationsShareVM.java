@@ -17,6 +17,7 @@ public class CollaborationsShareVM extends BaseShareVM{
     private final LiveData<PresenterData<BoxVoid>> mUpdateOwner;
     private final LiveData<PresenterData<BoxCollaboration>> mUpdateCollaboration;
     private final LiveData<PresenterData<BoxIteratorCollaborations>> mCollaborations;
+    private boolean mOwnerUpdated;
 
     public CollaborationsShareVM(ShareRepo shareRepo, BoxCollaborationItem shareItem) {
         super(shareRepo, shareItem);
@@ -25,6 +26,7 @@ public class CollaborationsShareVM extends BaseShareVM{
         mDeleteCollaboration = Transformations.map(shareRepo.getDeleteCollaboration(), transformer::getDeleteCollaborationPresenterData);
         mUpdateOwner = Transformations.map(shareRepo.getUpdateOwner(), transformer::getUpdateOwnerPresenterData);
         mUpdateCollaboration = Transformations.map(shareRepo.getUpdateCollaboration(), transformer::getUpdateCollaborationPresenterData);
+        mOwnerUpdated = false;
     }
 
     /**
@@ -61,5 +63,13 @@ public class CollaborationsShareVM extends BaseShareVM{
 
     public LiveData<PresenterData<BoxIteratorCollaborations>> getCollaborations() {
         return mCollaborations;
+    }
+
+    public boolean isOwnerUpdated() {
+        return mOwnerUpdated;
+    }
+
+    public void setOwnerUpdated(boolean ownerUpdated) {
+        this.mOwnerUpdated = ownerUpdated;
     }
 }

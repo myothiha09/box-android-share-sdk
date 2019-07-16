@@ -86,17 +86,17 @@ public class BoxCollaborationsActivity extends BoxActivity {
         return collabIntent;
     }
 
-    /**
-     * Gets a fully formed intent that can be used to start the activity with
-     *
-     * @param context context to launch the intent with
-     * @param boxCollaborationItem item to retrieve collaborations for
-     * @param session the session to view the items collaborations with
-     * @return the intent to launch the activity
-     */
-    public static Intent getLaunchIntent(Context context, BoxCollaborationItem boxCollaborationItem, BoxSession session, BoxIteratorCollaborations collaborations) {
-        Intent collabIntent = getLaunchIntent(context, boxCollaborationItem, session);
-        collabIntent.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, collaborations);
-        return collabIntent;
-    }
+//    /**
+//     * Gets a fully formed intent that can be used to start the activity with
+//     *
+//     * @param context context to launch the intent with
+//     * @param boxCollaborationItem item to retrieve collaborations for
+//     * @param session the session to view the items collaborations with
+//     * @return the intent to launch the activity
+//     */
+//    public static Intent getLaunchIntent(Context context, BoxCollaborationItem boxCollaborationItem, BoxSession session, BoxIteratorCollaborations collaborations) {
+//        Intent collabIntent = getLaunchIntent(context, boxCollaborationItem, session);
+//        collabIntent.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, collaborations);
+//        return collabIntent;
+//    }
 }
