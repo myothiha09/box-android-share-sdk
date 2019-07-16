@@ -11,7 +11,7 @@ import com.box.androidsdk.share.internal.models.BoxFeatures;
 import com.box.androidsdk.share.sharerepo.ShareRepo;
 import com.box.androidsdk.share.utils.ShareSDKTransformer;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 
 import static com.box.androidsdk.content.models.BoxSharedLink.Access.COLLABORATORS;
@@ -98,6 +98,10 @@ public class SharedLinkVM extends BaseShareVM {
 
     public void changePassword(BoxCollaborationItem item, String password) {
         mShareRepo.changePassword(item, password);
+    }
+
+    public void removeExpiryDate(BoxCollaborationItem item) throws Exception{
+        mShareRepo.removeExpiryDate(item);
     }
 
     public void fetchSupportedFeatures() {

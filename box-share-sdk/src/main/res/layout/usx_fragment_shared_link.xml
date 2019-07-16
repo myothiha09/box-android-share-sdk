@@ -180,7 +180,7 @@
                         android:layout_width="match_parent"
                         android:onClickListener="@{onCopyLinkListener}"
                         android:layout_height="@dimen/box_sharesdk_small_cell_height" />
-                    <View style="@style/BoxInsetDivider" />
+                    <View style="@style/BoxDivider" />
                     <Button
                         android:id="@+id/share_via_button"
                         style="@style/BoxCellSubHeader"

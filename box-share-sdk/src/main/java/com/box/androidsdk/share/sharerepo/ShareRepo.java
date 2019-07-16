@@ -159,13 +159,22 @@ public class ShareRepo  {
     }
 
     /**
-     * Change expiry date of a box collaboration item.
+     * Change expiry date of a shared link of box collaboration item.
      * @param boxCollaborationItem the item to change expiry date on
      * @param date the expiry date
      * @throws Exception
      */
     public void setExpiryDate(BoxCollaborationItem boxCollaborationItem, Date date) throws Exception {
         handleTaskAndPostValue(mController.executeRequest(BoxItem.class, mController.getCreatedSharedLinkRequest(boxCollaborationItem).setUnsharedAt(date)), mSharedLinkedItem);
+    }
+
+    /**
+     * Remove expiry date of a shared link of box collaboration item.
+     * @param boxCollaborationItem the item to remove expiry date on
+     * @throws Exception
+     */
+    public void removeExpiryDate(BoxCollaborationItem boxCollaborationItem) throws Exception {
+        handleTaskAndPostValue(mController.executeRequest(BoxItem.class, mController.getCreatedSharedLinkRequest(boxCollaborationItem).setRemoveUnsharedAtDate()), mSharedLinkedItem);
     }
 
     /**

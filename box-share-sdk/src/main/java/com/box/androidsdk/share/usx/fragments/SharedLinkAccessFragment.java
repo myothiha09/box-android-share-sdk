@@ -1,28 +1,31 @@
 package com.box.androidsdk.share.usx.fragments;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.box.androidsdk.content.models.BoxBookmark;
 import com.box.androidsdk.content.models.BoxCollaborationItem;
-import com.box.androidsdk.content.models.BoxFile;
-import com.box.androidsdk.content.models.BoxFolder;
 import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSharedLink;
-import com.box.androidsdk.content.requests.BoxRequestsFile;
-import com.box.androidsdk.content.requests.BoxRequestsFolder;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkAccessBinding;
+import com.box.androidsdk.share.usx.fragments.DatePickerFragment;
+import com.box.androidsdk.share.usx.fragments.PositiveNegativeDialogFragment;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.PresenterData;
 import com.box.androidsdk.share.vm.SharedLinkVM;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 
 public class SharedLinkAccessFragment extends BoxFragment {
@@ -34,9 +37,50 @@ public class SharedLinkAccessFragment extends BoxFragment {
     SharedLinkVM mShareLinkVM;
     UsxFragmentSharedLinkAccessBinding binding;
 
+    private SharedLinkAccessNotifiers notifier = new SharedLinkAccessNotifiers() {
+        @Override
+        public void notifyAccessLevelChange(BoxSharedLink.Access access) {
+            if (access != null && access != mShareLinkVM.getShareItem().getSharedLink().getEffectiveAccess()) {
+                changeAccess(access);
+            }
+
+        }
+
+        @Override
+        public void notifyDownloadChange(boolean download) {
+            changeDownloadPermission(download);
+        }
+
+        @Override
+        public void notifyRequirePassword(boolean required) {
+            if (required) {
+                showPasswordChooserDialog();
+            } else {
+                showSpinner(R.string.box_sharesdk_updating_link_access, R.string.boxsdk_Please_wait);
+                changePassword(null);
+            }
+        }
+
+        @Override
+        public void notifyExpireLink(boolean expire) {
+            if (expire) {
+                showDatePicker(new Date());
+            } else {
+                try {
+                    showSpinner(R.string.box_sharesdk_updating_link_access, R.string.boxsdk_Please_wait);
+                    mShareLinkVM.removeExpiryDate((BoxCollaborationItem) mShareLinkVM.getShareItem());
+                } catch (Exception e) {
+                    dismissSpinner();
+                }
+            }
+        }
+    };
+
     public interface SharedLinkAccessNotifiers {
         void notifyAccessLevelChange(BoxSharedLink.Access access);
         void notifyDownloadChange(boolean download);
+        void notifyRequirePassword(boolean required);
+        void notifyExpireLink(boolean expire);
     }
 
 
@@ -76,25 +120,14 @@ public class SharedLinkAccessFragment extends BoxFragment {
         binding.accessRadioGroup.setShareItem(mShareLinkVM.getShareItem());
         if (mShareLinkVM.getActiveRadioButtons().isEmpty()) mShareLinkVM.setActiveRadioButtons(mShareLinkVM.generateActiveButtons());
 
-        binding.setSharedLinkAccessNotifier(notifiers);
-        binding.accessRadioGroup.setSharedLinkAccessNotifier(notifiers);
+        binding.setSharedLinkAccessNotifier(notifier);
+        binding.accessRadioGroup.setSharedLinkAccessNotifier(notifier);
+        binding.setOnPasswordListener(v -> showPasswordChooserDialog());
+        binding.setOnDateListener(v -> showDatePicker(new Date()));
 
     }
 
-    private SharedLinkAccessNotifiers notifiers = new SharedLinkAccessNotifiers() {
-        @Override
-        public void notifyAccessLevelChange(BoxSharedLink.Access access) {
-            if (access != null && access != mShareLinkVM.getShareItem().getSharedLink().getEffectiveAccess()) {
-                changeAccess(access);
-            }
 
-        }
-
-        @Override
-        public void notifyDownloadChange(boolean download) {
-            changeDownloadPermission(download);
-        }
-    };
 
     /**
      * Modifies the share link access
@@ -123,6 +156,90 @@ public class SharedLinkAccessFragment extends BoxFragment {
             showToast("Bookmarks do not have a permission that can be changed.");
         }
     }
+
+    /**
+     * Sets the password to the provided string
+     *
+     * @param password the password to set on the shared item
+     */
+    private void changePassword(final String password) {
+
+        mShareLinkVM.changePassword((BoxCollaborationItem) mShareLinkVM.getShareItem(), password);
+    }
+
+    /**
+     * Displays the dialog for the user to set a password for the shared link
+     */
+    private void showPasswordChooserDialog(){
+        if (getFragmentManager().findFragmentByTag(PASSWORD_FRAGMENT_TAG) != null){
+            return;
+        }
+        PasswordDialogFragment fragment = PasswordDialogFragment.
+                createFragment(R.string.box_sharesdk_password, R.string.box_sharesdk_set_password, R.string.box_sharesdk_ok, R.string.box_sharesdk_cancel, new PositiveNegativeDialogFragment.OnPositiveOrNegativeButtonClickedListener() {
+                    @Override
+                    public void onPositiveButtonClicked(PositiveNegativeDialogFragment fragment) {
+                        try {
+                            showSpinner();
+                            changePassword(((PasswordDialogFragment) fragment).getPassword());
+                        } catch(Exception e) {
+                            dismissSpinner();
+                            showToast("Invalid password");
+                        }
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked(PositiveNegativeDialogFragment fragment) {
+                        refreshUi();
+                    }
+                });
+        fragment.show(getActivity().getSupportFragmentManager(), PASSWORD_FRAGMENT_TAG);
+    }
+
+    /**
+     * Displays the DatePickerFragment
+     *
+     * @param date the default date that should be selected
+     */
+    private void showDatePicker(Date date){
+        if (getFragmentManager().findFragmentByTag(DATE_FRAGMENT_TAG) != null){
+            return;
+        }
+        DatePickerFragment fragment = DatePickerFragment.createFragment(date, new DatePickerDialog.OnDateSetListener() {
+
+            /**
+             * Handles when a date is selected on the DatePickerFragment
+             *
+             * @param view the DatePicker view
+             * @param year the year
+             * @param month the month
+             * @param day the day
+             */
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int day) {
+                // Do something with the date chosen by the user
+                GregorianCalendar calendar = new GregorianCalendar(year, month, day);
+                try {
+                    showSpinner(R.string.box_sharesdk_updating_link_access, R.string.boxsdk_Please_wait);
+                    mShareLinkVM.setExpiryDate((BoxCollaborationItem) mShareLinkVM.getShareItem(), calendar.getTime());
+                } catch (Exception e){
+                    dismissSpinner();
+                    mController.showToast(getActivity(), "invalid time selected");
+                }
+            }
+        }, new PositiveNegativeDialogFragment.OnPositiveOrNegativeButtonClickedListener() {
+            @Override
+            public void onPositiveButtonClicked(PositiveNegativeDialogFragment fragment) {
+
+            }
+
+            @Override
+            public void onNegativeButtonClicked(PositiveNegativeDialogFragment fragment) {
+                refreshUi();
+            }
+        });
+        fragment.show(getActivity().getSupportFragmentManager(), DATE_FRAGMENT_TAG);
+    }
+
     public static SharedLinkAccessFragment newInstance(BoxItem boxItem) {
         Bundle args = BoxFragment.getBundle(boxItem);
         SharedLinkAccessFragment fragment = new SharedLinkAccessFragment();
@@ -148,8 +265,13 @@ public class SharedLinkAccessFragment extends BoxFragment {
             if(boxItemPresenterData.getStrCode() != PresenterData.NO_MESSAGE) {
                 showToast(boxItemPresenterData.getStrCode());
             }
+            refreshUi();
         }
     };
+
+    public void refreshUi() {
+        setShareItem(mShareLinkVM.getShareItem());
+    }
 
     public void setShareItem(BoxItem item) {
         mShareLinkVM.setShareItem(item);
