@@ -21,6 +21,7 @@ import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.internal.models.BoxFeatures;
 import com.box.androidsdk.share.internal.models.BoxIteratorInvitees;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -239,7 +240,7 @@ public class ShareRepo  {
      * Returns a controller for avatar.
      * @return a controller for avatar
      */
-    public BoxAvatarView.AvatarController getAvatarController() {
+    public  <E extends BoxAvatarView.AvatarController & Serializable> E getAvatarController() {
         return mController.getAvatarController();
     }
 

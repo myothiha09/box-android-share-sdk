@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.box.androidsdk.content.BoxException;
@@ -30,9 +32,11 @@ import com.box.androidsdk.content.utils.BoxLogUtils;
 import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
-import com.box.androidsdk.share.adapters.CollaboratorsAdapter;
-import com.box.androidsdk.share.fragments.CollaborationRolesDialog;
+import com.box.androidsdk.share.usx.adapters.CollaboratorsAdapter;
+import com.box.androidsdk.share.databinding.UsxFragmentCollaborationsBinding;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
+import com.box.androidsdk.share.vm.CollaborationsShareVM;
+import com.box.androidsdk.share.vm.PresenterData;
 import com.box.androidsdk.share.vm.SelectRoleShareVM;
 
 import java.net.HttpURLConnection;
@@ -41,14 +45,14 @@ import java.util.ArrayList;
 public class CollaborationsFragment extends BoxFragment implements AdapterView.OnItemClickListener {
 
     protected static final String TAG = CollaborationsFragment.class.getName();
-    protected ListView mCollaboratorsListView;
-    protected TextView mNoCollaboratorsText;
     protected CollaboratorsAdapter mCollaboratorsAdapter;
     protected BoxIteratorCollaborations mCollaborations;
 
 
     private boolean mOwnerUpdated = false;
     private CollaborationsFragmentCallback mCallback;
+    UsxFragmentCollaborationsBinding binding;
+    CollaborationsShareVM mCollaborationsShareVM;
 
     public interface CollaborationsFragmentCallback {
         void notifySwitchToAccessRoleFragment();
@@ -63,27 +67,26 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.usx_fragment_collaborations, container, false);
-
-        mCollaboratorsListView = (ListView) view.findViewById(R.id.collaboratorsList);
-        mCollaboratorsListView.setDivider(null);
-        mCollaboratorsAdapter = new CollaboratorsAdapter(getActivity(), getItem(), mController);
-        mCollaboratorsListView.setAdapter(mCollaboratorsAdapter);
-        mCollaboratorsListView.setOnItemClickListener(this);
-        mNoCollaboratorsText = (TextView) view.findViewById(R.id.no_collaborators_text);
-
         setTitles();
-//
-//        if (getArguments() != null){
-//            Bundle args = getArguments();
-//            mCollaborations = (BoxIteratorCollaborations)args.getSerializable(CollaborationUtils.EXTRA_COLLABORATIONS);
-//        }
-//        if (mCollaborations != null){
-//            updateUi();
-//        } else {
-//            fetchCollaborations();
-//        }
 
+        binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_collaborations, container, false);
+        mCollaborationsShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(CollaborationsShareVM.class);
+        binding.setViewModel(mCollaborationsShareVM);
+        binding.setLifecycleOwner(this);
+        View view = binding.getRoot();
+        binding.collaboratorsList.setDivider(null);
+        mCollaboratorsAdapter = new CollaboratorsAdapter(getActivity(), getItem(), mCollaborationsShareVM);
+        binding.collaboratorsList.setAdapter(mCollaboratorsAdapter);
+        binding.collaboratorsList.setOnItemClickListener(this);
+
+
+        mCollaborationsShareVM.getCollaborations().observe(this, onCollaborationsChange);
+        mCollaborationsShareVM.getRoleItem().observe(this, onRoleItemChange);
+
+        if (getArguments() != null){
+            Bundle args = getArguments();
+            mCollaborations = (BoxIteratorCollaborations)args.getSerializable(CollaborationUtils.EXTRA_COLLABORATIONS);
+        }
 
         // Get serialized roles or fetch them if they are not available
         if (getItem().getAllowedInviteeRoles() == null) {
@@ -91,6 +94,33 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         }
         return view;
     }
+
+    private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = data -> {
+            dismissSpinner();
+            if (data.isSuccess()) {
+                mCollaboratorsAdapter.setItems(data.getData());
+            } else {
+                BoxLogUtils.e(CollaborationsFragment.class.getName(), "Fetch Collaborators request failed",
+                        data.getException());
+
+                if (data.getStrCode() != PresenterData.NO_MESSAGE) {
+                    showToast(data.getStrCode());
+                }
+                BoxLogUtils.nonFatalE("CollaborationsError", getString(R.string.box_sharesdk_cannot_get_collaborators)
+                        + data.getException(), data.getException());
+            }
+    };
+
+    private Observer<PresenterData<BoxCollaborationItem>> onRoleItemChange = data -> {
+        dismissSpinner();
+        if (data.isSuccess()) {
+            mCollaborationsShareVM.setShareItem(data.getData());
+        } else {
+            BoxLogUtils.e(com.box.androidsdk.share.fragments.CollaborationsFragment.class.getName(), "Fetch roles request failed",
+                    data.getException());
+            showToast(data.getStrCode());
+        }
+    };
 
     @Override
     public void onResume() {
@@ -101,6 +131,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
     public void setCallback(CollaborationsFragmentCallback callback) {
         this.mCallback = callback;
     }
+
     @Override
     public void addResult(Intent data) {
         data.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, mCollaborations);
@@ -117,8 +148,8 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        CollaboratorsAdapter.ViewHolder holder = (CollaboratorsAdapter.ViewHolder) view.getTag();
-        if (holder != null && holder.collaboration != null) {
+        BoxCollaboration collaboration = (BoxCollaboration) view.getTag();
+        if (collaboration != null) {
             ArrayList<BoxCollaboration.Role> rolesArr = getRoles();
 
             if (rolesArr == null || rolesArr.size() == 0) {
@@ -126,9 +157,9 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
                 return;
             }
 
-            BoxCollaborator collaborator = holder.collaboration.getAccessibleBy();
-            BoxCollaboration.Role role = holder.collaboration.getRole();
-            String name = collaborator == null ? getString(R.string.box_sharesdk_another_person) : collaborator.getName();
+            BoxCollaborator collaborator = collaboration.getAccessibleBy();
+            BoxCollaboration.Role role = collaboration.getRole();
+            //String name = collaborator == null ? getString(R.string.box_sharesdk_another_person) : collaborator.getName();
             boolean allowOwner = getItem().getOwnedBy().getId().equals(mController.getCurrentUserId());
             if (allowOwner){
                 // currently changing owner only seems to be supported for folders (does not show up as a allowed invitee role).
@@ -139,13 +170,13 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
             selectRoleShareVM.setRoles(rolesArr);
             selectRoleShareVM.setAllowRemove(true);
             selectRoleShareVM.setAllowOwnerRole(allowOwner);
-            selectRoleShareVM.setCollaboration(holder.collaboration);
+            selectRoleShareVM.setCollaboration(collaboration);
             mCallback.notifySwitchToAccessRoleFragment();
         }
     }
 
     public BoxCollaborationItem getItem() {
-        return (BoxCollaborationItem) mShareItem;
+        return (BoxCollaborationItem) mCollaborationsShareVM.getShareItem();
     }
 
     /**
@@ -153,12 +184,12 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
      */
     public void fetchCollaborations() {
         if (getItem() == null || SdkUtils.isBlank(getItem().getId())) {
-            mController.showToast(getActivity(), getString(R.string.box_sharesdk_cannot_view_collaborations));
+            showToast(R.string.box_sharesdk_cannot_view_collaborations);
             return;
         }
 
         showSpinner(R.string.box_sharesdk_fetching_collaborators, R.string.boxsdk_Please_wait);
-        mController.fetchCollaborations(getItem()).addOnCompletedListener(null);
+        mCollaborationsShareVM.fetchCollaborations(getItem());
     }
 
     /**
@@ -170,18 +201,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         }
 
         showSpinner(R.string.box_sharesdk_fetching_collaborators, R.string.boxsdk_Please_wait);
-        mController.fetchRoles(getItem()).addOnCompletedListener(null);
-    }
-
-    private void updateUi(){
-        if (mCollaborations != null && mCollaborations.size() > 0) {
-            hideView(mNoCollaboratorsText);
-            showView(mCollaboratorsListView);
-            mCollaboratorsAdapter.setItems(mCollaborations);
-        } else {
-            hideView(mCollaboratorsListView);
-            showView(mNoCollaboratorsText);
-        }
+        mCollaborationsShareVM.fetchRoles(getItem());
     }
 
     public ArrayList<BoxCollaboration.Role> getRoles() {
@@ -190,8 +210,6 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         }
         return null;
     }
-
-
 
 
     public static CollaborationsFragment newInstance(BoxCollaborationItem collaborationItem, BoxIteratorCollaborations collaborations) {

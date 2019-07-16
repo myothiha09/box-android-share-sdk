@@ -10,6 +10,8 @@ import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.views.BoxAvatarView;
 import com.box.androidsdk.share.sharerepo.ShareRepo;
 
+import java.io.Serializable;
+
 
 /**
  * The base ViewModel class which should be extended by other ViewModels
@@ -82,7 +84,7 @@ public class BaseShareVM extends ViewModel {
      * Returns the avatar controller for displaying collaborators' avatars.
      * @return the avatar controller for displaying collaborators' avatars
      */
-    public BoxAvatarView.AvatarController getAvatarController() {
+    public  <E extends BoxAvatarView.AvatarController & Serializable> E getAvatarController() {
         return mShareRepo.getAvatarController();
     }
 }

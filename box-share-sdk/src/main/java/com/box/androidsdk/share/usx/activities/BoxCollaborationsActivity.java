@@ -40,30 +40,43 @@ public class BoxCollaborationsActivity extends BoxActivity {
 
     @Override
     protected void initializeUi() {
+
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (fragment == null || fragment instanceof CollaborationsFragment) {
+            setupCollaborationsFragment();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (fragment instanceof CollaboratorsRolesFragment) {
+            setupCollaborationsFragment();
+        } else {
+            super.onBackPressed();
+        }
+
+    }
+
+    private void setupCollaborationsFragment() {
         BoxIteratorCollaborations collaborations = null;
         if (getIntent() != null) {
             collaborations = (BoxIteratorCollaborations)getIntent().getSerializableExtra(CollaborationUtils.EXTRA_COLLABORATIONS);
         }
-
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
-        if (fragment == null || fragment instanceof CollaborationsFragment) {
-            setupCollaborationsFragment(collaborations);
-        }
-    }
-
-    private void setupCollaborationsFragment(BoxIteratorCollaborations collaborations) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         mFragment = CollaborationsFragment.newInstance( (BoxCollaborationItem) baseShareVM.getShareItem(), collaborations);
         mFragment.setController(new BoxShareController(mSession));
+        mFragment.setVMFactory(mShareVmFactory);
         ((CollaborationsFragment)mFragment).setCallback(this::switchToRolesFragment);
-        ft.add(R.id.fragmentContainer, mFragment);
+        ft.replace(R.id.fragmentContainer, mFragment);
         ft.commit();
     }
 
     private void switchToRolesFragment() {
         CollaboratorsRolesFragment fragment = CollaboratorsRolesFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
     }
     /**
      * Gets a fully formed intent that can be used to start the activity with
@@ -86,17 +99,17 @@ public class BoxCollaborationsActivity extends BoxActivity {
         return collabIntent;
     }
 
-//    /**
-//     * Gets a fully formed intent that can be used to start the activity with
-//     *
-//     * @param context context to launch the intent with
-//     * @param boxCollaborationItem item to retrieve collaborations for
-//     * @param session the session to view the items collaborations with
-//     * @return the intent to launch the activity
-//     */
-//    public static Intent getLaunchIntent(Context context, BoxCollaborationItem boxCollaborationItem, BoxSession session, BoxIteratorCollaborations collaborations) {
-//        Intent collabIntent = getLaunchIntent(context, boxCollaborationItem, session);
-//        collabIntent.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, collaborations);
-//        return collabIntent;
-//    }
+    /**
+     * Gets a fully formed intent that can be used to start the activity with
+     *
+     * @param context context to launch the intent with
+     * @param boxCollaborationItem item to retrieve collaborations for
+     * @param session the session to view the items collaborations with
+     * @return the intent to launch the activity
+     */
+    public static Intent getLaunchIntent(Context context, BoxCollaborationItem boxCollaborationItem, BoxSession session, BoxIteratorCollaborations collaborations) {
+        Intent collabIntent = getLaunchIntent(context, boxCollaborationItem, session);
+        collabIntent.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, collaborations);
+        return collabIntent;
+    }
 }
