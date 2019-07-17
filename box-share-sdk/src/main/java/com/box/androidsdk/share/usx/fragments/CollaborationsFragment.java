@@ -156,7 +156,6 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
                 SdkUtils.toastSafely(getContext(), R.string.box_sharesdk_cannot_get_collaborators, Toast.LENGTH_SHORT);
                 return;
             }
-
             BoxCollaborator collaborator = collaboration.getAccessibleBy();
             BoxCollaboration.Role role = collaboration.getRole();
             //String name = collaborator == null ? getString(R.string.box_sharesdk_another_person) : collaborator.getName();

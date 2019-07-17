@@ -146,11 +146,4 @@ public class CollaboratorsAdapter extends BaseAdapter {
         }
         return position;
     }
-
-    public static class ViewHolder {
-        public TextView nameView;
-        public TextView roleView;
-        public BoxAvatarView initialsView;
-        public BoxCollaboration collaboration;
-    }
 }

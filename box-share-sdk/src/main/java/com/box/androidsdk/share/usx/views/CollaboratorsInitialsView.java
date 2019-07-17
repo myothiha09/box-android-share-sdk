@@ -12,8 +12,13 @@ import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.StringRes;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.box.androidsdk.content.BoxException;
 import com.box.androidsdk.content.BoxFutureTask;
@@ -30,10 +35,15 @@ import com.box.androidsdk.content.views.BoxAvatarView;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.api.ShareController;
 import com.box.androidsdk.share.usx.fragments.CollaborationsFragment;
+import com.box.androidsdk.share.vm.CollaboratorsInitialsVM;
+import com.box.androidsdk.share.vm.PresenterData;
+import com.box.androidsdk.share.vm.ShareVMFactory;
 import com.eclipsesource.json.JsonObject;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
 /**
  * This is a custom view designed primarily like a container of other views to show the names of collaborators
@@ -41,17 +51,8 @@ import java.util.ArrayList;
  */
 public class CollaboratorsInitialsView extends LinearLayout {
 
-    // Should be implemented by the parent Fragment or Activity
-    public interface ShowCollaboratorsListener {
-        void onShowCollaborators(BoxIteratorCollaborations collaborations);
-    }
-
-    private ShowCollaboratorsListener mShowCollaboratorsListener;
     private LinearLayout mInitialsListView;
-    private LinearLayout mInitialsListViewSection;
     protected BoxIteratorCollaborations mCollaborations;
-    protected ShareController mController;
-    protected BoxItem mShareItem;
     private BoxCollaborator mUnknownCollaborator;
     public static final String EXTRA_COLLABORATORS = "CollaboratorsInitialsView.ExtraCollaborators";
     public static final String EXTRA_SAVED_STATE = "CollaboratorsInitialsView.ExtraSaveState";
@@ -59,6 +60,8 @@ public class CollaboratorsInitialsView extends LinearLayout {
     private ProgressBar mProgressBar;
     private BoxResponse mBoxResponse;
     private TextView mCollabsCount;
+
+    private CollaboratorsInitialsVM mCollaboratorsInitialsVM;
 
     public CollaboratorsInitialsView(Context context) {
         this(context, null);
@@ -73,15 +76,10 @@ public class CollaboratorsInitialsView extends LinearLayout {
         init();
     }
 
-    /**
-     * This is mandatory to execute a request in order to obtain collaborators for a box folder
-     *
-     * @param collaborationItem Box item
-     * @param shareController Share controller used for making a request
-     */
-    public void setArguments(BoxCollaborationItem collaborationItem, ShareController shareController) {
-        mShareItem = collaborationItem;
-        mController = shareController;
+
+    public void setArguments(CollaboratorsInitialsVM vm) {
+        mCollaboratorsInitialsVM = vm;
+        mCollaboratorsInitialsVM.getCollaborations().observe((LifecycleOwner) getContext(), onCollaborationsChange);
     }
 
     /**
@@ -90,16 +88,18 @@ public class CollaboratorsInitialsView extends LinearLayout {
     private void init() {
         inflate(getContext(), R.layout.usx_view_collaborators_initial, this);
         mInitialsListView = (LinearLayout) findViewById(R.id.invite_collaborator_initials_list);
-        mInitialsListViewSection = (LinearLayout) findViewById(R.id.collaborator_initials_list_section);
         mProgressBar = findViewById(R.id.box_sharesdk_activity_progress_bar);
         mCollabsCount = findViewById(R.id.collabsCount);
         JsonObject jsonObject = new JsonObject();
         jsonObject.add(BoxCollaborator.FIELD_NAME, "");
         mUnknownCollaborator = new BoxUser(jsonObject);
+
+        //mCollaboratorsInitialsVM = ViewModelProviders.of(mLifeCycleOwner, mShareVMFactory).get(CollaboratorsInitialsVM.class);
+
     }
 
     protected BoxCollaborationItem getCollaborationItem() {
-        return (BoxCollaborationItem)mShareItem;
+        return (BoxCollaborationItem) mCollaboratorsInitialsVM.getShareItem();
     }
 
     public final String getString(@StringRes int resId) {
@@ -110,12 +110,12 @@ public class CollaboratorsInitialsView extends LinearLayout {
      * Executes the request to retrieve collaborations for the folder
      */
     public void fetchCollaborations() {
-        if (mController == null) {
+        if (mCollaboratorsInitialsVM == null) {
             return;
         }
 
         if (getCollaborationItem() == null || SdkUtils.isBlank(getCollaborationItem().getId())) {
-            mController.showToast(getContext(), getString(R.string.box_sharesdk_cannot_view_collaborations));
+            showToast(getContext(), getString(R.string.box_sharesdk_cannot_view_collaborations));
             return;
         }
 
@@ -124,11 +124,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
 
         if (mBoxResponse == null) {
             // Execute request to fetch collaborators
-            mController.fetchCollaborations(getCollaborationItem()).addOnCompletedListener(mCollaborationsListener);
-        } else {
-            // Dismiss spinner
-            mProgressBar.setVisibility(GONE);
-            updateView((BoxIteratorCollaborations)mBoxResponse.getResult());
+            mCollaboratorsInitialsVM.fetchCollaborations(getCollaborationItem());
         }
     }
 
@@ -136,36 +132,19 @@ public class CollaboratorsInitialsView extends LinearLayout {
         mBoxResponse = null;
         fetchCollaborations();
     }
-
-    private BoxFutureTask.OnCompletedListener<BoxIteratorCollaborations> mCollaborationsListener =
-            new BoxFutureTask.OnCompletedListener<BoxIteratorCollaborations>() {
-                @Override
-                public void onCompleted(final BoxResponse<BoxIteratorCollaborations> response) {
-                    mBoxResponse = response;
-                    final Activity activity = (Activity)getContext();
-                    if (activity == null) {
-                        return;
-                    }
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Dismiss spinner
-                            mProgressBar.setVisibility(GONE);
-                            if (response.isSuccess() && getCollaborationItem() != null) {
-                                updateView(response.getResult());
-                            } else if (((BoxException)response.getException()).getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) {
-                                // The user is not a collaborator anymore
-                                mController.showToast(activity, getString(R.string.box_sharesdk_item_unavailable));
-                                activity.finish();
-                            } else {
-                                BoxLogUtils.e(CollaborationsFragment.class.getName(), "Fetch Collaborators request failed",
-                                        response.getException());
-                                mController.showToast(activity, getString(R.string.box_sharesdk_network_error));
-                            }
-                        }
-                    });
+    private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = data -> {
+        mProgressBar.setVisibility(GONE);
+        if (data.isSuccess()) {
+            updateView(data.getData());
+        } else {
+            showToast(getContext(), getString(data.getStrCode()));
+            if (data.getException() instanceof BoxException) {
+                if (((BoxException)data.getException()).getResponseCode() == HTTP_NOT_FOUND) {
+                    ((Activity)getContext()).finish();
                 }
-            };
+            }
+        }
+    };
 
     private void updateViewVisibilityForNoCollaborators() {
         mInitialsListView.setVisibility(GONE);
@@ -204,8 +183,8 @@ public class CollaboratorsInitialsView extends LinearLayout {
                     public void onGlobalLayout() {
                         if (initialsView.isShown() && !initialsAdded) {
                             initialsAdded = true;
-                            int viewsCount = 5;
-                            for (int i = 1; i < viewsCount && i < collaborations.size(); i++) {
+                            int viewsCount = 6;
+                            for (int i = 1; i < viewsCount && i < totalCollaborators; i++) {
                                 View viewAdded = addInitialsToList(collaborations.get(i).getAccessibleBy());
                                 if (i == viewsCount - 1) {
                                     // This is the last one, display count if needed
@@ -214,8 +193,9 @@ public class CollaboratorsInitialsView extends LinearLayout {
                                         BoxAvatarView initials = (BoxAvatarView) viewAdded.findViewById(R.id.collaborator_initials);
                                         JsonObject jsonObject = new JsonObject();
                                         jsonObject.set(BoxCollaborator.FIELD_NAME, Integer.toString(remaining + 1));
+                                        jsonObject.set(BoxCollaboration.FIELD_ID, "collab_initials_number_user");
                                         BoxUser numberUser = new BoxUser(jsonObject);
-                                        initials.loadUser(numberUser, mController.getAvatarController());
+                                        initials.loadUser(numberUser, mCollaboratorsInitialsVM.getAvatarController());
                                     }
                                 }
                             }
@@ -226,6 +206,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
         });
         mCollabsCount.setText(getResources().getQuantityString(R.plurals.box_sharesdk_collaborators_count_plurals, totalCollaborators, totalCollaborators));
     }
+
 
     private void clearInitialsView() {
         mInitialsListView.removeAllViewsInLayout();
@@ -238,9 +219,9 @@ public class CollaboratorsInitialsView extends LinearLayout {
         layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.box_sharesdk_initials_offset);
         layoutContainer.setLayoutParams(layoutParams);
         if (collaborator == null) {
-            initialsView.loadUser(mUnknownCollaborator, mController.getAvatarController());
+            initialsView.loadUser(mUnknownCollaborator, mCollaboratorsInitialsVM.getAvatarController());
         } else {
-            initialsView.loadUser(collaborator, mController.getAvatarController());
+            initialsView.loadUser(collaborator, mCollaboratorsInitialsVM.getAvatarController());
         }
         mInitialsListView.addView(layoutContainer);
         return layoutContainer;
@@ -276,15 +257,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
         this.fetchCollaborations();
     }
 
-    public void setShowCollaboratorsListener(ShowCollaboratorsListener inviteCollaboratorsListener) {
-        mShowCollaboratorsListener = inviteCollaboratorsListener;
-        mInitialsListViewSection.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mShowCollaboratorsListener != null) {
-                    mShowCollaboratorsListener.onShowCollaborators(mCollaborations);
-                }
-            }
-        });
+    private void showToast(Context context, String mssg) {
+        Toast.makeText(context, mssg, Toast.LENGTH_SHORT).show();
     }
 }

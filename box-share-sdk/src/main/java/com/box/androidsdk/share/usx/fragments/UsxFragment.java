@@ -20,6 +20,7 @@ import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentSharedLinkBinding;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
 import com.box.androidsdk.share.vm.BaseShareVM;
+import com.box.androidsdk.share.vm.CollaboratorsInitialsVM;
 import com.box.androidsdk.share.vm.PresenterData;
 import com.box.androidsdk.share.vm.SharedLinkVM;
 
@@ -96,7 +97,8 @@ public class UsxFragment extends BoxFragment {
         binding.setOnEditAccessClickListener(mOnEditAccessClickListener);
         binding.setOnCollabsListener(mOnCollabsClickListener);
         binding.setOnCopyLinkListener(v -> copyLink());
-        binding.initialViews.setArguments((BoxCollaborationItem) mSharedLinkVm.getShareItem(), mController);
+        CollaboratorsInitialsVM vm = ViewModelProviders.of(getActivity(), mShareVMFactory).get(CollaboratorsInitialsVM.class);
+        binding.initialViews.setArguments(vm);
     }
 
     public void refreshItemInfo() {
