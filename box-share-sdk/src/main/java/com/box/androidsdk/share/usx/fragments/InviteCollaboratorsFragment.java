@@ -89,6 +89,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         binding.setTokenListener(this);
         binding.setCollaboratorsPresent(mSelectRoleShareVM.isSendInvitationEnabled());
 
+        binding.inviteCollaboratorAutocomplete.requestFocus();
 
         mFilterTerm = "";
         mInviteCollaboratorsShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(InviteCollaboratorsShareVM.class);

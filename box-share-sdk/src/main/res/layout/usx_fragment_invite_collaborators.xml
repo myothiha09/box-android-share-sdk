@@ -69,7 +69,6 @@
                 app:adapter="@{adapter}"
                 app:tokenizer="@{tokenizer}"
                 app:tokenListener="@{tokenListener}"
-                android:focusedByDefault="true"
                 app:layout_constraintRight_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
