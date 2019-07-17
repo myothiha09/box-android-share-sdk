@@ -47,12 +47,10 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
     protected static final String TAG = CollaborationsFragment.class.getName();
     protected CollaboratorsAdapter mCollaboratorsAdapter;
     protected BoxIteratorCollaborations mCollaborations;
-
-
-    private boolean mOwnerUpdated = false;
     private CollaborationsFragmentCallback mCallback;
     UsxFragmentCollaborationsBinding binding;
     CollaborationsShareVM mCollaborationsShareVM;
+    SelectRoleShareVM mSelectRoleShareVM;
 
     public interface CollaborationsFragmentCallback {
         void notifySwitchToAccessRoleFragment();
@@ -71,6 +69,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
 
         binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_collaborations, container, false);
         mCollaborationsShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(CollaborationsShareVM.class);
+        mSelectRoleShareVM = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
         binding.setViewModel(mCollaborationsShareVM);
         binding.setLifecycleOwner(this);
         View view = binding.getRoot();
@@ -82,6 +81,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
 
         mCollaborationsShareVM.getCollaborations().observe(this, onCollaborationsChange);
         mCollaborationsShareVM.getRoleItem().observe(this, onRoleItemChange);
+        mCollaborationsShareVM.getUpdateCollaboration().observe(this ,onUpdateCollaboration);
 
         if (getArguments() != null){
             Bundle args = getArguments();
@@ -125,7 +125,22 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
     @Override
     public void onResume() {
         super.onResume();
-        fetchCollaborations();
+        if (mSelectRoleShareVM.getSelectedRole().getValue() != null && mSelectRoleShareVM.getCollaboration() != null) {
+            if (mSelectRoleShareVM.getSelectedRole().getValue() != mSelectRoleShareVM.getCollaboration().getRole()) { //this means user selected a different role.
+                showSpinner();
+                if (mSelectRoleShareVM.getSelectedRole().getValue() == BoxCollaboration.Role.OWNER) {
+                    dismissSpinner();
+                    showToast(mSelectRoleShareVM.getCollaboration().toString());
+                } else {
+                    mCollaborationsShareVM.updateCollaboration(mSelectRoleShareVM.getCollaboration(), mSelectRoleShareVM.getSelectedRole().getValue());
+                }
+
+            }
+        }
+        if (mCollaborationsShareVM.getCollaborations().getValue() == null) {
+            fetchCollaborations(); //only fetch again if VM not longer have the data.
+        }
+
     }
 
     public void setCallback(CollaborationsFragmentCallback callback) {
@@ -165,12 +180,11 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
                 // currently changing owner only seems to be supported for folders (does not show up as a allowed invitee role).
                 allowOwner = getItem() instanceof BoxFolder;
             }
-            SelectRoleShareVM selectRoleShareVM = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
-            selectRoleShareVM.setSelectedRole(role);
-            selectRoleShareVM.setRoles(rolesArr);
-            selectRoleShareVM.setAllowRemove(true);
-            selectRoleShareVM.setAllowOwnerRole(allowOwner);
-            selectRoleShareVM.setCollaboration(collaboration);
+            mSelectRoleShareVM.setSelectedRole(role);
+            mSelectRoleShareVM.setRoles(rolesArr);
+            mSelectRoleShareVM.setAllowRemove(true);
+            mSelectRoleShareVM.setAllowOwnerRole(allowOwner);
+            mSelectRoleShareVM.setCollaboration(collaboration);
             mCallback.notifySwitchToAccessRoleFragment();
         }
     }
@@ -219,5 +233,26 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         fragment.setArguments(args);
         return fragment;
     }
+    private Observer<PresenterData<BoxCollaboration>> onUpdateCollaboration = data -> {
+        dismissSpinner();
+        if (data.isSuccess()) {
+            mCollaboratorsAdapter.update(data.getData());
+        } else {
+            BoxLogUtils.e(com.box.androidsdk.share.fragments.CollaborationsFragment.class.getName(), "Update Collaborator request failed",
+                    data.getException());
+            if (data.getStrCode() != PresenterData.NO_MESSAGE) {
+                showToast(data.getStrCode());
+            }
+            if (data.getException() instanceof BoxException) {
+                logBoxException((BoxException) data.getException(), R.string.box_sharesdk_cannot_get_collaborators);
+            }
+        }
+    };
+
+    private void logBoxException(BoxException boxException, int res) {
+        BoxLogUtils.nonFatalE("UpdateCollabError", getString(res)
+                + boxException.getErrorType() + " " + boxException.getResponseCode(), boxException);
+    }
+
 
 }

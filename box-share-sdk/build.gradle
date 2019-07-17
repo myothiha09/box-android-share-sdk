@@ -59,7 +59,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.0.0"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     // If using local dependency instead of maven, use the path pointing to the content sdk to replace
-    // the maven dependency. e.g.:compile project(':box-android-content-sdk:box-content-sdk')
+    //implementation project(':box-android-content-sdk:box-content-sdk')
 
     api 'com.box:box-android-sdk:5.0.0'
     implementation "com.splitwise:tokenautocomplete:2.0.8@aar"

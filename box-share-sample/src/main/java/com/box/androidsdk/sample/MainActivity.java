@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     BoxSession mSession = null;
     BoxApiFolder mFolderApi;
-    private static final String SHARE_SAMPLE_FOLDER_NAME = "Box Share SDK Sample Folder";
+    private static final String SHARE_SAMPLE_FOLDER_NAME = "Box Share SDK Sample Folder2";
 
     private BoxCollaborationItem mSampleItem;
 

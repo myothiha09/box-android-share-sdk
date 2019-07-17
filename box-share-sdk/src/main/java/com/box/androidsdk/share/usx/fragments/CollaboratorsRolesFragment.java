@@ -32,10 +32,10 @@ import com.box.androidsdk.share.vm.SelectRoleShareVM;
 import com.box.androidsdk.share.vm.ShareVMFactory;
 
 
-public class CollaboratorsRolesFragment extends BoxFragment {
+public class CollaboratorsRolesFragment extends Fragment {
 
-    @Override
-    protected void setTitles() {
+
+    private void setTitles() {
         ActionbarTitleVM actionbarTitleVM = ViewModelProviders.of(getActivity()).get(ActionbarTitleVM.class);
         actionbarTitleVM.setTitle(getString(R.string.box_sharesdk_title_access_level));
         actionbarTitleVM.setSubtitle(null);
@@ -47,8 +47,7 @@ public class CollaboratorsRolesFragment extends BoxFragment {
 
     public static final String TAG = CollaboratorsRolesFragment.class.getName();
     SelectRoleShareVM vm;
-    private ViewModelProvider.Factory mShareVMFactory;
-    CollaborationsShareVM mCollaborationsShareVM;
+
 
     @Nullable
     @Override
@@ -56,66 +55,16 @@ public class CollaboratorsRolesFragment extends BoxFragment {
         UsxFragmentCollaborationRolesBinding binding = DataBindingUtil.inflate(inflater, R.layout.usx_fragment_collaboration_roles, container, false);
         View view = binding.getRoot();
 
+        setTitles();
 
         vm = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
         binding.setViewModel(vm);
-        binding.setRoleUpdateNotifier(role -> {
-            vm.setSelectedRole(role);
-        });
+        binding.setRoleUpdateNotifier(vm::setSelectedRole);
 
-        if (mShareVMFactory != null) {
-            mCollaborationsShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(CollaborationsShareVM.class);
-            vm.getSelectedRole().observe(this, role -> {
-                if (role == vm.getCollaboration().getRole()) {
-                    return; //do nothing if the updated role is the current role
-                } else if (role == BoxCollaboration.Role.OWNER) {
-                    showSpinner();
-                    Toast.makeText(getContext(), role.toString(), Toast.LENGTH_LONG).show();
-                } else {
-                    showSpinner();
-                    mCollaborationsShareVM.updateCollaboration(vm.getCollaboration(), role);
-                    mCollaborationsShareVM.getUpdateCollaboration().observe(this, onUpdateCollaboration); //don't start observing until the first change
-                }
-            });
-
-
-        }
         return view;
     }
 
-    private Observer<PresenterData<BoxCollaboration>> onUpdateCollaboration = data -> {
-        dismissSpinner();
-        if (data.isSuccess()) {
-            vm.setCollaboration(data.getData());
-        } else {
-            BoxLogUtils.e(CollaborationsFragment.class.getName(), "Update Collaborator request failed",
-                    data.getException());
-            if (data.getStrCode() != PresenterData.NO_MESSAGE) {
-                showToast(data.getStrCode());
-            }
-            if (data.getException() instanceof BoxException) {
-                logBoxException((BoxException) data.getException(), R.string.box_sharesdk_cannot_get_collaborators);
-            }
-        }
-    };
-
-    private void logBoxException(BoxException boxException, int res) {
-        BoxLogUtils.nonFatalE("UpdateCollabError", getString(res)
-                + boxException.getErrorType() + " " + boxException.getResponseCode(), boxException);
-    }
-
-
-
-    public void setShareVMFactory(ShareVMFactory shareVMFactory) {
-        this.mShareVMFactory = shareVMFactory;
-    }
-
-
-    public static CollaboratorsRolesFragment newInstance(BoxItem item) {
-        Bundle args = getBundle(item);
-        CollaboratorsRolesFragment fragment =  new CollaboratorsRolesFragment();
-        fragment.setArguments(args);
-
-        return fragment;
+    public static CollaboratorsRolesFragment newInstance(){
+        return new CollaboratorsRolesFragment();
     }
 }

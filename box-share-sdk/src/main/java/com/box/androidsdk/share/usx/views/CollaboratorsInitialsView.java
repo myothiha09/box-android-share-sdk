@@ -157,50 +157,69 @@ public class CollaboratorsInitialsView extends LinearLayout {
             bestKnownCollabsSize = mCollaborations.fullSize().intValue();
         }
         final int totalCollaborators = bestKnownCollabsSize;
-        final int remainingWidth = mInitialsListView.getWidth();
         final ArrayList<BoxCollaboration> collaborations = mCollaborations.getEntries();
 
+
         clearInitialsView();
-        mInitialsListView.post(new Runnable() {
-            @Override
-            public void run() {
-                //Add the first item to calculate the width
-                final View initialsView = addInitialsToList(collaborations.get(0).getAccessibleBy());
-                initialsView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    private boolean initialsAdded = false;
-                    @Override
-                    public void onGlobalLayout() {
-                        if (initialsView.isShown() && !initialsAdded) {
-                            initialsAdded = true;
-                            int viewsCount = 6;
-                            int viewsAddedCount = 0;
-                            for (int i = 1; i < viewsCount && i < totalCollaborators; i++) {
-                                BoxCollaborator collaborator = collaborations.get(i).getAccessibleBy();
-                                View viewAdded = null;
-                                if (collaborator != null) {
-                                    viewAdded = addInitialsToList(collaborator);
-                                    viewsAddedCount++;
-                                }
-                                if (i == viewsCount - 1) {
-                                    // This is the last one, display count if needed
-                                    int remaining = totalCollaborators - viewsAddedCount;
-                                    if (remaining > 0) {
-                                        if (viewAdded == null) addInitialsToList(collaborator);
-                                        BoxAvatarView initials = (BoxAvatarView) viewAdded.findViewById(R.id.collaborator_initials);
-                                        JsonObject jsonObject = new JsonObject();
-                                        jsonObject.set(BoxCollaborator.FIELD_NAME, Integer.toString(remaining));
-                                        jsonObject.set(BoxCollaboration.FIELD_ID, "collab_initials_number_user");
-                                        BoxUser numberUser = new BoxUser(jsonObject);
-                                        initials.loadUser(numberUser, mCollaboratorsInitialsVM.getAvatarController());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
+        int viewsCount = 3;
+        int knownCollabs = 0;
+        View viewAdded = null;
+        for (int i = 0; i < totalCollaborators; i++) {
+            BoxCollaborator collaborator = collaborations.get(i).getAccessibleBy();
+            if (collaborator != null) {
+                if (knownCollabs < viewsCount) viewAdded = addInitialsToList(collaborator);
+                knownCollabs++;
             }
-        });
-        mCollabsCount.setText(getResources().getQuantityString(R.plurals.box_sharesdk_collaborators_count_plurals, totalCollaborators, totalCollaborators));
+        }
+        if (knownCollabs > viewsCount) { //if the number of known collabs is more than the number of collabs shown
+            int remaining = knownCollabs - viewsCount;
+            BoxAvatarView initials = (BoxAvatarView) viewAdded.findViewById(R.id.collaborator_initials);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.set(BoxCollaborator.FIELD_NAME, Integer.toString(remaining + 1));
+            jsonObject.set(BoxCollaboration.FIELD_ID, "collab_initials_number_user");
+            BoxUser numberUser = new BoxUser(jsonObject);
+            initials.loadUser(numberUser, mCollaboratorsInitialsVM.getAvatarController());
+        }
+//        mInitialsListView.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                //Add the first item to calculate the width
+//                final View initialsView = addInitialsToList(collaborations.get(0).getAccessibleBy());
+//                initialsView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    private boolean initialsAdded = false;
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        if (initialsView.isShown() && !initialsAdded) {
+//                            initialsAdded = true;
+//                            int viewsCount = 6;
+//                            int viewsAddedCount = 0;
+//                            for (int i = 0; i < viewsCount && i < totalCollaborators; i++) {
+//                                BoxCollaborator collaborator = collaborations.get(i).getAccessibleBy();
+//                                View viewAdded = null;
+//                                if (collaborator != null) {
+//                                    viewAdded = addInitialsToList(collaborator);
+//                                    viewsAddedCount++;
+//                                }
+//                                if (i == viewsCount - 1) {
+//                                    // This is the last one, display count if needed
+//                                    int remaining = totalCollaborators - viewsAddedCount;
+//                                    if (remaining > 0) {
+//                                        if (viewAdded == null) addInitialsToList(collaborator);
+//                                        BoxAvatarView initials = (BoxAvatarView) viewAdded.findViewById(R.id.collaborator_initials);
+//                                        JsonObject jsonObject = new JsonObject();
+//                                        jsonObject.set(BoxCollaborator.FIELD_NAME, Integer.toString(remaining));
+//                                        jsonObject.set(BoxCollaboration.FIELD_ID, "collab_initials_number_user");
+//                                        BoxUser numberUser = new BoxUser(jsonObject);
+//                                        initials.loadUser(numberUser, mCollaboratorsInitialsVM.getAvatarController());
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
+//            }
+//        });
+        mCollabsCount.setText(getResources().getQuantityString(R.plurals.box_sharesdk_collaborators_count_plurals, knownCollabs, knownCollabs));
     }
 
 
