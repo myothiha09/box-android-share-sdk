@@ -3,6 +3,7 @@ package com.box.androidsdk.share.usx.fragments;
 import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -43,6 +44,8 @@ public class CollaboratorsRolesFragment extends Fragment {
 
     public interface RoleUpdateNotifier {
         void setRole(BoxCollaboration.Role role);
+
+        void notifyRemove();
     }
 
     public static final String TAG = CollaboratorsRolesFragment.class.getName();
@@ -59,7 +62,17 @@ public class CollaboratorsRolesFragment extends Fragment {
 
         vm = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
         binding.setViewModel(vm);
-        binding.setRoleUpdateNotifier(vm::setSelectedRole);
+        binding.setRoleUpdateNotifier(new RoleUpdateNotifier() {
+            @Override
+            public void setRole(BoxCollaboration.Role role) {
+                vm.setSelectedRole(role);
+            }
+
+            @Override
+            public void notifyRemove() {
+                showRemoveWarning();
+            }
+        });
 
         return view;
     }
@@ -67,4 +80,24 @@ public class CollaboratorsRolesFragment extends Fragment {
     public static CollaboratorsRolesFragment newInstance(){
         return new CollaboratorsRolesFragment();
     }
+    private void showRemoveWarning() {
+        String deleteDifferentWarning = getResources().getString(R.string.box_sharesdk_warn_remove_different_collaboration_folder, vm.getName(),vm.getCollaboration().getItem().getName());
+        AlertDialog dialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.box_sharesdk_title_remove_different_collaboration_folder)
+                .setMessage(deleteDifferentWarning)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        vm.setRemoveSelected(true);
+                        getActivity().onBackPressed();
+                    }
+                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(final DialogInterface dialog, final int which) {
+                        // do nothing
+                    }
+                }).setIcon(android.R.drawable.ic_dialog_alert).create();
+        dialog.show();
+    }
+
 }

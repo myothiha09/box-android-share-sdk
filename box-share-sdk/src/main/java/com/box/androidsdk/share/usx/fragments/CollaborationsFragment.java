@@ -24,8 +24,10 @@ import com.box.androidsdk.content.models.BoxCollaboration;
 import com.box.androidsdk.content.models.BoxCollaborationItem;
 import com.box.androidsdk.content.models.BoxCollaborator;
 import com.box.androidsdk.content.models.BoxFolder;
+import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxIteratorCollaborations;
 import com.box.androidsdk.content.models.BoxVoid;
+import com.box.androidsdk.content.requests.BoxRequest;
 import com.box.androidsdk.content.requests.BoxRequestsShare;
 import com.box.androidsdk.content.requests.BoxResponse;
 import com.box.androidsdk.content.utils.BoxLogUtils;
@@ -83,6 +85,9 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         mCollaborationsShareVM.getRoleItem().observe(this, onRoleItemChange);
         mCollaborationsShareVM.getUpdateCollaboration().observe(this ,onUpdateCollaboration);
         mCollaborationsShareVM.getUpdateOwner().observe(this, onUpdateOwnerCollaboration);
+        mCollaborationsShareVM.getDeleteCollaboration().observe(this, onDeleteCollaboration);
+
+        mCollaborationsShareVM.getItemInfo().observe(this, onBoxItemComplete);
 
         if (getArguments() != null){
             Bundle args = getArguments();
@@ -96,76 +101,41 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         return view;
     }
 
-    private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = presenterData -> {
-            dismissSpinner();
-            if (presenterData.isSuccess()) {
-                mCollaboratorsAdapter.setItems(presenterData.getData());
-            } else {
-                BoxLogUtils.e(CollaborationsFragment.class.getName(), "Fetch Collaborators request failed",
-                        presenterData.getException());
-
-                if (presenterData.getStrCode() != PresenterData.NO_MESSAGE) {
-                    showToast(presenterData.getStrCode());
-                }
-                BoxLogUtils.nonFatalE("CollaborationsError", getString(R.string.box_sharesdk_cannot_get_collaborators)
-                        + presenterData.getException(), presenterData.getException());
-            }
-    };
-
-    private Observer<PresenterData<BoxCollaborationItem>> onRoleItemChange = presenterData -> {
-        dismissSpinner();
-        if (presenterData.isSuccess()) {
-            mCollaborationsShareVM.setShareItem(presenterData.getData());
-        } else {
-            BoxLogUtils.e(com.box.androidsdk.share.fragments.CollaborationsFragment.class.getName(), "Fetch roles request failed",
-                    presenterData.getException());
-            showToast(presenterData.getStrCode());
-        }
-    };
-
-
-    private Observer<PresenterData<BoxVoid>> onUpdateOwnerCollaboration = presenterData -> {
-        dismissSpinner();
-        if (presenterData.isSuccess()) {
-            mCollaborationsShareVM.setOwnerUpdated(true);
-            getActivity().finish();
-        } else {
-            BoxLogUtils.e(com.box.androidsdk.share.fragments.CollaborationsFragment.class.getName(), "Update Owner request failed",
-                    presenterData.getException());
-            if (presenterData.getStrCode() != PresenterData.NO_MESSAGE) {
-                showToast(presenterData.getStrCode());
-            }
-            BoxLogUtils.nonFatalE("UpdateOwner", getString(R.string.box_sharesdk_cannot_get_collaborators)
-                    , presenterData.getException());
-        }
-    };
-
-
-
-
     @Override
     public void onResume() {
         super.onResume();
-        if (mSelectRoleShareVM.getSelectedRole().getValue() != null && mSelectRoleShareVM.getCollaboration() != null) {
-            if (mSelectRoleShareVM.getSelectedRole().getValue() != mSelectRoleShareVM.getCollaboration().getRole()) { //this means user selected a different role.
-                if (mSelectRoleShareVM.getSelectedRole().getValue() == BoxCollaboration.Role.OWNER) {
-                    AlertDialog dialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.box_sharesdk_change_owner_alert_title)
-                            .setMessage(R.string.box_sharesdk_change_owner_alert_message)
-                            .setPositiveButton(android.R.string.yes, (d, which) -> {
+        if (mSelectRoleShareVM.isRemoveSeleted()) {
+            showSpinner();
+            mCollaborationsShareVM.deleteCollaboration(mSelectRoleShareVM.getCollaboration());
+            mSelectRoleShareVM.setRemoveSelected(false); //reset remove selected
+        } else {
+            if (mSelectRoleShareVM.getSelectedRole().getValue() != null && mSelectRoleShareVM.getCollaboration() != null) {
+                if (mSelectRoleShareVM.getSelectedRole().getValue() != mSelectRoleShareVM.getCollaboration().getRole()) { //this means user selected a different role.
+                    if (mSelectRoleShareVM.getSelectedRole().getValue() == BoxCollaboration.Role.OWNER) {
+                        AlertDialog dialog = new AlertDialog.Builder(getActivity()).setTitle(R.string.box_sharesdk_change_owner_alert_title)
+                                .setMessage(R.string.box_sharesdk_change_owner_alert_message)
+                                .setPositiveButton(android.R.string.yes, (d, which) -> {
                                     showSpinner(R.string.box_sharesdk_fetching_collaborators, R.string.boxsdk_Please_wait);
                                     mCollaborationsShareVM.updateOwner(mSelectRoleShareVM.getCollaboration());
                                 }).setNegativeButton(android.R.string.no, (d, which) -> {}).setIcon(android.R.drawable.ic_dialog_alert).create();
-                    dialog.show();
-                } else {
-                    showSpinner();
-                    mCollaborationsShareVM.updateCollaboration(mSelectRoleShareVM.getCollaboration(), mSelectRoleShareVM.getSelectedRole().getValue());
+                        dialog.show();
+                    } else {
+                        showSpinner();
+                        mCollaborationsShareVM.updateCollaboration(mSelectRoleShareVM.getCollaboration(), mSelectRoleShareVM.getSelectedRole().getValue());
+
+                    }
+                    mSelectRoleShareVM.setSelectedRole(null); //reset selected role
                 }
-                mSelectRoleShareVM.setSelectedRole(null);
+            } else {
+                showSpinner();
+                mCollaborationsShareVM.fetchItemInfo(mCollaborationsShareVM.getShareItem()); //refreshItemInfo (needed to update item info after owner is updated)
             }
         }
+
         if (mCollaborationsShareVM.getCollaborations().getValue() == null) {
             fetchCollaborations(); //only fetch again if VM not longer have the data.
         }
+
 
     }
 
@@ -200,7 +170,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
             }
             BoxCollaborator collaborator = collaboration.getAccessibleBy();
             BoxCollaboration.Role role = collaboration.getRole();
-            //String name = collaborator == null ? getString(R.string.box_sharesdk_another_person) : collaborator.getName();
+            String name = collaborator == null ? getString(R.string.box_sharesdk_another_person) : collaborator.getName();
             boolean allowOwner = getItem().getOwnedBy().getId().equals(mCollaborationsShareVM.getUserId());
             if (allowOwner){
                 // currently changing owner only seems to be supported for folders (does not show up as a allowed invitee role).
@@ -208,6 +178,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
             }
             mSelectRoleShareVM.setSelectedRole(role);
             mSelectRoleShareVM.setRoles(rolesArr);
+            mSelectRoleShareVM.setName(name);
             mSelectRoleShareVM.setAllowRemove(true);
             mSelectRoleShareVM.setAllowOwnerRole(allowOwner);
             mSelectRoleShareVM.setCollaboration(collaboration);
@@ -279,6 +250,76 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         BoxLogUtils.nonFatalE("UpdateCollabError", getString(res)
                 + boxException.getErrorType() + " " + boxException.getResponseCode(), boxException);
     }
+
+
+    private Observer<PresenterData<BoxItem>> onBoxItemComplete = boxItemPresenterData -> {
+        dismissSpinner();
+        if (boxItemPresenterData.isSuccess() && boxItemPresenterData.getData() != null) {
+            //data might still be null if the original request was not BoxRequestItem
+            mCollaborationsShareVM.setShareItem(boxItemPresenterData.getData());
+        } else {
+            if(boxItemPresenterData.getStrCode() != PresenterData.NO_MESSAGE) {
+                showToast(boxItemPresenterData.getStrCode());
+            }
+        }
+    };
+
+
+    private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = presenterData -> {
+        dismissSpinner();
+        if (presenterData.isSuccess()) {
+            mCollaboratorsAdapter.setItems(presenterData.getData());
+        } else {
+            BoxLogUtils.e(CollaborationsFragment.class.getName(), "Fetch Collaborators request failed",
+                    presenterData.getException());
+
+            if (presenterData.getStrCode() != PresenterData.NO_MESSAGE) {
+                showToast(presenterData.getStrCode());
+            }
+            BoxLogUtils.nonFatalE("CollaborationsError", getString(R.string.box_sharesdk_cannot_get_collaborators)
+                    + presenterData.getException(), presenterData.getException());
+        }
+    };
+
+    private Observer<PresenterData<BoxCollaborationItem>> onRoleItemChange = presenterData -> {
+        dismissSpinner();
+        if (presenterData.isSuccess()) {
+            mCollaborationsShareVM.setShareItem(presenterData.getData());
+        } else {
+            BoxLogUtils.e(com.box.androidsdk.share.fragments.CollaborationsFragment.class.getName(), "Fetch roles request failed",
+                    presenterData.getException());
+            showToast(presenterData.getStrCode());
+        }
+    };
+
+
+    private Observer<PresenterData<BoxVoid>> onUpdateOwnerCollaboration = presenterData -> {
+        dismissSpinner();
+        if (presenterData.isSuccess()) {
+            mCollaborationsShareVM.setOwnerUpdated(true);
+            getActivity().finish();
+        } else {
+            BoxLogUtils.e(com.box.androidsdk.share.fragments.CollaborationsFragment.class.getName(), "Update Owner request failed",
+                    presenterData.getException());
+            if (presenterData.getStrCode() != PresenterData.NO_MESSAGE) {
+                showToast(presenterData.getStrCode());
+            }
+            BoxLogUtils.nonFatalE("UpdateOwner", getString(R.string.box_sharesdk_cannot_get_collaborators)
+                    , presenterData.getException());
+        }
+    };
+
+    private Observer<PresenterData<BoxRequest>> onDeleteCollaboration = presenterData -> {
+        if (presenterData.isSuccess()) {
+            BoxRequestsShare.DeleteCollaboration req = (BoxRequestsShare.DeleteCollaboration) presenterData.getData();
+            mCollaboratorsAdapter.delete(req.getId());
+            fetchCollaborations(); //refresh collaborations
+        } else {
+            BoxLogUtils.e(CollaborationsFragment.class.getName(), "Delete Collaborator request failed",
+                    presenterData.getException());
+            showToast(presenterData.getStrCode());
+        }
+    };
 
 
 }

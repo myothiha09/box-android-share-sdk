@@ -234,7 +234,7 @@ public class ShareSDKTransformer {
         } else {
             data.failure(R.string.box_sharesdk_network_error, response.getException());
         }
-        return null;
+        return data;
     }
 
     public PresenterData<BoxVoid> getUpdateOwnerPresenterData(BoxResponse<BoxVoid> response) {
