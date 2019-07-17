@@ -23,7 +23,7 @@ public class SharedLinkAccessToggleListeners {
     }
 
     public static void onPasswordToggle(boolean checked, BoxItem shareItem, SharedLinkAccessFragment.SharedLinkAccessNotifiers notifiers) {
-        if (checked && shareItem.getSharedLink().getIsPasswordEnabled() == checked ){
+        if (shareItem.getSharedLink().getIsPasswordEnabled() == checked){
             // if there is no change or we are busy with another task then do nothing.
             return;
         }

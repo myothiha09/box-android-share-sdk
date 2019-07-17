@@ -39,7 +39,8 @@ public class SharedLinkBindingAdapters {
                         break;
                     case COLLABORATORS:
                         text = textView.getResources().getString(R.string.box_sharesdk_accessible_collaborator);
-                        break;
+                        textView.setText(text);
+                        return;
                     case COMPANY:
                         text = textView.getResources().getString(R.string.box_sharesdk_accessible_company);
                         break;

@@ -134,8 +134,9 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
 
     @Override
     public void addResult(Intent data) {
-        data.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, mCollaborations);
-        data.putExtra(CollaborationUtils.EXTRA_OWNER_UPDATED, mOwnerUpdated);
+//        data.putExtra(CollaborationUtils.EXTRA_COLLABORATIONS, mCollaborations);
+//        data.putExtra(CollaborationUtils.EXTRA_OWNER_UPDATED, mOwnerUpdated);
+        //I commented these out since this could be passing too much data inside an Intent.
         super.addResult(data);
     }
 

@@ -15,33 +15,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.box.androidsdk.content.BoxException;
-import com.box.androidsdk.content.BoxFutureTask;
 import com.box.androidsdk.content.models.BoxCollaboration;
 import com.box.androidsdk.content.models.BoxCollaborationItem;
 import com.box.androidsdk.content.models.BoxCollaborator;
-import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxIteratorCollaborations;
 import com.box.androidsdk.content.models.BoxUser;
-import com.box.androidsdk.content.requests.BoxResponse;
-import com.box.androidsdk.content.utils.BoxLogUtils;
 import com.box.androidsdk.content.utils.SdkUtils;
 import com.box.androidsdk.content.views.BoxAvatarView;
 import com.box.androidsdk.share.R;
-import com.box.androidsdk.share.api.ShareController;
-import com.box.androidsdk.share.usx.fragments.CollaborationsFragment;
 import com.box.androidsdk.share.vm.CollaboratorsInitialsVM;
 import com.box.androidsdk.share.vm.PresenterData;
-import com.box.androidsdk.share.vm.ShareVMFactory;
 import com.eclipsesource.json.JsonObject;
 
-import java.net.HttpURLConnection;
+
 import java.util.ArrayList;
 
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -183,15 +173,22 @@ public class CollaboratorsInitialsView extends LinearLayout {
                         if (initialsView.isShown() && !initialsAdded) {
                             initialsAdded = true;
                             int viewsCount = 6;
+                            int viewsAddedCount = 0;
                             for (int i = 1; i < viewsCount && i < totalCollaborators; i++) {
-                                View viewAdded = addInitialsToList(collaborations.get(i).getAccessibleBy());
+                                BoxCollaborator collaborator = collaborations.get(i).getAccessibleBy();
+                                View viewAdded = null;
+                                if (collaborator != null) {
+                                    viewAdded = addInitialsToList(collaborator);
+                                    viewsAddedCount++;
+                                }
                                 if (i == viewsCount - 1) {
                                     // This is the last one, display count if needed
-                                    int remaining = totalCollaborators - viewsCount;
+                                    int remaining = totalCollaborators - viewsAddedCount;
                                     if (remaining > 0) {
+                                        if (viewAdded == null) addInitialsToList(collaborator);
                                         BoxAvatarView initials = (BoxAvatarView) viewAdded.findViewById(R.id.collaborator_initials);
                                         JsonObject jsonObject = new JsonObject();
-                                        jsonObject.set(BoxCollaborator.FIELD_NAME, Integer.toString(remaining + 1));
+                                        jsonObject.set(BoxCollaborator.FIELD_NAME, Integer.toString(remaining));
                                         jsonObject.set(BoxCollaboration.FIELD_ID, "collab_initials_number_user");
                                         BoxUser numberUser = new BoxUser(jsonObject);
                                         initials.loadUser(numberUser, mCollaboratorsInitialsVM.getAvatarController());
@@ -214,6 +211,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
     private View addInitialsToList(BoxCollaborator collaborator) {
         View layoutContainer =  LayoutInflater.from((Activity)getContext()).inflate(R.layout.usx_view_initials, null);
         BoxAvatarView initialsView = (BoxAvatarView) layoutContainer.findViewById(R.id.collaborator_initials);
+       // initialsView.setBackground(getResources().getDrawable(R.drawable.ic_box_sharesdk_circle_bg));
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layoutParams.leftMargin = (int) getResources().getDimension(R.dimen.box_sharesdk_initials_offset);
         layoutContainer.setLayoutParams(layoutParams);

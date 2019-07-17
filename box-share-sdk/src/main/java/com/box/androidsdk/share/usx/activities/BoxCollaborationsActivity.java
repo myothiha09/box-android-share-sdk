@@ -73,7 +73,8 @@ public class BoxCollaborationsActivity extends BoxActivity {
     }
 
     private void switchToRolesFragment() {
-        CollaboratorsRolesFragment fragment = CollaboratorsRolesFragment.newInstance();
+        CollaboratorsRolesFragment fragment = CollaboratorsRolesFragment.newInstance(baseShareVM.getShareItem());
+        fragment.setShareVMFactory(mShareVMFactory);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
     }
     /**
