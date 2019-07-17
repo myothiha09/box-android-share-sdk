@@ -118,14 +118,14 @@ public class CollaboratorsInitialsView extends LinearLayout {
     public void refreshView() {
         fetchCollaborations();
     }
-    private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = data -> {
+    private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = presenterData -> {
         mProgressBar.setVisibility(GONE);
-        if (data.isSuccess()) {
-            updateView(data.getData());
+        if (presenterData.isSuccess()) {
+            updateView(presenterData.getData());
         } else {
-            showToast(getContext(), getString(data.getStrCode()));
-            if (data.getException() instanceof BoxException) {
-                if (((BoxException)data.getException()).getResponseCode() == HTTP_NOT_FOUND) {
+            showToast(getContext(), getString(presenterData.getStrCode()));
+            if (presenterData.getException() instanceof BoxException) {
+                if (((BoxException)presenterData.getException()).getResponseCode() == HTTP_NOT_FOUND) {
                     ((Activity)getContext()).finish();
                 }
             }
