@@ -89,6 +89,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
 
         mCollaborationsShareVM.getItemInfo().observe(this, onBoxItemComplete);
 
+        mCollaborationsShareVM.fetchItemInfo(mCollaborationsShareVM.getShareItem()); //refresh item info
         if (getArguments() != null){
             Bundle args = getArguments();
             mCollaborations = (BoxIteratorCollaborations)args.getSerializable(CollaborationUtils.EXTRA_COLLABORATIONS);
@@ -126,9 +127,6 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
                     }
                     mSelectRoleShareVM.setSelectedRole(null); //reset selected role
                 }
-            } else {
-                showSpinner();
-                mCollaborationsShareVM.fetchItemInfo(mCollaborationsShareVM.getShareItem()); //refreshItemInfo (needed to update item info after owner is updated)
             }
         }
 
@@ -256,6 +254,9 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
         dismissSpinner();
         if (boxItemPresenterData.isSuccess() && boxItemPresenterData.getData() != null) {
             //data might still be null if the original request was not BoxRequestItem
+
+            //silently update collaborations based on new share item. User might see wrong collaborators and wrong roles on each collaborator otherwise. This bug is in legacy version.
+            mCollaborationsShareVM.fetchCollaborations((BoxCollaborationItem) boxItemPresenterData.getData());
             mCollaborationsShareVM.setShareItem(boxItemPresenterData.getData());
         } else {
             if(boxItemPresenterData.getStrCode() != PresenterData.NO_MESSAGE) {
