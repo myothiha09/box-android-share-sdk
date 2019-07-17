@@ -1,17 +1,12 @@
 package com.box.androidsdk.share.utils;
 
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.databinding.BindingAdapter;
 
-import com.box.androidsdk.content.models.BoxBookmark;
-import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSharedLink;
 import com.box.androidsdk.share.R;
-import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
 import com.box.androidsdk.share.usx.fragments.UsxFragment;
-import com.box.androidsdk.share.vm.SharedLinkVM;
 
 public class SharedLinkBindingAdapters {
 
