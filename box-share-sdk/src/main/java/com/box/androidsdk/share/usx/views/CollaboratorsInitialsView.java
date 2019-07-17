@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -58,7 +59,6 @@ public class CollaboratorsInitialsView extends LinearLayout {
     public static final String EXTRA_SAVED_STATE = "CollaboratorsInitialsView.ExtraSaveState";
 
     private ProgressBar mProgressBar;
-    private BoxResponse mBoxResponse;
     private TextView mCollabsCount;
 
     private CollaboratorsInitialsVM mCollaboratorsInitialsVM;
@@ -87,6 +87,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
      */
     private void init() {
         inflate(getContext(), R.layout.usx_view_collaborators_initial, this);
+
         mInitialsListView = (LinearLayout) findViewById(R.id.invite_collaborator_initials_list);
         mProgressBar = findViewById(R.id.box_sharesdk_activity_progress_bar);
         mCollabsCount = findViewById(R.id.collabsCount);
@@ -120,14 +121,10 @@ public class CollaboratorsInitialsView extends LinearLayout {
         // Show spinner
         mProgressBar.setVisibility(VISIBLE);
         updateViewVisibilityForNoCollaborators();
-        if (mBoxResponse == null) {
-            // Execute request to fetch collaborators
-            mCollaboratorsInitialsVM.fetchCollaborations(getCollaborationItem());
-        }
+        mCollaboratorsInitialsVM.fetchCollaborations(getCollaborationItem());
     }
 
     public void refreshView() {
-        mBoxResponse = null;
         fetchCollaborations();
     }
     private Observer<PresenterData<BoxIteratorCollaborations>> onCollaborationsChange = data -> {
@@ -227,29 +224,6 @@ public class CollaboratorsInitialsView extends LinearLayout {
         return layoutContainer;
     }
 
-    @Override
-    public Parcelable onSaveInstanceState()
-    {
-        Parcelable savedState = super.onSaveInstanceState();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(EXTRA_COLLABORATORS, mBoxResponse);
-        bundle.putParcelable(EXTRA_SAVED_STATE, savedState);
-        return bundle;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state)
-    {
-        if (state instanceof Bundle)
-        {
-            Bundle bundle = (Bundle) state;
-            mBoxResponse = (BoxResponse) bundle.getSerializable(EXTRA_COLLABORATORS);
-            Parcelable savedState =  bundle.getParcelable(EXTRA_SAVED_STATE);
-            super.onRestoreInstanceState(savedState);
-            return;
-        }
-        super.onRestoreInstanceState(state);
-    }
 
     @Override
     protected void onAttachedToWindow() {
