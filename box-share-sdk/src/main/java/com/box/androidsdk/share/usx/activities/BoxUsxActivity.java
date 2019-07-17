@@ -12,7 +12,6 @@ import com.box.androidsdk.content.models.BoxItem;
 import com.box.androidsdk.content.models.BoxSession;
 import com.box.androidsdk.share.CollaborationUtils;
 import com.box.androidsdk.share.R;
-import com.box.androidsdk.share.api.BoxShareController;
 import com.box.androidsdk.share.usx.fragments.SharedLinkAccessFragment;
 import com.box.androidsdk.share.usx.fragments.UsxFragment;
 
@@ -46,7 +45,7 @@ public class BoxUsxActivity extends BoxActivity {
         mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
         ft.replace(R.id.fragmentContainer, mFragment);
         ft.commit();
-        mFragment.setVMFactory(mShareVmFactory);
+        mFragment.setVMFactory(mShareVMFactory);
         ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->
                 startActivityForResult(BoxInviteCollaboratorsActivity.getLaunchIntent(BoxUsxActivity.this,
@@ -60,7 +59,7 @@ public class BoxUsxActivity extends BoxActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         SharedLinkAccessFragment fragment = SharedLinkAccessFragment.newInstance(baseShareVM.getShareItem());
-        fragment.setVMFactory(mShareVmFactory);
+        fragment.setVMFactory(mShareVMFactory);
         ft.replace(R.id.fragmentContainer, fragment);
         ft.commit();
     }

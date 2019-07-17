@@ -120,7 +120,8 @@ public class CollaboratorsInitialsView extends LinearLayout {
 
         // Show spinner
         mProgressBar.setVisibility(VISIBLE);
-        updateViewVisibilityForNoCollaborators();
+        mCollabsCount.setVisibility(GONE);
+        mInitialsListView.setVisibility(GONE);
         mCollaboratorsInitialsVM.fetchCollaborations(getCollaborationItem());
     }
 
@@ -143,7 +144,8 @@ public class CollaboratorsInitialsView extends LinearLayout {
 
     private void updateViewVisibilityForNoCollaborators() {
         mInitialsListView.setVisibility(GONE);
-        mCollabsCount.setVisibility(GONE);
+        mCollabsCount.setVisibility(VISIBLE);
+        mCollabsCount.setText(R.string.box_sharesdk_no_collaborators);
     }
 
     private void updateViewVisibilityIfCollaboratorsFound() {

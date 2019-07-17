@@ -1,6 +1,5 @@
 package com.box.androidsdk.share.usx.activities;
 
-import androidx.appcompat.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -8,10 +7,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -45,7 +42,7 @@ public abstract class BoxActivity extends AppCompatActivity {
     protected BoxFragment mFragment;
     protected ProgressDialog mProgress;
     protected BaseShareVM baseShareVM;
-    protected ShareVMFactory mShareVmFactory;
+    protected ShareVMFactory mShareVMFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,12 +112,12 @@ public abstract class BoxActivity extends AppCompatActivity {
                     if (mProgress != null && mProgress.isShowing()) {
                         mProgress.dismiss();
                     }
-                    mShareVmFactory = new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) response.getData());
+                    mShareVMFactory = new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) response.getData());
                     initializeUi();
                 }
             });
         } else {
-            mShareVmFactory = new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) shareItem);
+            mShareVMFactory = new ShareVMFactory(new ShareRepo(new BoxShareController(mSession)), (BoxCollaborationItem) shareItem);
             initializeUi();
         }
     }

@@ -23,6 +23,7 @@ import com.box.androidsdk.share.databinding.UsxListItemCollaborationBinding;
 import com.box.androidsdk.share.vm.BaseShareVM;
 import com.eclipsesource.json.JsonObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class CollaboratorsAdapter extends BaseAdapter {
@@ -31,6 +32,8 @@ public class CollaboratorsAdapter extends BaseAdapter {
     private Context mContext;
     private BoxCollaborationItem mFolder;
     private final BoxCollaborator mAnotherPersonCollaborator;
+
+    String userId;
 
     private BaseShareVM mBaseShareVM;
 

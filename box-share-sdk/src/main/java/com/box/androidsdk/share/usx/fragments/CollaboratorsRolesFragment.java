@@ -11,13 +11,16 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.box.androidsdk.content.models.BoxCollaboration;
 import com.box.androidsdk.share.R;
 import com.box.androidsdk.share.databinding.UsxFragmentCollaborationRolesBinding;
 import com.box.androidsdk.share.vm.ActionbarTitleVM;
+import com.box.androidsdk.share.vm.CollaborationsShareVM;
 import com.box.androidsdk.share.vm.SelectRoleShareVM;
+import com.box.androidsdk.share.vm.ShareVMFactory;
 
 
 public class CollaboratorsRolesFragment extends Fragment {
@@ -29,6 +32,8 @@ public class CollaboratorsRolesFragment extends Fragment {
 
     public static final String TAG = CollaboratorsRolesFragment.class.getName();
     SelectRoleShareVM vm;
+    private ViewModelProvider.Factory mShareVMFactory;
+    CollaborationsShareVM mCollaborationsShareVM;
 
     @Nullable
     @Override
@@ -43,7 +48,15 @@ public class CollaboratorsRolesFragment extends Fragment {
         vm = ViewModelProviders.of(getActivity()).get(SelectRoleShareVM.class);
         binding.setViewModel(vm);
         binding.setRoleUpdateNotifier(vm::setSelectedRole);
+
+        if (mShareVMFactory != null) {
+            mCollaborationsShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(CollaborationsShareVM.class);
+        }
         return view;
+    }
+
+    public void setShareVMFactory(ShareVMFactory shareVMFactory) {
+        this.mShareVMFactory = shareVMFactory;
     }
 
 
