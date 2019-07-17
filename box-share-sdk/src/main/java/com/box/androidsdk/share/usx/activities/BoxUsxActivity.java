@@ -44,7 +44,7 @@ public class BoxUsxActivity extends BoxActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
-        ft.add(R.id.fragmentContainer, mFragment);
+        ft.replace(R.id.fragmentContainer, mFragment);
         ft.commit();
         mFragment.setVMFactory(mShareVmFactory);
         ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
