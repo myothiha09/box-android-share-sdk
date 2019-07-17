@@ -159,7 +159,7 @@ public class CollaborationsFragment extends BoxFragment implements AdapterView.O
             BoxCollaborator collaborator = collaboration.getAccessibleBy();
             BoxCollaboration.Role role = collaboration.getRole();
             //String name = collaborator == null ? getString(R.string.box_sharesdk_another_person) : collaborator.getName();
-            boolean allowOwner = getItem().getOwnedBy().getId().equals(mController.getCurrentUserId());
+            boolean allowOwner = getItem().getOwnedBy().getId().equals(mCollaborationsShareVM.getUserId());
             if (allowOwner){
                 // currently changing owner only seems to be supported for folders (does not show up as a allowed invitee role).
                 allowOwner = getItem() instanceof BoxFolder;

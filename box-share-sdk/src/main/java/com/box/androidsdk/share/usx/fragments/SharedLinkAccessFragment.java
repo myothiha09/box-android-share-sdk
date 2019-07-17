@@ -223,7 +223,7 @@ public class SharedLinkAccessFragment extends BoxFragment {
                     mShareLinkVM.setExpiryDate((BoxCollaborationItem) mShareLinkVM.getShareItem(), calendar.getTime());
                 } catch (Exception e){
                     dismissSpinner();
-                    mController.showToast(getActivity(), "invalid time selected");
+                    showToast("invalid time selected");
                 }
             }
         }, new PositiveNegativeDialogFragment.OnPositiveOrNegativeButtonClickedListener() {

@@ -94,8 +94,6 @@ public class CollaboratorsInitialsView extends LinearLayout {
         jsonObject.add(BoxCollaborator.FIELD_NAME, "");
         mUnknownCollaborator = new BoxUser(jsonObject);
 
-        //mCollaboratorsInitialsVM = ViewModelProviders.of(mLifeCycleOwner, mShareVMFactory).get(CollaboratorsInitialsVM.class);
-
     }
 
     protected BoxCollaborationItem getCollaborationItem() {
@@ -121,7 +119,7 @@ public class CollaboratorsInitialsView extends LinearLayout {
 
         // Show spinner
         mProgressBar.setVisibility(VISIBLE);
-
+        updateViewVisibilityForNoCollaborators();
         if (mBoxResponse == null) {
             // Execute request to fetch collaborators
             mCollaboratorsInitialsVM.fetchCollaborations(getCollaborationItem());
@@ -148,10 +146,12 @@ public class CollaboratorsInitialsView extends LinearLayout {
 
     private void updateViewVisibilityForNoCollaborators() {
         mInitialsListView.setVisibility(GONE);
+        mCollabsCount.setVisibility(GONE);
     }
 
     private void updateViewVisibilityIfCollaboratorsFound() {
         mInitialsListView.setVisibility(VISIBLE);
+        mCollabsCount.setVisibility(VISIBLE);
     }
 
     private void updateView(BoxIteratorCollaborations boxIteratorCollaborations) {

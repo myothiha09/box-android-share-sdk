@@ -67,7 +67,6 @@ public class BoxCollaborationsActivity extends BoxActivity {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_NONE);
         mFragment = CollaborationsFragment.newInstance( (BoxCollaborationItem) baseShareVM.getShareItem(), collaborations);
-        mFragment.setController(new BoxShareController(mSession));
         mFragment.setVMFactory(mShareVmFactory);
         ((CollaborationsFragment)mFragment).setCallback(this::switchToRolesFragment);
         ft.replace(R.id.fragmentContainer, mFragment);

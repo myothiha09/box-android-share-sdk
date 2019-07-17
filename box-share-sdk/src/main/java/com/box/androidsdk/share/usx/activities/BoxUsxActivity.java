@@ -46,7 +46,6 @@ public class BoxUsxActivity extends BoxActivity {
         mFragment = UsxFragment.newInstance(baseShareVM.getShareItem());
         ft.add(R.id.fragmentContainer, mFragment);
         ft.commit();
-        mFragment.setController(new BoxShareController(mSession));
         mFragment.setVMFactory(mShareVmFactory);
         ((UsxFragment)mFragment).setOnEditLinkAccessButtonClickListener(v -> setupSharedLinkAccessFragment());
         ((UsxFragment)mFragment).setOnInviteCollabsClickListener(v ->

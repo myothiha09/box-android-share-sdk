@@ -221,12 +221,6 @@ public abstract class BoxFragment extends Fragment {
         Toast.makeText(getContext(), getString(strRes), Toast.LENGTH_SHORT).show();
     }
 
-    protected ShareController mController; //temporarily added to test UI changes
-
-    public void setController(ShareController controller) {
-        this.mController = controller;
-    }
-
     protected String capitalizeFirstLetterOfEveryWord(String str) {
         StringBuilder sb = new StringBuilder();
         for(String curr: str.split(" ")) {
