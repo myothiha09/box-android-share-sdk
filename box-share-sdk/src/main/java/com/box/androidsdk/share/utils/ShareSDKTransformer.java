@@ -192,9 +192,9 @@ public class ShareSDKTransformer {
     }
 
     /**
-     * Helper method for transforming BoxResponse to UI Model for shared link operations.
-     * @param response
-     * @return
+     * Returns a UI model for shared link operations by transforming the BoxResponse.
+     * @param response the response to transform
+     * @return a UI model for shared link operations
      */
     public PresenterData<BoxItem> getSharedLinkItemPresenterData(BoxResponse<BoxItem> response, BoxItem item) {
         final PresenterData<BoxItem> data = new PresenterData<>();
@@ -227,6 +227,11 @@ public class ShareSDKTransformer {
         return data;
     }
 
+    /**
+     * Returns a UI model for a delete collaboration operation.
+     * @param response the response to transform
+     * @return a UI model for a delete collaboration operation
+     */
     public PresenterData<BoxRequest> getDeleteCollaborationPresenterData(BoxResponse<BoxVoid> response) {
         PresenterData<BoxRequest> data = new PresenterData<>();
         if (response.isSuccess()) {
@@ -237,6 +242,11 @@ public class ShareSDKTransformer {
         return data;
     }
 
+    /**
+     * Returns a UI model for update owner operation.
+     * @param response the response to transform
+     * @return a UI model for update owner operation
+     */
     public PresenterData<BoxVoid> getUpdateOwnerPresenterData(BoxResponse<BoxVoid> response) {
         PresenterData<BoxVoid> data = new PresenterData<>();
         if (response.isSuccess()) {
@@ -262,6 +272,11 @@ public class ShareSDKTransformer {
         return data;
     }
 
+    /**
+     * Returns a UI model for update collaboration operation.
+     * @param response the response to transform
+     * @return a UI model for update collaboration operation
+     */
     public PresenterData<BoxCollaboration> getUpdateCollaborationPresenterData(BoxResponse<BoxCollaboration> response) {
         PresenterData<BoxCollaboration> data = new PresenterData<>();
         if (response.isSuccess()) {
@@ -287,6 +302,11 @@ public class ShareSDKTransformer {
         return data;
     }
 
+    /**
+     * Returns a UI model for collaborations.
+     * @param response the response to transform
+     * @return a UI model for collaborations
+     */
     public PresenterData<BoxIteratorCollaborations> getCollaborationsPresenterData(BoxResponse<BoxIteratorCollaborations> response) {
         PresenterData<BoxIteratorCollaborations> data = new PresenterData<>();
         if (response.isSuccess()) {
@@ -312,6 +332,11 @@ public class ShareSDKTransformer {
         return data;
     }
 
+    /**
+     * Returns a UI model for retrieving collaborations inside CollaboratorsInitialsView
+     * @param response the response to transform
+     * @return a UI model for retrieving collaborations inside CollaboratorsInitialsView
+     */
     public PresenterData<BoxIteratorCollaborations> getIntialsViewCollabsPresenterData(BoxResponse<BoxIteratorCollaborations> response) {
         PresenterData<BoxIteratorCollaborations> data = new PresenterData<>();
         if (response.isSuccess()) {
@@ -325,6 +350,11 @@ public class ShareSDKTransformer {
         return data;
     }
 
+    /**
+     * Returns a UI model for supported features.
+     * @param response the response to transform
+     * @return a UI model for supported features
+     */
     public PresenterData<BoxFeatures> getSupportedFeaturePresenterData(BoxResponse<BoxFeatures> response) {
         PresenterData<BoxFeatures> data = new PresenterData<>();
         if (response.isSuccess()) {
