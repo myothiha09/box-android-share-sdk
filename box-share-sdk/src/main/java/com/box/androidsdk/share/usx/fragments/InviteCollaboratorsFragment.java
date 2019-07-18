@@ -89,6 +89,7 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
         binding.setTokenListener(this);
         binding.setCollaboratorsPresent(mSelectRoleShareVM.isSendInvitationEnabled());
 
+        binding.inviteCollaboratorAutocomplete.requestFocus();
 
         mFilterTerm = "";
         mInviteCollaboratorsShareVM = ViewModelProviders.of(getActivity(), mShareVMFactory).get(InviteCollaboratorsShareVM.class);
@@ -163,13 +164,13 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
     };
 
     private Observer<PresenterData<BoxIteratorInvitees>> onInviteesChanged = presenter -> {
-            if (presenter.isSuccess()) {
-                binding.getAdapter().setInvitees(presenter.getData());
-            } else {
-                BoxLogUtils.e(InviteCollaboratorsFragment.class.getName(), "get invitees request failed",
-                        presenter.getException());
-                showToast(getString(presenter.getStrCode()) + ((BoxException)presenter.getException()).getResponseCode()); //need response code
-            }
+        if (presenter.isSuccess()) {
+            binding.getAdapter().setInvitees(presenter.getData());
+        } else {
+            BoxLogUtils.e(InviteCollaboratorsFragment.class.getName(), "get invitees request failed",
+                    presenter.getException());
+            showToast(getString(presenter.getStrCode()) + ((BoxException)presenter.getException()).getResponseCode()); //need response code
+        }
     };
 
     private Observer<InviteCollaboratorsPresenterData> onInviteCollabs = presenter -> {
@@ -254,13 +255,13 @@ public class InviteCollaboratorsFragment extends BoxFragment implements TokenCom
     }
     private InviteeAdapter.InviteeAdapterListener createInviteeAdapterListener() {
         return constraint -> {
-                if (constraint.length() >= 3) {
-                    String firstThreeChars = constraint.subSequence(0, 3).toString();
-                    if (!firstThreeChars.equals(mFilterTerm)) {
-                        mFilterTerm = firstThreeChars;
-                        fetchInvitees();
-                    }
+            if (constraint.length() >= 3) {
+                String firstThreeChars = constraint.subSequence(0, 3).toString();
+                if (!firstThreeChars.equals(mFilterTerm)) {
+                    mFilterTerm = firstThreeChars;
+                    fetchInvitees();
                 }
+            }
         };
     }
 

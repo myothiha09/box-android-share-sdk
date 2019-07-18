@@ -6,12 +6,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -46,6 +45,7 @@ public abstract class BoxActivity extends AppCompatActivity {
     protected ProgressDialog mProgress;
     protected BaseShareVM baseShareVM;
     protected ShareVMFactory mShareVmFactory;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,7 +198,8 @@ public abstract class BoxActivity extends AppCompatActivity {
     protected void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
-    protected void showToast(int strRes) {
+
+    protected void showToast(@StringRes int strRes) {
         Toast.makeText(this, getString(strRes), Toast.LENGTH_SHORT).show();
     }
 }
